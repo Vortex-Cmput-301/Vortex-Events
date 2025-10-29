@@ -21,7 +21,7 @@ public class Event {
     LinkedHashSet<String> waitingList = new LinkedHashSet<>();
     LinkedHashSet<String> chosenEntrants = new LinkedHashSet<>();// One idea is create a Entrants class with the state of chosen, lost, declined or cancelled
 
-    
+
 
 
 }
