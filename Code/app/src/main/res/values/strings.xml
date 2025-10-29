@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">vortex-events</string>
+    <string name="empty"></string>
 </resources>
