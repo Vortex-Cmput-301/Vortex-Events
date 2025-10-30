@@ -1,39 +1,27 @@
 package com.example.vortex_events;
 
+import com.google.firebase.firestore.auth.User;
+
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Event {
+    String eventID;
     String name;
     String description;
-    ArrayList<Entrant> entrants;
 
-    public Event(String name, String description) {
-        this.name = name;
-        this.description = description;
-        this.entrants = new ArrayList<>();
-    }
+//    Image here somehow
+    int capacity;
+    String location;
+    ArrayList<String> tags;
+    Date start_time;
+    Date end_time;
+    Date enrollement_start;
+    Date enrollement_end;
+    ArrayList<User> waitlist;
+    ArrayList<Users> accepted;
+    ArrayList<User> declined;
+    String organizer;
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public ArrayList<Entrant> getEntrants() {
-        return entrants;
-    }
-
-    public void setEntrants(ArrayList<Entrant> entrants) {
-        this.entrants = entrants;
-    }
 }
