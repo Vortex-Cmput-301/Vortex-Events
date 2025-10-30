@@ -21,27 +21,12 @@ public class databaseWorker {
             if (error != null){
                 Log.e("FireStore", error.toString());
             }
-            if (value != null && !value.isEmpty()){
-//                for (QueryDocumentSnapshot snapshot : value){
-//                    String name = snapshot.getString("name");
-//                    String name = snapshot.getString("name");
-//                    String name = snapshot.getString("name");
-//
-//                }
-            }
         }));
     }
 
-    public void postEntrant(Entrant entrant){
-
-
-
-
-
-    }
 
     public void postEvent(Event event){
-        DocumentReference docuref = eventsRef.document(event.getName().toString());
+//        DocumentReference docuref = eventsRef.document(event.getName().toString());
         docuref.set(event);
 
 

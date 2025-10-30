@@ -19,9 +19,26 @@ public class Event {
     Date end_time;
     Date enrollement_start;
     Date enrollement_end;
-    ArrayList<User> waitlist;
+    ArrayList<Users> waitlist;
     ArrayList<Users> accepted;
-    ArrayList<User> declined;
+    ArrayList<Users> declined;
     String organizer;
 
+    public Event(String name, String location, String organizer, String eventID, Date enrollement_start, Date enrollement_end, Date end_time, Date start_time, ArrayList<String> tags, String description, int capacity) {
+        this.name = name;
+        this.location = location;
+        this.organizer = organizer;
+        this.eventID = eventID;
+        this.enrollement_start = enrollement_start;
+        this.enrollement_end = enrollement_end;
+        this.end_time = end_time;
+        this.start_time = start_time;
+        this.tags = tags;
+        this.description = description;
+        this.capacity = capacity;
+
+        this.waitlist = new ArrayList<>();
+        this.accepted = new ArrayList<>();
+        this.declined = new ArrayList<>();
+    }
 }
