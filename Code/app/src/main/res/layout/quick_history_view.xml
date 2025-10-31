@@ -32,6 +32,7 @@
                 android:id="@+id/event_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/league_spartan_medium"
                 android:text="Example Event"
                 android:textSize="16sp"
                 android:textStyle="bold" />
