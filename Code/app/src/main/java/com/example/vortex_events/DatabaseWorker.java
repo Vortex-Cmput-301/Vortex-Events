@@ -1,20 +1,18 @@
 package com.example.vortex_events;
 import android.util.Log;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 
-public class databaseWorker {
+public class DatabaseWorker {
     FirebaseFirestore db;
     CollectionReference eventsRef;
 
 
-    public databaseWorker() {
-        this.db = FirebaseFirestore.getInstance();
+    public DatabaseWorker(FirebaseFirestore db_arg) {
+        this.db = db_arg;
         this.eventsRef = db.collection("Events");
 
         eventsRef.addSnapshotListener(((value, error) -> {
@@ -24,7 +22,7 @@ public class databaseWorker {
         }));
     }
 
-    public String createEvent(Users maker, Event targetEvent){
+    public Task<Void> createEvent(Users maker, Event targetEvent){
 //        HashWorker hw = new HashWorker();
 //        if (maker instanceof GuestUser){
 //            return "Invalid permission";
@@ -32,8 +30,8 @@ public class databaseWorker {
 //        targetEvent.setOrganizer(maker.deviceID);
 //        targetEvent.setEventID(hw.generateEventID(targetEvent.getName(), maker.deviceID));
         DocumentReference docuref = eventsRef.document(targetEvent.getName());
-        docuref.set(targetEvent);
-        return "Post valid";
+
+        return docuref.set(targetEvent);
     }
 
 

@@ -50,6 +50,10 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
 
+    // For mocking the firebase in testing
+    testImplementation(libs.mockito.core)
+
+
     // Import the Firebase BoM
 
     implementation(platform("com.google.firebase:firebase-bom:34.4.0"))

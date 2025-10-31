@@ -6,7 +6,7 @@ public abstract class Users {
     String deviceID;
 
     public Users(Context context){
-        String userID = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
-        this.deviceID = userID;
+//        String userID = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+        this.deviceID = "";
     }
 }
