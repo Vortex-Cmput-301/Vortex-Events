@@ -26,4 +26,5 @@ public class RegisteredUser extends Users{
         this.notifications = new ArrayList<>();
     }
 
+
 }

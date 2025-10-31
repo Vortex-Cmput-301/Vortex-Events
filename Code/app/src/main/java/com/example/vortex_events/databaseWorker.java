@@ -24,13 +24,18 @@ public class databaseWorker {
         }));
     }
 
-
-    public void postEvent(Event event){
-//        DocumentReference docuref = eventsRef.document(event.getName().toString());
-        docuref.set(event);
-
-
+    public String createEvent(Users maker, Event targetEvent){
+//        HashWorker hw = new HashWorker();
+//        if (maker instanceof GuestUser){
+//            return "Invalid permission";
+//        }
+//        targetEvent.setOrganizer(maker.deviceID);
+//        targetEvent.setEventID(hw.generateEventID(targetEvent.getName(), maker.deviceID));
+        DocumentReference docuref = eventsRef.document(targetEvent.getName());
+        docuref.set(targetEvent);
+        return "Post valid";
     }
+
 
 
 }
