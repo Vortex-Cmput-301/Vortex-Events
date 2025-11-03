@@ -1,3 +1,28 @@
 <resources>
     <string name="app_name">vortex-events</string>
+    <string name="create_new_event">Create New Event</string>
+    <string name="name_of_event">Name of event</string>
+    <string name="name">Name</string>
+    <string name="location">location</string>
+    <string name="a_place">a place</string>
+    <string name="time_of_event">Time of event</string>
+    <string name="yyyy_mm_dd_hh_mm_hh_mm">YYYY-MM-DD, HH:MM-HH:MM</string>
+    <string name="tag">Tag</string>
+    <string name="start_with">start with #</string>
+    <string name="capacity">capacity</string>
+    <string name="number_of_capacity">number of capacity</string>
+    <string name="registration_period">Registration period</string>
+    <string name="end_at_yyyy_mm_dd_hh_mm">end at: YYYY-MM-DD, HH:MM</string>
+    <string name="description">Description</string>
+    <string name="value">Value</string>
+    <string name="waiting_list_limit">waiting list limit</string>
+    <string name="geolocation_requirement">Geolocation requirement</string>
+    <string name="poster_upload">Poster upload</string>
+    <string name="submit">Submit</string>
+    <string name="home">Home</string>
+    <string name="scan_qr">Scan QR</string>
+    <string name="create">Create</string>
+    <string name="search">Search</string>
+    <string name="explore">Explore</string>
+
 </resources>
