@@ -53,7 +53,4 @@ public class DatabaseWorker {
     public Task<QuerySnapshot> getOrganizerEvents(String organizer) {
         return eventsRef.whereEqualTo("organizer", organizer).get();
     }
-
-
-
 }
