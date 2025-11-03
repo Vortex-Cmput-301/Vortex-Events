@@ -4,7 +4,11 @@ import android.util.Log;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
 
 public class DatabaseWorker {
     FirebaseFirestore db;
@@ -32,6 +36,22 @@ public class DatabaseWorker {
         DocumentReference docuref = eventsRef.document(targetEvent.getName());
 
         return docuref.set(targetEvent);
+    }
+
+    public Task<Void> updateEvent(Event targetEvent) {
+        DocumentReference docuref = eventsRef.document(targetEvent.getName());
+
+        return docuref.set(targetEvent);
+    }
+
+    public Task<Void> deleteEvent(Event targetEvent) {
+        DocumentReference docuref = eventsRef.document(targetEvent.getName());
+
+        return docuref.delete();
+    }
+
+    public Task<QuerySnapshot> getOrganizerEvents(String organizer) {
+        return eventsRef.whereEqualTo("organizer", organizer).get();
     }
 
 

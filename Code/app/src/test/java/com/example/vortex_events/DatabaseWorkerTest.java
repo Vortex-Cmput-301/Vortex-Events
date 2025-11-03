@@ -7,7 +7,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -17,6 +20,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.concurrent.ExecutionException;
 
 @RunWith(MockitoJUnitRunner.class) // Initialize all the @Mock fields
 public class DatabaseWorkerTest {
@@ -26,6 +30,10 @@ public class DatabaseWorkerTest {
     private CollectionReference mockCollectionRef;
     @Mock
     private DocumentReference mockDocRef;
+    @Mock
+    private Query mockQuery;
+    @Mock
+    private Task<QuerySnapshot> mockQuerySnapshot;
 
     public Event createMockEvent(){
         Event mockup = new Event("Lebron party", "Cleveland", "", "", new Date(), new Date(), new Date(), new Date(), new ArrayList<>(), "We all love lebron", 23);
@@ -95,5 +103,42 @@ public class DatabaseWorkerTest {
         // make sure task failed
         assertFalse(resultTask.isSuccessful());
         assertEquals(testException, resultTask.getException());
+    }
+
+    @Test
+    public void updateEventTest() {
+        // Create an instantly successful Task (will succeed)
+        Task<Void> successTask = Tasks.forResult(null);
+
+        when(mockDocRef.set(any(Event.class))).thenReturn(successTask);
+
+        Event testEvent = createMockEvent();
+        testEvent.setName("Test Event");
+
+        Task<Void> resultTask = worker.updateEvent(testEvent);
+
+        assertTrue(resultTask.isSuccessful()); // confirm the task was successful
+        verify(mockDocRef).set(testEvent); // check if updated event matches
+
+    }
+
+    @Test
+    public void getOrganizerEventsTest() throws ExecutionException, InterruptedException {
+        Task<QuerySnapshot> successTask = Tasks.forResult(null);
+
+        Event testEvent = createMockEvent();
+        Event otherEvent = createMockEvent();
+        otherEvent.setName("Other Event");
+
+
+        when(mockCollectionRef.whereEqualTo("organizer", testEvent.getOrganizer())).thenReturn(mockQuery);
+        when(mockQuery.get()).thenReturn(successTask);
+
+        Task<QuerySnapshot> result = worker.getOrganizerEvents(testEvent.getOrganizer());
+
+        verify(mockCollectionRef).whereEqualTo("organizer", testEvent.getOrganizer());
+        verify(mockQuery).get();
+        assertTrue(result.isSuccessful());
+
     }
 }
