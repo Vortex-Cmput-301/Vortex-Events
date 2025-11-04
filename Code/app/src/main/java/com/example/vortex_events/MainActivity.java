@@ -1,5 +1,6 @@
 package com.example.vortex_events;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
@@ -24,14 +25,12 @@ public class MainActivity extends AppCompatActivity {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        DatabaseWorker worker = new DatabaseWorker(db);
-        Date enroll_start = new Date();
+        Intent intent = new Intent(this, MainActivity.class);
 
-        Event event = new Event("Washed", "China", "Russel Westbrook", "123456789",
-                enroll_start, enroll_start, enroll_start, enroll_start, null, null, 5 );
+//        startActivity(intent);
 
-        worker.createEvent(null, event);
-        DbViewModel dbVM = new ViewModelProvider(this).get(DbViewModel.class);
+
+
 
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
