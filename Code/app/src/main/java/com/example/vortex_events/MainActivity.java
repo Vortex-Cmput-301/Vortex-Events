@@ -38,8 +38,6 @@ public class MainActivity extends AppCompatActivity {
                 enroll_start, enroll_start, enroll_start, enroll_start, null, null, 5 );
 
         worker.createEvent(null, event);
-        DbViewModel dbVM = new ViewModelProvider(this).get(DbViewModel.class);
-
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
