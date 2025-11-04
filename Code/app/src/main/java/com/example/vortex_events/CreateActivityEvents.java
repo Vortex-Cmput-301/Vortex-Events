@@ -40,7 +40,6 @@ public class CreateActivityEvents extends AppCompatActivity {
                     startActivity(intent);
                     return true;
                 }else if(itemId == R.id.nav_create) {
-
                     return true;
                 }
 
