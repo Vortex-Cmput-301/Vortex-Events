@@ -37,7 +37,14 @@ public class DatabaseWorker {
     public Task<Void> createGuest(GuestUser guest){
         DocumentReference docuRef = usersRef.document(guest.deviceID);
 
+        return  docuRef.set(guest);
 
+    }
+
+    public Task<Void> createRegisteredUser(RegisteredUser user){
+        DocumentReference docuRef = usersRef.document(user.deviceID);
+
+        return  docuRef.set(user);
     }
 
 

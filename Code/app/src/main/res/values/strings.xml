@@ -26,4 +26,6 @@
     <string name="explore">Explore</string>
     <string name="details">details</string>
     <string name="event_image">Event image</string>
+    <string name="create_profile">Create Profile</string>
+    <string name="your_name">Your name</string>
 </resources>
