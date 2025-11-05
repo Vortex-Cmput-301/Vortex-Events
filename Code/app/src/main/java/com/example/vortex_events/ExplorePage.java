@@ -92,7 +92,3 @@ public class ExplorePage extends AppCompatActivity {
         }
 
 
-
-
-
-

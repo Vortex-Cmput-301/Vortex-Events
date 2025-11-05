@@ -15,6 +15,9 @@
             android:name=".OrganizerViewParticipant"
             android:exported="true" />
         <activity
+            android:name=".activity_profile"
+            android:exported="false" />
+        <activity
             android:name=".ExplorePage"
             android:exported="false" />
         <activity
