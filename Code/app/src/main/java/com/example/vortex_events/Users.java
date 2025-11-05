@@ -4,9 +4,26 @@ import android.provider.Settings;
 
 public abstract class Users {
     String deviceID;
+    String type;
+
+    public String getDeviceID() {
+        return deviceID;
+    }
+
+    public void setDeviceID(String deviceID) {
+        this.deviceID = deviceID;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public Users(Context context){
-//        String userID = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
-        this.deviceID = "";
+        String userID = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+        this.deviceID = userID;
     }
 }

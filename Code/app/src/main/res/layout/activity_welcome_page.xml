@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".WelcomePage">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:id="@+id/welcome_frame"
+        android:gravity="center"
+        android:weightSum="2"
+        >
+
+        <TextView
+
+            android:id="@+id/welcome_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Welcome"
+            android:textSize="50dp"
+            android:layout_weight="0.2"
+             />
+
+        <Button
+            android:id="@+id/welcome_sign_in"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/welcome_buttom"
+            android:text="Sign In"
+            android:textSize="30dp"
+            app:backgroundTint="@null">
+
+        </Button>
+        <View
+            android:layout_width="match_parent"
+            android:layout_weight="0.4"
+            android:layout_height="0">
+
+        </View>
+        <TextView
+            android:id="@+id/guest_link"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Continue as guest"
+            android:textSize="20dp"
+            ></TextView>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -13,18 +13,34 @@ import java.util.ArrayList;
 public class DatabaseWorker {
     FirebaseFirestore db;
     CollectionReference eventsRef;
+    CollectionReference usersRef;
 
 
     public DatabaseWorker(FirebaseFirestore db_arg) {
         this.db = db_arg;
         this.eventsRef = db.collection("Events");
-
+        this.usersRef = db.collection("Users");
         eventsRef.addSnapshotListener(((value, error) -> {
             if (error != null){
                 Log.e("FireStore", error.toString());
             }
         }));
+
+        usersRef.addSnapshotListener(((value, error) -> {
+            if (error != null){
+                Log.e("FireStore", error.toString());
+            }
+        }));
     }
+
+
+    public Task<Void> createGuest(GuestUser guest){
+        DocumentReference docuRef = usersRef.document(guest.deviceID);
+
+
+    }
+
+
 
     public Task<Void> createEvent(Users maker, Event targetEvent){
 //        HashWorker hw = new HashWorker();
