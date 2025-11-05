@@ -22,7 +22,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
+    <ImageButton
         android:id="@+id/imageView_profile"
         android:layout_width="32dp"
         android:layout_height="32dp"
@@ -33,7 +33,7 @@
         app:layout_constraintTop_toTopOf="@+id/textView_explore_title"
         android:contentDescription="Profile" />
 
-    <ImageView
+    <ImageButton
         android:id="@+id/imageView_notifications"
         android:layout_width="32dp"
         android:layout_height="32dp"
