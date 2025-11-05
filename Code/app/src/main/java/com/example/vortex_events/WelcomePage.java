@@ -1,7 +1,10 @@
 package com.example.vortex_events;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -26,6 +29,20 @@ public class WelcomePage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_welcome_page);
+
+        @SuppressLint("HardwareIds") String userID = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        boolean logged = dbWorker.checkIfIn(userID);
+        Log.d("EXISTS", String.valueOf(logged));
+        Log.d("USERIFD", userID);
+        if (logged){
+
+            Intent intent = new Intent(WelcomePage.this, MainActivity.class);
+            startActivity(intent);
+        }
+
+
+
 
         signInButton = findViewById(R.id.welcome_sign_in);
         guestLink = findViewById(R.id.guest_link);

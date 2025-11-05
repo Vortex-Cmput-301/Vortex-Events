@@ -1,6 +1,9 @@
 package com.example.vortex_events;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -39,6 +42,20 @@ public class DatabaseWorker {
 
         return  docuRef.set(guest);
 
+    }
+
+    public boolean checkIfIn(String deviceID){
+        final boolean[] exists = {false};
+        DocumentReference docRef = db.collection("Users").document(deviceID);
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                exists[0] = task.isSuccessful();
+            }
+        });
+
+
+        return exists[0];
     }
 
     public Task<Void> createRegisteredUser(RegisteredUser user){

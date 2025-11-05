@@ -1,5 +1,6 @@
 package com.example.vortex_events;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -42,6 +43,11 @@ public class RegistrationScreen extends AppCompatActivity {
         emailField = findViewById(R.id.email_field);
         nameField = findViewById(R.id.name_field_sign_up);
 
+
+
+
+
+
         signUpButton = findViewById(R.id.sign_up_submit);
 
         signUpButton.setOnClickListener(new View.OnClickListener() {
@@ -53,6 +59,9 @@ public class RegistrationScreen extends AppCompatActivity {
 
                 RegisteredUser user = new RegisteredUser(RegistrationScreen.this, phoneNumber, emailAddress, userName);
                 dbWorker.createRegisteredUser(user);
+
+                Intent intent = new Intent(RegistrationScreen.this, MainActivity.class);
+                startActivity(intent);
             }
         });
 
