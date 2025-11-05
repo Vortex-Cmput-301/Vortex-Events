@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Vortexevents">
         <activity
+            android:name=".activity_profile"
+            android:exported="false" />
+        <activity
             android:name=".ExplorePage"
             android:exported="false" />
         <activity
@@ -23,7 +26,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".CreateActivityEvents"
             android:exported="false" />
