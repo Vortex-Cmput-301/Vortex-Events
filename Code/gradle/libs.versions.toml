@@ -11,6 +11,7 @@ firebaseDatabase = "22.0.1"
 mockitoCore = "5.20.0"
 monitor = "1.8.0"
 core = "1.7.0"
+firebaseFirestore = "26.0.2"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -24,6 +25,7 @@ firebase-database = { group = "com.google.firebase", name = "firebase-database",
 mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoCore" }
 monitor = { group = "androidx.test", name = "monitor", version.ref = "monitor" }
 core = { group = "androidx.test", name = "core", version.ref = "core" }
+firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

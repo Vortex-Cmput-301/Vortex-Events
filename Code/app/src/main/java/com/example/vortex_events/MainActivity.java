@@ -38,17 +38,15 @@ public class MainActivity extends AppCompatActivity {
                 enroll_start, enroll_start, enroll_start, enroll_start, null, null, 5 );
 
         worker.createEvent(null, event);
-        DbViewModel dbVM = new ViewModelProvider(this).get(DbViewModel.class);
-
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
         //Add to every activity
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             //Add the rest of the activities when finished
             //made a boolean function to implement highlighting items. will implement later
@@ -61,12 +59,15 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent = new Intent(getApplicationContext(), CreateActivityEvents.class);
                     startActivity(intent);
                     return true;
+                }else if(itemId == R.id.nav_explore){
+                    Intent intent = new Intent(getApplicationContext(), ExplorePage.class);
+                    startActivity(intent);
+                    return true;
                 }
 
                 return false;
             }
         });
-
 
     }
 
