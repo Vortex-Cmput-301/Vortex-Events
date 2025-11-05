@@ -10,35 +10,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.lifecycle.ViewModelProvider;
 
-import com.google.firebase.Firebase;
-import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.Date;
-
-import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
-public class MainActivity extends AppCompatActivity {
+public class CreateActivityEvents extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_main);
-
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-        DatabaseWorker worker = new DatabaseWorker(db);
-        Date enroll_start = new Date();
-
-        Event event = new Event("Washed", "China", "Russel Westbrook", "123456789",
-                enroll_start, enroll_start, enroll_start, enroll_start, null, null, 5 );
-
-        worker.createEvent(null, event);
-
+        setContentView(R.layout.activity_create_events);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -54,19 +36,21 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item){
                 int itemId = item.getItemId();
                 if (itemId == R.id.nav_home){
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(intent);
                     return true;
                 }else if(itemId == R.id.nav_create) {
-                    Intent intent = new Intent(getApplicationContext(), CreateActivityEvents.class);
-                    startActivity(intent);
                     return true;
                 }
 
                 return false;
             }
         });
-
-
     }
+
+
+
+
 
 
 }
