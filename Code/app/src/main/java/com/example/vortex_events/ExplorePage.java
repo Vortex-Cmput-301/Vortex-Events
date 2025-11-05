@@ -1,24 +1,90 @@
 package com.example.vortex_events;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 public class ExplorePage extends AppCompatActivity {
+
+    private List<Event> eventList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
+
         setContentView(R.layout.activity_explore_page);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
+
+        RecyclerView recyclerView = findViewById(R.id.recyclerView_events);
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        setupEventListData();
+        EventAdapter eventAdapter = new EventAdapter(eventList, this);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(eventAdapter);
+
+
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            //Add the rest of the activities when finished
+            //made a boolean function to implement highlighting items. will implement later
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int itemId = item.getItemId();
+                if (itemId == R.id.nav_home) {
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(intent);
+                    return true;
+                } else if (itemId == R.id.nav_create) {
+                    Intent intent = new Intent(getApplicationContext(), CreateActivityEvents.class);
+                    startActivity(intent);
+                    return true;
+                }
+                return false;
+            }
         });
     }
+
+    private void setupEventListData() {
+        eventList = new ArrayList<>();
+        ArrayList<String> arraylist = new ArrayList<String>();
+        arraylist.add("trending");
+        arraylist.add("local");
+
+
+        Calendar calendar = Calendar.getInstance();
+
+        // Create the enrollment start date: October 1, 2025
+        calendar.set(2025, Calendar.OCTOBER, 1); // Month is 0-indexed, OCTOBER is 9
+        Date enrollmentStart = calendar.getTime();
+
+        // Create the enrollment end date: November 15, 2025
+        calendar.set(2025, Calendar.NOVEMBER, 15); // NOVEMBER is 10
+        Date enrollmentEnd = calendar.getTime();
+
+        // Create the event start/end date: November 20, 2025
+        calendar.set(2025, Calendar.NOVEMBER, 20);
+        Date eventDate = calendar.getTime();
+
+
+        Event first_event = new Event("Scream", "UofA", "Bonnie", "123456", enrollmentStart, enrollmentEnd, eventDate, eventDate, arraylist, "description", 20);
+        eventList.add(first_event);
+    }
 }
+
+
