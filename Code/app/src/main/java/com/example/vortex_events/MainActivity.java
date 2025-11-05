@@ -29,16 +29,6 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-        DatabaseWorker worker = new DatabaseWorker(db);
-        Date enroll_start = new Date();
-
-        Event event = new Event("Washed", "China", "Russel Westbrook", "123456789",
-                enroll_start, enroll_start, enroll_start, enroll_start, null, null, 5 );
-
-        worker.createEvent(null, event);
-        DbViewModel dbVM = new ViewModelProvider(this).get(DbViewModel.class);
 
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {

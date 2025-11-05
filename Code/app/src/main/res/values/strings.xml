@@ -6,7 +6,7 @@
     <string name="location">location</string>
     <string name="a_place">a place</string>
     <string name="time_of_event">Time of event</string>
-    <string name="yyyy_mm_dd_hh_mm_hh_mm">YYYY-MM-DD, HH:MM-HH:MM</string>
+    <string name="yyyy_mm_dd_hh_mm">YYYY-MM-DD, HH:MM</string>
     <string name="tag">Tag</string>
     <string name="start_with">start with #</string>
     <string name="capacity">capacity</string>
@@ -24,5 +24,7 @@
     <string name="create">Create</string>
     <string name="search">Search</string>
     <string name="explore">Explore</string>
+    <string name="end_of_event">End of event</string>
+    <string name="start_at_yyyy_mm_dd_hh_mm">start at: YYYY-MM-DD, HH:MM</string>
 
 </resources>

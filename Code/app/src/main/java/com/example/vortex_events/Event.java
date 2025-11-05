@@ -1,5 +1,7 @@
 package com.example.vortex_events;
 
+import android.media.Image;
+
 import com.google.firebase.firestore.auth.User;
 
 import java.sql.Time;
@@ -10,15 +12,14 @@ public class Event {
     String eventID;
     String name;
     String description;
-
-//    Image here somehow
+    String image;
     int capacity;
     String location;
     ArrayList<String> tags;
     Date start_time;
     Date end_time;
-    Date enrollement_start;
-    Date enrollement_end;
+    Date enrollment_start;
+    Date enrollment_end;
     ArrayList<Users> waitlist;
     ArrayList<Users> accepted;
     ArrayList<Users> declined;
@@ -27,15 +28,17 @@ public class Event {
     public Event(String name, String location, String organizer, String eventID, Date enrollement_start, Date enrollement_end, Date end_time, Date start_time, ArrayList<String> tags, String description, int capacity) {
         this.name = name;
         this.location = location;
+        //add image later once database is set up
         this.organizer = organizer;
         this.eventID = eventID;
-        this.enrollement_start = enrollement_start;
-        this.enrollement_end = enrollement_end;
+        this.enrollment_start = enrollement_start;
+        this.enrollment_end = enrollement_end;
         this.end_time = end_time;
         this.start_time = start_time;
         this.tags = tags;
         this.description = description;
         this.capacity = capacity;
+
 
         this.waitlist = new ArrayList<>();
         this.accepted = new ArrayList<>();
@@ -84,20 +87,20 @@ public class Event {
         this.end_time = end_time;
     }
 
-    public Date getEnrollement_end() {
-        return enrollement_end;
+    public Date getEnrollment_end() {
+        return enrollment_end;
     }
 
-    public void setEnrollement_end(Date enrollement_end) {
-        this.enrollement_end = enrollement_end;
+    public void setEnrollment_end(Date enrollment_end) {
+        this.enrollment_end = enrollment_end;
     }
 
-    public Date getEnrollement_start() {
-        return enrollement_start;
+    public Date getEnrollment_start() {
+        return enrollment_start;
     }
 
-    public void setEnrollement_start(Date enrollement_start) {
-        this.enrollement_start = enrollement_start;
+    public void setEnrollment_start(Date enrollment_start) {
+        this.enrollment_start = enrollment_start;
     }
 
     public String getEventID() {
