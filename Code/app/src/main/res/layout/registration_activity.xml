@@ -73,13 +73,12 @@
             android:layout_height="40dp"
             android:layout_marginBottom="16dp"
             android:background="@drawable/edit_text_border"
-            android:focusable="false"
             android:hint="A Valid phone number"
             android:inputType="text" />
         <View
             android:layout_height="0dp"
             android:layout_width="match_parent"
-            android:layout_weight="0.7"
+            android:layout_weight="0.9"
             >
 
         </View>
@@ -96,17 +95,7 @@
 
     </LinearLayout>
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_navigation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@color/white"
-        android:outlineAmbientShadowColor="@color/black"
-        app:itemIconSize="30dp"
-        app:labelVisibilityMode="labeled"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:menu="@menu/bottom_nav_menu" />
+
 
 
 

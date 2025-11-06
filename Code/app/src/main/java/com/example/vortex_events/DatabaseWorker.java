@@ -18,6 +18,8 @@ public class DatabaseWorker {
     CollectionReference eventsRef;
     CollectionReference usersRef;
 
+    boolean userExists;
+
 
     public DatabaseWorker(FirebaseFirestore db_arg) {
         this.db = db_arg;
@@ -36,6 +38,13 @@ public class DatabaseWorker {
         }));
     }
 
+    public boolean isUserExists() {
+        return userExists;
+    }
+
+    public void setUserExists(boolean userExists) {
+        this.userExists = userExists;
+    }
 
     public Task<Void> createGuest(GuestUser guest){
         DocumentReference docuRef = usersRef.document(guest.deviceID);
@@ -44,19 +53,32 @@ public class DatabaseWorker {
 
     }
 
-    public boolean checkIfIn(String deviceID){
-        final boolean[] exists = {false};
+    public void checkIfIn(String deviceID, final UserCheckCallBack callBack){
+
+
         DocumentReference docRef = db.collection("Users").document(deviceID);
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                exists[0] = task.isSuccessful();
+            boolean real = true;
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.d("RETRIEVAL", "DocumentSnapshot data: " + document.getData());
+                        callBack.onUserChecked(true);
+
+                    } else {
+                        Log.d("RETRIEVAL", "No such document");
+                        callBack.onUserChecked(false);
+                    }
+                } else {
+                    Log.d("RETRIEVAL", "get failed with ", task.getException());
+                }
             }
+
         });
-
-
-        return exists[0];
     }
+
 
     public Task<Void> createRegisteredUser(RegisteredUser user){
         DocumentReference docuRef = usersRef.document(user.deviceID);

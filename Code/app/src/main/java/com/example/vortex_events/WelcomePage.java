@@ -20,10 +20,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class WelcomePage extends AppCompatActivity {
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    DatabaseWorker dbWorker = new DatabaseWorker(db);
 
     Button signInButton;
     TextView guestLink;
-    DatabaseWorker dbWorker = new DatabaseWorker(db);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,14 +32,8 @@ public class WelcomePage extends AppCompatActivity {
 
         @SuppressLint("HardwareIds") String userID = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
 
-        boolean logged = dbWorker.checkIfIn(userID);
-        Log.d("EXISTS", String.valueOf(logged));
-        Log.d("USERIFD", userID);
-        if (logged){
 
-            Intent intent = new Intent(WelcomePage.this, MainActivity.class);
-            startActivity(intent);
-        }
+
 
 
 

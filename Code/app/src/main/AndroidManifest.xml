@@ -12,11 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Vortexevents">
         <activity
-            android:name=".RegistrationScreen"
-            android:exported="false" />
-        <activity
-            android:name=".WelcomePage"
+            android:name=".LoadingActivity"
             android:exported="true">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,11 +22,19 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".RegistrationScreen"
+            android:exported="false" />
+        <activity
+            android:name=".WelcomePage"
+            android:exported="false">
+
+        </activity>
+        <activity
             android:name=".ExplorePage"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="false"></activity>
+            android:exported="false" />
         <activity
             android:name=".CreateActivityEvents"
             android:exported="false" />
