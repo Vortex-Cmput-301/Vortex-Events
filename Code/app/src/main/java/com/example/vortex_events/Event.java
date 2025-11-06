@@ -1,8 +1,5 @@
 package com.example.vortex_events;
 
-import com.google.firebase.firestore.auth.User;
-
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
 
