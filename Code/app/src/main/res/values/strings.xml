@@ -31,7 +31,6 @@
         - The organizer reserves the right to put limit on maximum load of waiting list.
         ]]>
     </string>
-
     <string name="create_new_event">Create New Event</string>
     <string name="name_of_event">Name of event</string>
     <string name="name">Name</string>
@@ -56,7 +55,6 @@
     <string name="create">Create</string>
     <string name="search">Search</string>
     <string name="explore">Explore</string>
-
     <string name="details">details</string>
     <string name="event_image">Event image</string>
     <string name="participantsViewTitle">Participants</string>
