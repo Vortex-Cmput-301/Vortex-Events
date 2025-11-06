@@ -19,28 +19,17 @@ public class DatabaseWorker {
         this.db = db_arg;
         this.eventsRef = db.collection("Events");
 
-        eventsRef.addSnapshotListener(((value, error) -> {
-            if (error != null){
-                Log.e("FireStore", error.toString());
-            }
-        }));
     }
 
     public DatabaseWorker() {
         this.db = FirebaseFirestore.getInstance();
         this.eventsRef = db.collection("Events");
-        eventsRef.addSnapshotListener(((value, error) -> {
-            if (error != null){
-                Log.e("FireStore", error.toString());
-            }
-        }));
     }
 
     public Task<Void> createEvent(Users maker, Event targetEvent){
         HashWorker hw = new HashWorker();
         targetEvent.setOrganizer(maker.deviceID);
         targetEvent.setEventID(hw.generateEventID(targetEvent.getName(), maker.deviceID));
-        Log.d("EventID", targetEvent.getEventID());
         DocumentReference docuref = eventsRef.document(targetEvent.getEventID());
 
         return docuref.set(targetEvent);
