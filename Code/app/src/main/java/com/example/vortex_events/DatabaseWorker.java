@@ -26,6 +26,9 @@ public class DatabaseWorker {
      * @Test for dependency injection
      * DO NOT USE FOR NON TESTING PURPOSES
      * */
+    boolean userExists;
+
+
     public DatabaseWorker(FirebaseFirestore db_arg) {
         this.db = db_arg;
         this.eventsRef = db.collection("Events");
@@ -37,13 +40,20 @@ public class DatabaseWorker {
             }
         }));
     }
-    
+
     public DatabaseWorker() {
         this.db = FirebaseFirestore.getInstance();
         this.eventsRef = db.collection("Events");
         this.usersRef = db.collection("Users");
     }
 
+    public boolean isUserExists() {
+        return userExists;
+    }
+
+    public void setUserExists(boolean userExists) {
+        this.userExists = userExists;
+    }
 
 
     public Task<Void> createGuest(GuestUser guest){
@@ -178,7 +188,6 @@ public class DatabaseWorker {
             }
         });
     }
-
 
     /**
      * check if user exists
