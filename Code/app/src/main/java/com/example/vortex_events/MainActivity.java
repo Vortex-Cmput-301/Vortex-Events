@@ -2,6 +2,7 @@ package com.example.vortex_events;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 import androidx.activity.EdgeToEdge;
@@ -29,15 +30,24 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        DatabaseWorker worker = new DatabaseWorker(db);
+        DatabaseWorker worker = new DatabaseWorker();
         Date enroll_start = new Date();
+        RegisteredUser user = new RegisteredUser(MainActivity.this, "7805551234",
+                "russelwestbrook@washed.com", "Russel Westbrook");
 
         Event event = new Event("Washed", "China", "Russel Westbrook", "123456789",
                 enroll_start, enroll_start, enroll_start, enroll_start, null, null, 5 );
 
-        worker.createEvent(null, event);
+        worker.createEvent(user, event).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Log.d("Event", "Success");
+                    } else {
+                        Log.d("Event","Failure");
+                    }
+                }
+        );
+
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
