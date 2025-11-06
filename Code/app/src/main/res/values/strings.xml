@@ -1,5 +1,37 @@
 <resources>
     <string name="app_name">vortex-events</string>
+    <!-- In the policy text Article 2, paragraph 3，we need to provide formated date string-->
+    <string name="lottery_policy">
+        <![CDATA[
+        Lottery Policy Statement
+
+        1. Purpose of the Lottery
+        To ensure that all participants have an equal opportunity to join the event, a random lottery system will be used to select final registrants from the waitlist.
+
+        2. Registration and Waitlist
+        - During the registration period, users may submit an application to join the event waitlist.
+        - No new applications will be accepted after the registration deadline.
+        - The registration period for this event is %1$s to %2$s .
+
+        3. Lottery Process
+        - The lottery will be conducted after the registration period ends.
+        - The system will randomly select the required number of participants from the valid waitlist and automatically send notifications to selected entrants.
+        - If a selected entrant fails to complete registration within the specified time or voluntarily declines, the system will draw a replacement entrant from the waitlist following the same rules.
+
+        4. Fairness and Transparency
+        - The lottery is executed automatically by the system to ensure complete randomness, without any human interference.
+        - All valid applications have an equal chance of being selected.
+        - The system does not adjust lottery probabilities based on submission time, personal information, or other factors.
+
+        5. User Confirmation
+        Before joining the waitlist, users must read and understand the above lottery rules and check the confirmation box to proceed with the application.
+
+        6. Supplementary Provisions
+        - This lottery policy applies to all events requiring a lottery process.
+        - The organizer reserves the right to put limit on maximum load of waiting list.
+        ]]>
+    </string>
+  
     <string name="create_new_event">Create New Event</string>
     <string name="name_of_event">Name of event</string>
     <string name="name">Name</string>
@@ -24,6 +56,7 @@
     <string name="create">Create</string>
     <string name="search">Search</string>
     <string name="explore">Explore</string>
+
     <string name="details">details</string>
     <string name="event_image">Event image</string>
 </resources>

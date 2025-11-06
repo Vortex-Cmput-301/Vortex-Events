@@ -1,5 +1,6 @@
 package com.example.vortex_events;
 
+import com.example.vortex_events.*;
 import com.google.firebase.firestore.auth.User;
 
 import java.sql.Time;
