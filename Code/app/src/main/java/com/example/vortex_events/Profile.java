@@ -18,7 +18,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class activity_profile extends AppCompatActivity{
+public class Profile extends AppCompatActivity{
 
     private List<Event> pastEventList;
 
@@ -44,6 +44,14 @@ public class activity_profile extends AppCompatActivity{
         back_button.setOnClickListener(v -> {
             finish();
         });
+
+        View account_settings = findViewById((R.id.button_account_settings));
+
+        account_settings.setOnClickListener(v ->{
+            Intent intent = new Intent(getApplicationContext(), Account_settings.class);
+            startActivity(intent);
+        });
+
 
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             //Add the rest of the activities when finished

@@ -12,7 +12,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Vortexevents">
         <activity
-            android:name=".activity_profile"
+            android:name=".Account_settings"
+            android:exported="false" />
+        <activity
+            android:name=".Profile"
             android:exported="false" />
         <activity
             android:name=".ExplorePage"
