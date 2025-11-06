@@ -26,4 +26,10 @@
     <string name="explore">Explore</string>
     <string name="details">details</string>
     <string name="event_image">Event image</string>
+    <string name="participantsViewTitle">Participants</string>
+    <string-array name="item_dropdown">
+        <item>Accepted</item>
+        <item>Declined</item>
+        <item>Waitlist</item>
+    </string-array>
 </resources>

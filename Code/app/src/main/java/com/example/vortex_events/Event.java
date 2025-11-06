@@ -33,7 +33,7 @@ public class Event {
         this.enrollement_end = enrollement_end;
         this.end_time = end_time;
         this.start_time = start_time;
-        this.tags = tags;
+        this.tags = tags; // for filtering, put in an array of tags
         this.description = description;
         this.capacity = capacity;
 

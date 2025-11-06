@@ -26,14 +26,22 @@ public class DatabaseWorker {
         }));
     }
 
+    public DatabaseWorker() {
+        this.db = FirebaseFirestore.getInstance();
+        this.eventsRef = db.collection("Events");
+        eventsRef.addSnapshotListener(((value, error) -> {
+            if (error != null){
+                Log.e("FireStore", error.toString());
+            }
+        }));
+    }
+
     public Task<Void> createEvent(Users maker, Event targetEvent){
-//        HashWorker hw = new HashWorker();
-//        if (maker instanceof GuestUser){
-//            return "Invalid permission";
-//        }
-//        targetEvent.setOrganizer(maker.deviceID);
-//        targetEvent.setEventID(hw.generateEventID(targetEvent.getName(), maker.deviceID));
-        DocumentReference docuref = eventsRef.document(targetEvent.getName());
+        HashWorker hw = new HashWorker();
+        targetEvent.setOrganizer(maker.deviceID);
+        targetEvent.setEventID(hw.generateEventID(targetEvent.getName(), maker.deviceID));
+        Log.d("EventID", targetEvent.getEventID());
+        DocumentReference docuref = eventsRef.document(targetEvent.getEventID());
 
         return docuref.set(targetEvent);
     }
@@ -53,4 +61,10 @@ public class DatabaseWorker {
     public Task<QuerySnapshot> getOrganizerEvents(String organizer) {
         return eventsRef.whereEqualTo("organizer", organizer).get();
     }
+
+    public Task<DocumentSnapshot> getEventByID(String id) {
+        return eventsRef.document(id).get();
+    }
+
+
 }
