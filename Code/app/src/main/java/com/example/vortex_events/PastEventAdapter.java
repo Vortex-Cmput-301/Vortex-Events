@@ -17,14 +17,14 @@ import java.util.Locale;
 public class PastEventAdapter extends RecyclerView.Adapter<PastEventAdapter.PastEventViewHolder> {
 
     private final List<Event> pastEventList;
-    private final activity_profile activity; // A reference to the activity that created it.
+    private final Profile activity; // A reference to the activity that created it.
 
     /**
      * Constructor that takes the data list and a reference to the calling Activity.
      * @param pastEventList The list of events to display.
      * @param activity The ProfileActivity instance, used for handling clicks.
      */
-    public PastEventAdapter(List<Event> pastEventList, activity_profile activity) {
+    public PastEventAdapter(List<Event> pastEventList, Profile activity) {
         this.pastEventList = pastEventList;
         this.activity = activity;
     }

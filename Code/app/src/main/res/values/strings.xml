@@ -57,6 +57,7 @@
     <string name="explore">Explore</string>
     <string name="details">details</string>
     <string name="event_image">Event image</string>
+    <string name="account_settings">Account Settings</string>
     <string name="participantsViewTitle">Participants</string>
     <string-array name="item_dropdown">
         <item>Accepted</item>
