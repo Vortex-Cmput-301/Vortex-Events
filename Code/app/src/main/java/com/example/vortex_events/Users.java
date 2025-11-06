@@ -1,5 +1,4 @@
 package com.example.vortex_events;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.provider.Settings;
 

@@ -15,7 +15,10 @@
             android:name=".OrganizerViewParticipant"
             android:exported="true" />
         <activity
-            android:name=".activity_profile"
+            android:name=".Account_settings"
+            android:exported="false" />
+        <activity
+            android:name=".Profile"
             android:exported="false" />
         <activity
             android:name=".ExplorePage"
@@ -29,7 +32,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".CreateActivityEvents"
             android:exported="false" />
