@@ -41,7 +41,7 @@ public class DatabaseWorkerTest {
     }
 
     public RegisteredUser createMockRegisteredUser(){
-        RegisteredUser user = new RegisteredUser(null, "780-THE-GOAT", "elbron@gamil.com", "Lebron");
+        RegisteredUser user = new RegisteredUser("SomeID", "780-THE-GOAT", "elbron@gamil.com", "Lebron");
         return  user;
     }
 

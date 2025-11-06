@@ -1,9 +1,5 @@
 package com.example.vortex_events;
 
-import com.example.vortex_events.*;
-import com.google.firebase.firestore.auth.User;
-
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -34,7 +30,7 @@ public class Event {
         this.enrollement_end = enrollement_end;
         this.end_time = end_time;
         this.start_time = start_time;
-        this.tags = tags;
+        this.tags = tags; // for filtering, put in an array of tags
         this.description = description;
         this.capacity = capacity;
 

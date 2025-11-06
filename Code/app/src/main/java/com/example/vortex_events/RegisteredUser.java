@@ -26,6 +26,18 @@ public class RegisteredUser extends Users{
         this.notifications = new ArrayList<>();
     }
 
+    public RegisteredUser(String Id, String number, String email, String name){
+        this.deviceID = Id;
+        this.phone_number = number;
+        this.email = email;
+        this.name = name;
+
+        this.signed_up_events = new ArrayList<>();
+        this.created_events = new ArrayList<>();
+        this.event_history =  new ArrayList<>();
+        this.notifications = new ArrayList<>();
+    }
+
     public boolean leaveEvent(Event targetEvent){
         if (signed_up_events.contains(targetEvent.getEventID())){
             targetEvent.getWaitlist().remove(deviceID);//remove from waitlist
