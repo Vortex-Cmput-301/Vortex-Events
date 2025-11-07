@@ -1,6 +1,9 @@
 package com.example.vortex_events;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -20,15 +23,58 @@ public class DatabaseWorker {
     public DatabaseWorker(FirebaseFirestore db_arg) {
         this.db = db_arg;
         this.eventsRef = db.collection("Events");
-        this.usersRef = db.collection("Users");// 11.6 by Kehan - add users collection
+        this.usersRef = db.collection("Users");
+
+        eventsRef.addSnapshotListener(((value, error) -> {
+            if (error != null){
+                Log.e("FireStore", error.toString());
+            }
+        }));
+    }
+
+
+
+    public Task<Void> createGuest(GuestUser guest){
+        DocumentReference docuRef = usersRef.document(guest.deviceID);
+
+        return  docuRef.set(guest);
 
     }
 
-    public DatabaseWorker() {
-        this.db = FirebaseFirestore.getInstance();
-        this.eventsRef = db.collection("Events");
-        this.usersRef = db.collection("Users");// 11.6 by Kehan - add users collection
+    public void checkIfIn(String deviceID, final UserCheckCallBack callBack){
+
+
+        DocumentReference docRef = db.collection("Users").document(deviceID);
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+            boolean real = true;
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.d("RETRIEVAL", "DocumentSnapshot data: " + document.getData());
+                        callBack.onUserChecked(true);
+
+                    } else {
+                        Log.d("RETRIEVAL", "No such document");
+                        callBack.onUserChecked(false);
+                    }
+                } else {
+                    Log.d("RETRIEVAL", "get failed with ", task.getException());
+                }
+            }
+
+        });
     }
+
+
+    public Task<Void> createRegisteredUser(RegisteredUser user){
+        DocumentReference docuRef = usersRef.document(user.deviceID);
+
+        return  docuRef.set(user);
+    }
+
+
 
     public Task<Void> createEvent(Users maker, Event targetEvent){
         HashWorker hw = new HashWorker();
