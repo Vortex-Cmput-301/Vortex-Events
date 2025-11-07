@@ -1,6 +1,11 @@
 plugins {
     alias(libs.plugins.android.application)
+
+    // Add the Google services Gradle plugin
+
     id("com.google.gms.google-services")
+
+
 }
 
 android {
@@ -33,17 +38,37 @@ android {
 }
 
 dependencies {
-
+    implementation("com.google.android.material:material:1.10.0")
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
-    implementation(libs.firebase.common)
+    implementation(libs.firebase.database)
+    implementation(libs.monitor)
+    implementation(libs.core)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
 
-    implementation(platform("com.google.firebase:firebase-bom:33.4.0"))
+    // For mocking the firebase in testing
+    testImplementation(libs.mockito.core)
+
+
+    // Import the Firebase BoM
+
+    implementation(platform("com.google.firebase:firebase-bom:34.4.0"))
+
+
+    // TODO: Add the dependencies for Firebase products you want to use
+
+    // When using the BoM, don't specify versions in Firebase dependencies
+
+    implementation("com.google.firebase:firebase-analytics")
+
+
+    // Add the dependencies for any other desired Firebase products
+    implementation(platform("com.google.firebase:firebase-bom:34.3.0"))
     implementation("com.google.firebase:firebase-firestore")
-    implementation("com.google.android.gms:play-services-tasks:18.1.0")
+    // https://firebase.google.com/docs/android/setup#available-libraries
+
 }

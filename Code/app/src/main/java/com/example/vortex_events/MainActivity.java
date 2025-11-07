@@ -2,12 +2,25 @@ package com.example.vortex_events;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.MenuItem;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.ViewModelProvider;
+
+import com.google.firebase.Firebase;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.Date;
+
+import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -17,14 +30,53 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        startActivity(new Intent(MainActivity.this,
-                com.example.vortex_events.ui.OrganizerParticipantsActivity.class));
-        finish(); // 可选：避免退回到 MainActivity
+
+        DatabaseWorker worker = new DatabaseWorker();
+        Date enroll_start = new Date();
+        RegisteredUser user = new RegisteredUser(MainActivity.this, "7805551234",
+                "russelwestbrook@washed.com", "Russel Westbrook");
+
+        Event event = new Event("Washed", "China", "Russel Westbrook", "123456789",
+                enroll_start, enroll_start, enroll_start, enroll_start, null, null, 5 );
+
+        worker.createEvent(user, event).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Log.d("Event", "Success");
+                    } else {
+                        Log.d("Event","Failure");
+                    }
+                }
+        );
+
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        //Add to every activity
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            //Add the rest of the activities when finished
+            //made a boolean function to implement highlighting items. will implement later
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item){
+                int itemId = item.getItemId();
+                if (itemId == R.id.nav_home){
+                    return true;
+                }else if(itemId == R.id.nav_create) {
+                    Intent intent = new Intent(getApplicationContext(), CreateActivityEvents.class);
+                    startActivity(intent);
+                    return true;
+                }
+
+                return false;
+            }
+        });
+
+
     }
+
+
 }
