@@ -26,9 +26,9 @@ public class CreateActivityEvents extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
         //Add to every activity
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             //Add the rest of the activities when finished
             //made a boolean function to implement highlighting items. will implement later
@@ -39,7 +39,9 @@ public class CreateActivityEvents extends AppCompatActivity {
                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                     startActivity(intent);
                     return true;
-                }else if(itemId == R.id.nav_create) {
+                }else if(itemId == R.id.nav_explore) {
+                    Intent intent = new Intent(getApplicationContext(), ExplorePage.class);
+                    startActivity(intent);
                     return true;
                 }
 

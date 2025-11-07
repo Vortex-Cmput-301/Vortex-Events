@@ -22,7 +22,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
+    <ImageButton
         android:id="@+id/imageView_profile"
         android:layout_width="32dp"
         android:layout_height="32dp"
@@ -33,7 +33,7 @@
         app:layout_constraintTop_toTopOf="@+id/textView_explore_title"
         android:contentDescription="Profile" />
 
-    <ImageView
+    <ImageButton
         android:id="@+id/imageView_notifications"
         android:layout_width="32dp"
         android:layout_height="32dp"
@@ -59,58 +59,19 @@
         app:layout_constraintTop_toBottomOf="@+id/textView_explore_title" />
 
     <!-- Bottom Navigation Bar -->
-    <ScrollView
-        android:id="@+id/scrollView"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView_events"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
+        android:clipToPadding="false"
+        android:paddingBottom="16dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button_sort"
-        app:layout_constraintVertical_bias="1.0">
-
-        <LinearLayout
-            android:id="@+id/linearLayout_events_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
-
-            <!-- Example Event 1 -->
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="12dp"
-                app:strokeColor="#E0E0E0"
-                app:strokeWidth="1dp" />
-
-            <!-- Example Event 2 -->
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="12dp"
-                app:strokeColor="#E0E0E0"
-                app:strokeWidth="1dp">
-                <!-- Similar structure as Event 1 with different data -->
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- Load More Button -->
-            <Button
-                android:id="@+id/button_load_more"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="Load more Events"
-                android:textAllCaps="false"
-                android:textColor="@android:color/darker_gray" />
-
-        </LinearLayout>
-    </ScrollView>
+        tools:listitem="@layout/item_event" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"

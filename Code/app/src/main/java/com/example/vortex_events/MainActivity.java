@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
         //Add to every activity
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
 
@@ -67,6 +68,10 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 }else if(itemId == R.id.nav_create) {
                     Intent intent = new Intent(getApplicationContext(), CreateActivityEvents.class);
+                    startActivity(intent);
+                    return true;
+                }else if(itemId == R.id.nav_explore){
+                    Intent intent = new Intent(getApplicationContext(), ExplorePage.class);
                     startActivity(intent);
                     return true;
                 }
