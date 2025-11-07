@@ -30,7 +30,7 @@ public class ExplorePage extends AppCompatActivity {
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView_events);
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-        setupEventListData();
+        setupEventListData();//adds events to list
         EventAdapter eventAdapter = new EventAdapter(eventList, this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(eventAdapter);
@@ -63,6 +63,7 @@ public class ExplorePage extends AppCompatActivity {
         });
     }
 
+    //TODO THis is just a test to see if events list work, need to get events from DATABASE in order to finish.
     private void setupEventListData() {
         eventList = new ArrayList<>();
         ArrayList<String> arraylist = new ArrayList<String>();

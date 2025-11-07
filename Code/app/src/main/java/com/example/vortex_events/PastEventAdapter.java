@@ -76,6 +76,7 @@ public class PastEventAdapter extends RecyclerView.Adapter<PastEventAdapter.Past
             // Check for a valid position, as it can be NO_POSITION during layout changes
             if (currentPosition != RecyclerView.NO_POSITION) {
                 // Directly call the public method on the ProfileActivity instance
+                //TODO This will switch the view to event details, however this is not implemented yet. this function will be in PROFILE
 //                activity.onPastEventDetailsClick(currentPosition);
             }
         });
