@@ -43,52 +43,56 @@ public class ExplorePage extends AppCompatActivity {
             startActivity(intent);
         });
 
-        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            //Add the rest of the activities when finished
-            //made a boolean function to implement highlighting items. will implement later
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                int itemId = item.getItemId();
-                if (itemId == R.id.nav_home) {
-                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                    startActivity(intent);
-                    return true;
-                } else if (itemId == R.id.nav_create) {
-                    Intent intent = new Intent(getApplicationContext(), CreateActivityEvents.class);
-                    startActivity(intent);
-                    return true;
-                }
+            bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+                //Add the rest of the activities when finished
+                //made a boolean function to implement highlighting items. will implement later
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    int itemId = item.getItemId();
+                    if (itemId == R.id.nav_home) {
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        startActivity(intent);
+                        return true;
+                    } else if (itemId == R.id.nav_create) {
+                        Intent intent = new Intent(getApplicationContext(), CreateActivityEvents.class);
+                        startActivity(intent);
+                        return true;
+                    }
                     return false;
+                }
+            });
+        }
+
+            //TODO THis is just a test to see if events list work, need to get events from DATABASE in order to finish.
+            private void setupEventListData() {
+                eventList = new ArrayList<>();
+                ArrayList<String> arraylist = new ArrayList<String>();
+                arraylist.add("trending");
+                arraylist.add("local");
+
+
+                Calendar calendar = Calendar.getInstance();
+
+                // Create the enrollment start date: October 1, 2025
+                calendar.set(2025, Calendar.OCTOBER, 1); // Month is 0-indexed, OCTOBER is 9
+                Date enrollmentStart = calendar.getTime();
+
+                // Create the enrollment end date: November 15, 2025
+                calendar.set(2025, Calendar.NOVEMBER, 15); // NOVEMBER is 10
+                Date enrollmentEnd = calendar.getTime();
+
+                // Create the event start/end date: November 20, 2025
+                calendar.set(2025, Calendar.NOVEMBER, 20);
+                Date eventDate = calendar.getTime();
+
+
+                Event first_event = new Event("Scream", "UofA", "Bonnie", "123456", enrollmentStart, enrollmentEnd, eventDate, eventDate, arraylist, "description", 20);
+                eventList.add(first_event);
             }
-        });
-    }
-
-    //TODO THis is just a test to see if events list work, need to get events from DATABASE in order to finish.
-    private void setupEventListData() {
-        eventList = new ArrayList<>();
-        ArrayList<String> arraylist = new ArrayList<String>();
-        arraylist.add("trending");
-        arraylist.add("local");
+        }
 
 
-        Calendar calendar = Calendar.getInstance();
-
-        // Create the enrollment start date: October 1, 2025
-        calendar.set(2025, Calendar.OCTOBER, 1); // Month is 0-indexed, OCTOBER is 9
-        Date enrollmentStart = calendar.getTime();
-
-        // Create the enrollment end date: November 15, 2025
-        calendar.set(2025, Calendar.NOVEMBER, 15); // NOVEMBER is 10
-        Date enrollmentEnd = calendar.getTime();
-
-        // Create the event start/end date: November 20, 2025
-        calendar.set(2025, Calendar.NOVEMBER, 20);
-        Date eventDate = calendar.getTime();
 
 
-        Event first_event = new Event("Scream", "UofA", "Bonnie", "123456", enrollmentStart, enrollmentEnd, eventDate, eventDate, arraylist, "description", 20);
-        eventList.add(first_event);
-    }
-}
 
 
