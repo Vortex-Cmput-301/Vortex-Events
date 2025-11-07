@@ -2,30 +2,39 @@ package com.example.vortex_events;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
+/**
+ * Displays and filters participants: accept / waiting list / cancelled
+ * Depends on: DatabaseWorker.getParticipants(eventId, ValueEventListener)
+ */
 public class OrganizerViewParticipant extends AppCompatActivity {
-    FirebaseFirestore db;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_organizer_view_participant);
-
         Spinner spinner = findViewById(R.id.participant_filter_dropdown);
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
@@ -43,17 +52,42 @@ public class OrganizerViewParticipant extends AppCompatActivity {
                 loading);
         participantList.setAdapter(listAdapter);
         listAdapter.notifyDataSetChanged();
+        listAdapter.notifyDataSetChanged();
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
+//        TODO: get event id from intent
+        setupParticipantLists(spinner, listAdapter, "6dehsaW");
 
 
-//        Suggested fix by android studio
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+
+
+
+    }
+
+    /**
+    * This function setups a spinner with data from an event on the firebase
+    * @param spinner: the spinner to setup
+    * @param listAdapter: the adapter to use for the list view
+    * @param eventId: the id of the event to get the data from
+    * */
+    private void setupParticipantLists(Spinner spinner, ArrayAdapter<String> listAdapter, String eventId) {
+        //        Suggested fix by android studio
         AtomicReference<ArrayList<String>> acceptedList = new AtomicReference<>(new ArrayList<>());
         AtomicReference<ArrayList<String>> waitlistList = new AtomicReference<>(new ArrayList<>());
         AtomicReference<ArrayList<String>> deletedList = new AtomicReference<>(new ArrayList<>());
 
+        FirebaseFirestore fs = FirebaseFirestore.getInstance();
+        DatabaseWorker dbwork = new DatabaseWorker(fs);
 
-        db = FirebaseFirestore.getInstance();
-        DatabaseWorker dbwork = new DatabaseWorker(db);
-        dbwork.getEventByID("6dehsaW").addOnSuccessListener(documentSnapshot -> { // Note: singular
+//        get event by id
+        dbwork.getEventByID(eventId).addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
                 Log.d("OrganizerViewParticipant", "Event 'accepted' field: " +
                         documentSnapshot.get("accepted"));
@@ -70,15 +104,14 @@ public class OrganizerViewParticipant extends AppCompatActivity {
             Log.e("OrganizerViewParticipant", "Error getting document", e);
         });
 
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-
+        // setup spinner
         spinner.setOnItemSelectedListener(
                 new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, android.view.View view, int position, long id) {
                         String selectedItem = parent.getItemAtPosition(position).toString();
                         Log.d("OrganizerViewParticipant", "Selected item: " + selectedItem);
+//                        check which item was selected
                         if (selectedItem.equals("Accepted")) {
                             Log.d("OrganizerViewParticipant", "Accepted");
                             listAdapter.clear();
@@ -102,12 +135,5 @@ public class OrganizerViewParticipant extends AppCompatActivity {
                         // required but not used
                     }
                 });
-
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
     }
 }
