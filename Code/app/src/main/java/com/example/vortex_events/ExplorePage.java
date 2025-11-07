@@ -61,17 +61,17 @@ public class ExplorePage extends AppCompatActivity {
                     startActivity(intent);
                     return true;
                 }
-                return false;
+                    return false;
             }
         });
     }
 
-    //TODO THis is just a test to see if events list work, need to get events from DATABASE in order to finish.
-    private void setupEventListData() {
-        eventList = new ArrayList<>();
-        ArrayList<String> arraylist = new ArrayList<String>();
-        arraylist.add("trending");
-        arraylist.add("local");
+        //TODO THis is just a test to see if events list work, need to get events from DATABASE in order to finish.
+        private void setupEventListData() {
+            eventList = new ArrayList<>();
+            ArrayList<String> arraylist = new ArrayList<String>();
+            arraylist.add("trending");
+            arraylist.add("local");
 
 
         Calendar calendar = Calendar.getInstance();

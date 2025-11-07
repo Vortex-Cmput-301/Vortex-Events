@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
         //Add to every activity
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
 
