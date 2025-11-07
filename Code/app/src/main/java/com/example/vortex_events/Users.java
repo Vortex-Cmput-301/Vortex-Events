@@ -7,7 +7,9 @@ public abstract class Users {
     String deviceID;
 
     public Users(Context context){
-       @SuppressLint("HardwareIds") String userID = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+        @SuppressLint("HardwareIds") String userID = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
         this.deviceID = userID;
+    }
+    public Users(){
     }
 }

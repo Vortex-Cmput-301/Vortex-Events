@@ -2,4 +2,5 @@
 Code/local.properties
 .idea
 Code/.idea/
+Code/build
 .gradle

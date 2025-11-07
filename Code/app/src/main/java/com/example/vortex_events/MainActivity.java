@@ -2,6 +2,7 @@ package com.example.vortex_events;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 import androidx.activity.EdgeToEdge;
@@ -10,10 +11,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.lifecycle.ViewModelProvider;
-
-import com.google.firebase.Firebase;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Date;
 
@@ -29,6 +26,23 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
+
+        DatabaseWorker worker = new DatabaseWorker();
+        Date enroll_start = new Date();
+        RegisteredUser user = new RegisteredUser(MainActivity.this, "7805551234",
+                "russelwestbrook@washed.com", "Russel Westbrook");
+
+        Event event = new Event("Washed", "China", "Russel Westbrook", "123456789",
+                enroll_start, enroll_start, enroll_start, enroll_start, null, null, 5 );
+
+        worker.createEvent(user, event).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Log.d("Event", "Success");
+                    } else {
+                        Log.d("Event","Failure");
+                    }
+                }
+        );
 
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -49,6 +63,10 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 }else if(itemId == R.id.nav_create) {
                     Intent intent = new Intent(getApplicationContext(), CreateActivityEvents.class);
+                    startActivity(intent);
+                    return true;
+                }else if(itemId == R.id.nav_explore){
+                    Intent intent = new Intent(getApplicationContext(), ExplorePage.class);
                     startActivity(intent);
                     return true;
                 }
