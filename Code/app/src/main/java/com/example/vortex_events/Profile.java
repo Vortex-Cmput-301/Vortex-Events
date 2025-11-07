@@ -75,7 +75,7 @@ public class Profile extends AppCompatActivity{
             }
         });
     }
-
+    //Todo this will also get the events from the DATABASE, however right now it is only a TEST
     private void setupPastEventListData() {
         pastEventList = new ArrayList<>();
         ArrayList<String> arraylist = new ArrayList<String>();
@@ -107,6 +107,7 @@ public class Profile extends AppCompatActivity{
      * This method is called by the PastEventAdapter when a details button is clicked.
      * @param position The position of the item that was clicked.
      */
+    //TODO will switch to events details
     public void onPastEventDetailsClick(int position) {
         // Safety check
         if (position < 0 || position >= pastEventList.size()) {

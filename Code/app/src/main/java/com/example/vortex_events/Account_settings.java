@@ -52,7 +52,7 @@ public class Account_settings extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 //        currentUser = mAuth.getCurrentUser();
-        currentUser = "2c5e1fb22ef59572";
+        currentUser = "2c5e1fb22ef59572";//Todo Currently this is hardcoded to the userID in the DATABASE, just a test in order to see if it works (which it does) still needs to implement getting the userId and checking with the databse to get information.
         // If the user is not null, get the reference to their document in Firestore
         if (currentUser != null) {
             userDocRef = db.collection("Users").document(currentUser);

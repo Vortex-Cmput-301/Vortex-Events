@@ -75,6 +75,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             int currentPosition = holder.getAdapterPosition();
             // Check for a valid position, as it can be NO_POSITION during layout changes
             if (currentPosition != RecyclerView.NO_POSITION) {
+                //TODO will switch the details of events, yet to be implemented tho, original function will be in EXPLORE PAGE
 //                activity.onDetailsClick(currentPosition);
             }
         });
