@@ -81,18 +81,22 @@
 
 
             <!-- 3. My Events Section Title -->
-            <TextView
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/button_my_events"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:text="Past Events"
                 android:gravity="center"
-                android:background="@drawable/outline_button_background"
+                android:hapticFeedbackEnabled="false"
                 android:padding="12dp"
+                android:text="Past Events"
                 android:textColor="#000000"
+                android:textColorLink="?attr/actionMenuTextColor"
                 android:textSize="16sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                app:strokeColor="#000000"
+                app:strokeWidth="2dp"
+                app:backgroundTint="@color/transparent" />
 
             <!-- 4. RecyclerView for the list of past events -->
             <androidx.recyclerview.widget.RecyclerView
@@ -102,38 +106,41 @@
                 android:layout_marginTop="8dp"
                 android:nestedScrollingEnabled="false"
                 tools:listitem="@layout/item_past_event"
-                tools:itemCount="2"/>
+                tools:itemCount="3"/>
 
             <!-- ... (See More, Account Settings, and Log Out buttons remain the same) ... -->
 
-            <TextView
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/button_account_settings"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
                 android:text="Account Settings"
                 android:gravity="center"
-                android:background="@drawable/outline_button_background"
                 android:padding="14dp"
                 android:textColor="#000000"
                 android:textSize="16sp"
                 android:layout_gravity="bottom"
                 android:clickable="true"
-                android:focusable="true"/>
+                android:focusable="true"
+                app:strokeColor="#000000"
+                app:strokeWidth="2dp"
+                app:backgroundTint="@color/transparent" />
 
-            <TextView
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/button_log_out"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Log Out"
+                android:text="Delete Profile"
                 android:gravity="center"
-                android:background="@drawable/outline_button_background"
                 android:padding="14dp"
-                android:textColor="#FF0000"
+                android:textColor="#FFFFFF"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:layout_gravity="bottom"/>
+                android:layout_gravity="bottom"
+                app:cornerRadius="12dp"
+                app:backgroundTint="#FF0000" />
 
         </LinearLayout>
     </ScrollView>
