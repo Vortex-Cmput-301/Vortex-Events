@@ -1,17 +1,14 @@
-package com.example.vortex_events;
+package com.example.vortex_events;// In ProfileActivity.java
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.MenuItem;
 
-import androidx.annotation.NonNull;
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView; // Make sure this is imported
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
@@ -21,30 +18,40 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class ExplorePage extends AppCompatActivity {
+public class Profile extends AppCompatActivity{
 
-    private List<Event> eventList;
+    private List<Event> pastEventList;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+
+    protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_explore_page);
 
-        RecyclerView recyclerView = findViewById(R.id.recyclerView_events);
+        setContentView(R.layout.activity_profile);
+
+        RecyclerView recyclerView = findViewById(R.id.recyclerView_past_events);
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-        setupEventListData();//adds events to list
-        EventAdapter eventAdapter = new EventAdapter(eventList, this);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(eventAdapter);
 
-        View imageView_profile = findViewById(R.id.imageView_profile);
+        setupPastEventListData();
 
-        imageView_profile.setOnClickListener(v -> {
-            // Create an Intent to launch ProfileActivity
-            Intent intent = new Intent(getApplicationContext(), Profile.class);
+        PastEventAdapter pastEventAdapter = new PastEventAdapter(pastEventList,this);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager((this)));
+        recyclerView.setAdapter(pastEventAdapter);
+
+        View back_button = findViewById(R.id.button_back);
+
+        back_button.setOnClickListener(v -> {
+            finish();
+        });
+
+        View account_settings = findViewById((R.id.button_account_settings));
+
+        account_settings.setOnClickListener(v ->{
+            Intent intent = new Intent(getApplicationContext(), Account_settings.class);
             startActivity(intent);
         });
+
 
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             //Add the rest of the activities when finished
@@ -60,18 +67,20 @@ public class ExplorePage extends AppCompatActivity {
                     Intent intent = new Intent(getApplicationContext(), CreateActivityEvents.class);
                     startActivity(intent);
                     return true;
+                } else if (itemId == R.id.button_back) {
+                    Intent intent = new Intent(getApplicationContext(), ExplorePage.class);
+                    startActivity(intent);
                 }
-                    return false;
+                return false;
             }
         });
     }
-
-        //TODO THis is just a test to see if events list work, need to get events from DATABASE in order to finish.
-        private void setupEventListData() {
-            eventList = new ArrayList<>();
-            ArrayList<String> arraylist = new ArrayList<String>();
-            arraylist.add("trending");
-            arraylist.add("local");
+    //Todo this will also get the events from the DATABASE, however right now it is only a TEST
+    private void setupPastEventListData() {
+        pastEventList = new ArrayList<>();
+        ArrayList<String> arraylist = new ArrayList<String>();
+        arraylist.add("trending");
+        arraylist.add("local");
 
 
         Calendar calendar = Calendar.getInstance();
@@ -90,8 +99,26 @@ public class ExplorePage extends AppCompatActivity {
 
 
         Event first_event = new Event("Scream", "UofA", "Bonnie", "123456", enrollmentStart, enrollmentEnd, eventDate, eventDate, arraylist, "description", 20);
-        eventList.add(first_event);
+        pastEventList.add(first_event);
     }
-}
 
+
+    /**
+     * This method is called by the PastEventAdapter when a details button is clicked.
+     * @param position The position of the item that was clicked.
+     */
+    //TODO will switch to events details
+    public void onPastEventDetailsClick(int position) {
+        // Safety check
+        if (position < 0 || position >= pastEventList.size()) {
+            return;
+        }
+        Event clickedEvent = pastEventList.get(position);
+
+        // Intent intent = new Intent(this, EventDetailsActivity.class);
+        // intent.putExtra("EVENT_ID", clickedEvent.getEventID());
+        // startActivity(intent);
+    }
+
+}
 
