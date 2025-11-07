@@ -13,7 +13,7 @@
         android:theme="@style/Theme.Vortexevents">
         <activity
             android:name=".OrganizerViewParticipant"
-            android:exported="true" />
+            android:exported="false" />
         <activity
             android:name=".Account_settings"
             android:exported="false" />
@@ -24,14 +24,27 @@
             android:name=".ExplorePage"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".LoadingActivity"
             android:exported="true">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".RegistrationScreen"
+            android:exported="false" />
+        <activity
+            android:name=".WelcomePage"
+            android:exported="false">
+
+        </activity>
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="false" />
         <activity
             android:name=".CreateActivityEvents"
             android:exported="false" />
