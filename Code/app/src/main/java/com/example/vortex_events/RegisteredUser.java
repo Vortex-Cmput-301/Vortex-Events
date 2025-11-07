@@ -14,11 +14,11 @@ public class RegisteredUser extends Users{
     ArrayList<String> created_events;
     ArrayList<AppNotification> notifications;
 
-    public ArrayList<Event> getCreated_events() {
+    public ArrayList<String> getCreated_events() {
         return created_events;
     }
 
-    public void setCreated_events(ArrayList<Event> created_events) {
+    public void setCreated_events(ArrayList<String> created_events) {
         this.created_events = created_events;
     }
 
@@ -30,11 +30,11 @@ public class RegisteredUser extends Users{
         this.email = email;
     }
 
-    public ArrayList<Event> getEvent_history() {
+    public ArrayList<String> getEvent_history() {
         return event_history;
     }
 
-    public void setEvent_history(ArrayList<Event> event_history) {
+    public void setEvent_history(ArrayList<String> event_history) {
         this.event_history = event_history;
     }
 
@@ -62,11 +62,11 @@ public class RegisteredUser extends Users{
         this.phone_number = phone_number;
     }
 
-    public ArrayList<Event> getSigned_up_events() {
+    public ArrayList<String> getSigned_up_events() {
         return signed_up_events;
     }
 
-    public void setSigned_up_events(ArrayList<Event> signed_up_events) {
+    public void setSigned_up_events(ArrayList<String> signed_up_events) {
         this.signed_up_events = signed_up_events;
     }
 
@@ -83,17 +83,7 @@ public class RegisteredUser extends Users{
         this.notifications = new ArrayList<>();
     }
 
-    public RegisteredUser(String Id, String number, String email, String name){
-        this.deviceID = Id;
-        this.phone_number = number;
-        this.email = email;
-        this.name = name;
 
-        this.signed_up_events = new ArrayList<>();
-        this.created_events = new ArrayList<>();
-        this.event_history =  new ArrayList<>();
-        this.notifications = new ArrayList<>();
-    }
 
     public boolean leaveEvent(Event targetEvent){
         if (signed_up_events.contains(targetEvent.getEventID())){

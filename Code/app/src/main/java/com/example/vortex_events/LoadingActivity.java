@@ -40,6 +40,16 @@ public class LoadingActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
             }
+
+            @Override
+            public void rUserCollected(RegisteredUser user) {
+
+            }
+
+            @Override
+            public Void gUserCollected(GuestUser user) {
+                return null;
+            }
         });
 
 
