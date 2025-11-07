@@ -13,11 +13,13 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class OrganizerViewParticipant extends AppCompatActivity {
-
+    FirebaseFirestore db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,7 +50,9 @@ public class OrganizerViewParticipant extends AppCompatActivity {
         AtomicReference<ArrayList<String>> waitlistList = new AtomicReference<>(new ArrayList<>());
         AtomicReference<ArrayList<String>> deletedList = new AtomicReference<>(new ArrayList<>());
 
-        DatabaseWorker dbwork = new DatabaseWorker();
+
+        db = FirebaseFirestore.getInstance();
+        DatabaseWorker dbwork = new DatabaseWorker(db);
         dbwork.getEventByID("6dehsaW").addOnSuccessListener(documentSnapshot -> { // Note: singular
             if (documentSnapshot.exists()) {
                 Log.d("OrganizerViewParticipant", "Event 'accepted' field: " +
