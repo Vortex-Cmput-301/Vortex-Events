@@ -40,10 +40,13 @@ public class DatabaseWorkerTest {
         return mockup;
     }
 
+    /**
+
     public RegisteredUser createMockRegisteredUser(){
         RegisteredUser user = new RegisteredUser("SomeID", "780-THE-GOAT", "elbron@gamil.com", "Lebron");
         return  user;
     }
+     **/
 
     private DatabaseWorker worker; // worker to test
 

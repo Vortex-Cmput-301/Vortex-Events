@@ -14,6 +14,10 @@ public class RegisteredUser extends Users{
     ArrayList<String> created_events;
     ArrayList<AppNotification> notifications;
 
+    public RegisteredUser(){
+
+    };
+
     public ArrayList<String> getCreated_events() {
         return created_events;
     }
