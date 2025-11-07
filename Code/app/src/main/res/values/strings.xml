@@ -65,4 +65,7 @@
         <item>Declined</item>
         <item>Waitlist</item>
     </string-array>
+    <string name="empty"></string>
+    <string name="no_enrolled_entrants">No enrolled entrants yet</string>
+
 </resources>
