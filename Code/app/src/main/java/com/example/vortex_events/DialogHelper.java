@@ -36,7 +36,7 @@ public class DialogHelper {
      * @param currentUser The current user to delete
      * @param onDeleteSuccess Callback when delete is successful
      */
-    public void showDeleteConfirmationDialog(Users currentUser, Runnable onDeleteSuccess) {
+    public void showDeleteConfirmationDialog(RegisteredUser currentUser, Runnable onDeleteSuccess) {
         try {
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             LayoutInflater inflater = LayoutInflater.from(context);
@@ -92,7 +92,7 @@ public class DialogHelper {
      * @param currentUser The user to delete
      * @param onSuccess Callback when delete is successful
      */
-    private void deleteUserProfile(Users currentUser, Runnable onSuccess) {
+    private void deleteUserProfile(RegisteredUser currentUser, Runnable onSuccess) {
         ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.setMessage("Deleting profile...");
         progressDialog.setCancelable(false);

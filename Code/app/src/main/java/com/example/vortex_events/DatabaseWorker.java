@@ -9,7 +9,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DatabaseWorker {
     FirebaseFirestore db;
@@ -66,7 +68,7 @@ public class DatabaseWorker {
      * @param user  new user object
      * @return Task<Void>
      */
-    public Task<Void> createUser(Users user) {
+    public Task<Void> createUser(RegisteredUser user) {
         Log.d("DatabaseWorker", "Creating user with deviceID: " + user.deviceID);
         DocumentReference docRef = usersRef.document(user.deviceID);
         return docRef.set(user);
@@ -77,7 +79,7 @@ public class DatabaseWorker {
      * @param user object need to update
      * @return Task<Void>
      */
-    public Task<Void> updateUser(Users user) {
+    public Task<Void> updateUser(RegisteredUser user) {
         Log.d("DatabaseWorker", "Updating user with deviceID: " + user.deviceID);
         DocumentReference docRef = usersRef.document(user.deviceID);
         return docRef.set(user);
@@ -88,21 +90,35 @@ public class DatabaseWorker {
      * @param user object need to remove
      * @return Task<Void>
      */
-    public Task<Void> deleteUser(Users user) {
+    public Task<Void> deleteUser(RegisteredUser user) {
         Log.d("DatabaseWorker", "Deleting user with deviceID: " + user.deviceID);
         DocumentReference docRef = usersRef.document(user.deviceID);
         return docRef.delete();
     }
 
     /**
-     * get user by deviceID
+     * Get user by deviceID and convert to RegisteredUser object
      * @param deviceID
-     * @return Task<DocumentSnapshot> stored user data
+     * @return Task<RegisteredUser> stored user data as RegisteredUser object
      */
-    public Task<DocumentSnapshot> getUserByDeviceID(String deviceID) {
+    public Task<RegisteredUser> getUserByDeviceID(String deviceID) {
         Log.d("DatabaseWorker", "Getting user by deviceID: " + deviceID);
-        return usersRef.document(deviceID).get();
+        return usersRef.document(deviceID).get().continueWith(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document != null && document.exists()) {
+                    return convertDocumentToRegisteredUser(document);
+                } else {
+                    Log.d("DatabaseWorker", "User not found with deviceID: " + deviceID);
+                    return null;
+                }
+            } else {
+                Log.e("DatabaseWorker", "Error getting user: ", task.getException());
+                return null;
+            }
+        });
     }
+
 
     /**
      * check if user exists
@@ -142,7 +158,7 @@ public class DatabaseWorker {
 
             // Handle lists - get them from document or create empty lists
             List<String> signedUpEvents = (List<String>) document.get("signed_up_events");
-            List<String> eventHistory = (List<String>) document.get("event_history");
+            Map<String, String> eventHistory = (Map<String, String>) document.get("event_history");
             List<String> createdEvents = (List<String>) document.get("created_events");
             List<AppNotification> notifications = (List<AppNotification>) document.get("notifications");
 
@@ -154,7 +170,7 @@ public class DatabaseWorker {
                 user.signed_up_events = new ArrayList<>(signedUpEvents);
             }
             if (eventHistory != null) {
-                user.event_history = new ArrayList<>(eventHistory);
+                user.event_history = new HashMap<>(eventHistory);
             }
             if (createdEvents != null) {
                 user.created_events = new ArrayList<>(createdEvents);

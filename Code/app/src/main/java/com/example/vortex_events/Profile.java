@@ -37,7 +37,7 @@ public class Profile extends AppCompatActivity{
     private List<Event> pastEventList;
     private MaterialButton buttonDeleteProfile;
     private DatabaseWorker databaseWorker;
-    private Users currentUser;
+    private RegisteredUser currentUser;
     private DialogHelper dialogHelper; // Added DialogHelper
 
 
@@ -102,7 +102,7 @@ public class Profile extends AppCompatActivity{
      * Get current user from device ID
      * This creates a RegisteredUser instance using the device ID
      */
-    private Users getCurrentUser() {
+    private RegisteredUser getCurrentUser() {
         try {
             // Get device ID from Android system
             @SuppressLint("HardwareIds") String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
