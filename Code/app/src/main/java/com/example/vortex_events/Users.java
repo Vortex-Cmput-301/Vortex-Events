@@ -7,6 +7,8 @@ public abstract class Users {
     String deviceID;
     String type;
 
+    public Users(){};
+
     public String getDeviceID() {
         return deviceID;
     }
