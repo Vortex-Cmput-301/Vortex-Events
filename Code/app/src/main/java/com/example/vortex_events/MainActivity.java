@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         RegisteredUser user = new RegisteredUser(MainActivity.this, "7805551234",
                 "russelwestbrook@washed.com", "Russel Westbrook");
 
-        Event event = new Event("Washed", "China", "Russel Westbrook", "123456789",
+        Event event = new Event("Washed", "Albania", "Russel Westbrook", "123456789",
                 enroll_start, enroll_start, enroll_start, enroll_start, null, null, 5 );
 
         worker.createEvent(user, event).addOnCompleteListener(task -> {
