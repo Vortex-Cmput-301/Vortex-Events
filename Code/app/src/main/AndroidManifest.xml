@@ -12,6 +12,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Vortexevents">
         <activity
+            android:name=".OrganizerViewParticipant"
+            android:exported="false" />
+        <activity
+            android:name=".ExplorePage"
+            android:exported="false" />
+        <activity
             android:name=".LoadingActivity"
             android:exported="true">
 
@@ -29,9 +35,7 @@
             android:exported="false">
 
         </activity>
-        <activity
-            android:name=".ExplorePage"
-            android:exported="false" />
+
         <activity
             android:name=".MainActivity"
             android:exported="false" />
