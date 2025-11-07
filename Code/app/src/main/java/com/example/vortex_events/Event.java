@@ -21,6 +21,10 @@ public class Event {
     ArrayList<Users> declined;
     String organizer;
 
+    public Event() {
+
+    }
+
     public Event(String name, String location, String organizer, String eventID, Date enrollement_start, Date enrollement_end, Date end_time, Date start_time, ArrayList<String> tags, String description, int capacity) {
         this.name = name;
         this.location = location;

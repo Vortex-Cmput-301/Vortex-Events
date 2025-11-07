@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Vortexevents">
         <activity
+            android:name=".SearchEvents"
+            android:exported="false" />
+        <activity
             android:name=".OrganizerViewParticipant"
             android:exported="true" />
         <activity
