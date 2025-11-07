@@ -18,6 +18,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,7 +83,9 @@ public class OrganizerViewParticipant extends AppCompatActivity {
         AtomicReference<ArrayList<String>> waitlistList = new AtomicReference<>(new ArrayList<>());
         AtomicReference<ArrayList<String>> deletedList = new AtomicReference<>(new ArrayList<>());
 
-        DatabaseWorker dbwork = new DatabaseWorker();
+        FirebaseFirestore fs = FirebaseFirestore.getInstance();
+        DatabaseWorker dbwork = new DatabaseWorker(fs);
+
 //        get event by id
         dbwork.getEventByID(eventId).addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
