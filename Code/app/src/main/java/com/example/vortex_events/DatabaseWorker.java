@@ -2,6 +2,9 @@ package com.example.vortex_events;
 import android.util.Log;
 
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -53,6 +56,15 @@ public class DatabaseWorker {
 
     public Task<DocumentSnapshot> getEventByID(String id) {
         return eventsRef.document(id).get();
+    }
+
+    public void getParticipants(String eventId, ValueEventListener listener) {
+        DatabaseReference ref = FirebaseDatabase.getInstance()
+                .getReference("events")
+                .child(eventId)
+                .child("participants");
+
+        ref.addValueEventListener(listener); // listener of events
     }
 
 

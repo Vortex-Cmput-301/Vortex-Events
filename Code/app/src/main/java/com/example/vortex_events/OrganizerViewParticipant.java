@@ -1,109 +1,139 @@
 package com.example.vortex_events;
 
 import android.os.Bundle;
-import android.util.Log;
+import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.List;
 
+/**
+ * Displays and filters participants: accept / waiting list / cancelled
+ * Depends on: DatabaseWorker.getParticipants(eventId, ValueEventListener)
+ */
 public class OrganizerViewParticipant extends AppCompatActivity {
+
+    // Spinner for filter options and ListView for displaying participants
+    private Spinner spinnerFilter;
+    private ListView participantListView;
+
+    // Adapter and data lists
+    private ParticipantAdapter adapter;
+    private final List<ParticipantEntry> master = new ArrayList<>();  // All participants
+    private final List<ParticipantEntry> visible = new ArrayList<>(); // Filtered participants
+
+    private ParticipantEntry.Status currentFilter = ParticipantEntry.Status.ACCEPT; // Default filter
+    private DatabaseWorker db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_organizer_view_participant);
 
-        Spinner spinner = findViewById(R.id.participant_filter_dropdown);
+        spinnerFilter = findViewById(R.id.participant_filter_dropdown);
+        participantListView = findViewById(R.id.participantList);
 
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+        // Set up dropdown menu — only three options (Accept / Waiting list / Cancelled)
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(
                 this,
-                R.array.item_dropdown,
-                android.R.layout.simple_spinner_item
+                android.R.layout.simple_spinner_dropdown_item,
+                new String[]{"Accept", "Waiting list", "Cancelled"}
         );
+        spinnerFilter.setAdapter(spinnerAdapter);
 
-        ListView participantList = findViewById(R.id.participantList);
-        ArrayList<String> loading = new ArrayList<>();
-        loading.add("Loading...");
+        adapter = new ParticipantAdapter(this, (ArrayList<ParticipantEntry>) visible);
+        participantListView.setAdapter(adapter);
 
-        ArrayAdapter<String> listAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_1,
-                loading);
-        participantList.setAdapter(listAdapter);
-        listAdapter.notifyDataSetChanged();
+        // Get eventId from the previous Activity
+        String eventId = getIntent().getStringExtra("eventId");
+        if (eventId == null || eventId.trim().isEmpty()) {
+            Toast.makeText(this, "Missing eventId", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-
-//        Suggested fix by android studio
-        AtomicReference<ArrayList<String>> acceptedList = new AtomicReference<>(new ArrayList<>());
-        AtomicReference<ArrayList<String>> waitlistList = new AtomicReference<>(new ArrayList<>());
-        AtomicReference<ArrayList<String>> deletedList = new AtomicReference<>(new ArrayList<>());
-
-        DatabaseWorker dbwork = new DatabaseWorker();
-        dbwork.getEventByID("6dehsaW").addOnSuccessListener(documentSnapshot -> { // Note: singular
-            if (documentSnapshot.exists()) {
-                Log.d("OrganizerViewParticipant", "Event 'accepted' field: " +
-                        documentSnapshot.get("accepted"));
-                acceptedList.set((ArrayList<String>) documentSnapshot.get("accepted"));
-                waitlistList.set((ArrayList<String>) documentSnapshot.get("waitlist"));
-                deletedList.set((ArrayList<String>) documentSnapshot.get("declined"));
-                listAdapter.clear();
-                listAdapter.addAll(acceptedList.get());
-                listAdapter.notifyDataSetChanged();
-            } else {
-                Log.e("OrganizerViewParticipant", "No such document found with that ID.");
+        // Handle dropdown filter changes
+        spinnerFilter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                switch (position) {
+                    case 0: currentFilter = ParticipantEntry.Status.ACCEPT; break;
+                    case 1: currentFilter = ParticipantEntry.Status.WAITING; break;
+                    default: currentFilter = ParticipantEntry.Status.CANCELLED;
+                }
+                applyFilterAndRefresh();
             }
-        }).addOnFailureListener(e -> {
-            Log.e("OrganizerViewParticipant", "Error getting document", e);
+            @Override public void onNothingSelected(AdapterView<?> parent) { }
         });
 
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
+        // Subscribe to Firebase real-time data updates
+        db = new DatabaseWorker();
+        subscribeParticipants(eventId);
+    }
 
-        spinner.setOnItemSelectedListener(
-                new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> parent, android.view.View view, int position, long id) {
-                        String selectedItem = parent.getItemAtPosition(position).toString();
-                        Log.d("OrganizerViewParticipant", "Selected item: " + selectedItem);
-                        if (selectedItem.equals("Accepted")) {
-                            Log.d("OrganizerViewParticipant", "Accepted");
-                            listAdapter.clear();
-                            listAdapter.addAll(acceptedList.get());
-                            listAdapter.notifyDataSetChanged();
-                        } else if (selectedItem.equals("Waitlist")) {
-                            Log.d("OrganizerViewParticipant", "Waitlist");
-                            listAdapter.clear();
-                            listAdapter.addAll(waitlistList.get());
-                            listAdapter.notifyDataSetChanged();
-                        } else if (selectedItem.equals("Declined")) {
-                            Log.d("OrganizerViewParticipant", "Declined");
-                            listAdapter.clear();
-                            listAdapter.addAll(deletedList.get());
-                            listAdapter.notifyDataSetChanged();
-                        }
-                    }
+    // Listen to the participants of this event in Firebase
+    private void subscribeParticipants(@NonNull String eventId) {
+        db.getParticipants(eventId, new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                master.clear();
+                for (DataSnapshot child : snapshot.getChildren()) {
+                    // child: /events/{eventId}/participants/{userId}
+                    String userId = child.getKey();
 
-                    @Override
-                    public void onNothingSelected(AdapterView<?> parent) {
-                        // required but not used
-                    }
-                });
+                    String name = safeGet(child, "name");
+                    String email = safeGet(child, "email");
+                    String statusRaw = safeGet(child, "status");
+                    long enrolledAt = 0L;
+                    try {
+                        Long t = child.child("enrolledAt").getValue(Long.class);
+                        if (t != null) enrolledAt = t;
+                    } catch (Exception ignored) {}
 
+                    ParticipantEntry.Status status = ParticipantEntry.Status.from(statusRaw);
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
+                    master.add(new ParticipantEntry(userId, name, email, enrolledAt, status));
+                }
+                applyFilterAndRefresh();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(OrganizerViewParticipant.this,
+                        "Failed to load participants: " + error.getMessage(),
+                        Toast.LENGTH_SHORT).show();
+            }
         });
     }
+
+    // Apply current filter and refresh the ListView
+    private void applyFilterAndRefresh() {
+        visible.clear();
+        for (ParticipantEntry p : master) {
+            if (p.getStatus() == currentFilter) {
+                visible.add(p);
+            }
+        }
+        adapter.notifyDataSetChanged();
+    }
+
+    // Safely retrieve String value from a DataSnapshot (to prevent null pointer exceptions)
+    private static String safeGet(@NonNull DataSnapshot node, @NonNull String key) {
+        try {
+            String v = node.child(key).getValue(String.class);
+            return v == null ? "" : v;
+        } catch (Exception e) {
+            return "";
+        }
+    }
 }
+
