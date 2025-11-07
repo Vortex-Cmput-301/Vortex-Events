@@ -9,6 +9,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class DatabaseWorker {
     FirebaseFirestore db;
@@ -126,4 +127,49 @@ public class DatabaseWorker {
         Log.d("DatabaseWorker", "Getting all users");
         return usersRef.get();
     }
+
+    /**
+     * Convert DocumentSnapshot to RegisteredUser object
+     * @param document DocumentSnapshot from Firestore
+     * @return RegisteredUser object
+     */
+    private RegisteredUser convertDocumentToRegisteredUser(DocumentSnapshot document) {
+        try {
+            String deviceID = document.getId();
+            String phoneNumber = document.getString("phone_number");
+            String email = document.getString("email");
+            String name = document.getString("name");
+
+            // Handle lists - get them from document or create empty lists
+            List<String> signedUpEvents = (List<String>) document.get("signed_up_events");
+            List<String> eventHistory = (List<String>) document.get("event_history");
+            List<String> createdEvents = (List<String>) document.get("created_events");
+            List<AppNotification> notifications = (List<AppNotification>) document.get("notifications");
+
+            // Create RegisteredUser object
+            RegisteredUser user = new RegisteredUser(deviceID, phoneNumber, email, name);
+
+            // Set the lists
+            if (signedUpEvents != null) {
+                user.signed_up_events = new ArrayList<>(signedUpEvents);
+            }
+            if (eventHistory != null) {
+                user.event_history = new ArrayList<>(eventHistory);
+            }
+            if (createdEvents != null) {
+                user.created_events = new ArrayList<>(createdEvents);
+            }
+            if (notifications != null) {
+                user.notifications = new ArrayList<>(notifications);
+            }
+
+            Log.d("DatabaseWorker", "Successfully converted document to RegisteredUser: " + deviceID);
+            return user;
+
+        } catch (Exception e) {
+            Log.e("DatabaseWorker", "Error converting document to RegisteredUser: ", e);
+            return null;
+        }
+    }
+
 }
