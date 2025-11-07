@@ -1,4 +1,7 @@
 package com.example.vortex_events;// adapters/EventAdapter.java
+import static androidx.core.content.ContextCompat.startActivity;
+
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -77,6 +80,18 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             if (currentPosition != RecyclerView.NO_POSITION) {
                 //TODO will switch the details of events, yet to be implemented tho, original function will be in EXPLORE PAGE
 //                activity.onDetailsClick(currentPosition);
+            }
+        });
+
+
+//        OnClick listener for eventDetails button - Saleh
+        holder.detailsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(activity, EventDetails.class);
+                intent.putExtra("EventID", currentEvent.eventID);
+                activity.startActivity(intent);
+
             }
         });
     }

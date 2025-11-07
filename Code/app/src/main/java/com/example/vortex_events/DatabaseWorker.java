@@ -22,6 +22,7 @@ public class DatabaseWorker {
     CollectionReference usersRef; // 11.6 by Kehan - add users collection
 
 
+
     /**
      * @Test for dependency injection
      * DO NOT USE FOR NON TESTING PURPOSES
@@ -51,9 +52,6 @@ public class DatabaseWorker {
         return userExists;
     }
 
-    public void setUserExists(boolean userExists) {
-        this.userExists = userExists;
-    }
 
 
     public Task<Void> createGuest(GuestUser guest){
