@@ -148,6 +148,7 @@ public class CreateActivityEvents extends AppCompatActivity {
 
 
                 int capacity;
+
                 int waitingListLimit;
 
                 try {
