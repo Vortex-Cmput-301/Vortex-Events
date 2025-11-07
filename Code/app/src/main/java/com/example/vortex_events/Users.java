@@ -8,6 +8,8 @@ public abstract class Users {
 
     public Users(Context context){
         @SuppressLint("HardwareIds") String userID = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
-        this.deviceID = "";
+        this.deviceID = userID;
+    }
+    public Users(){
     }
 }
