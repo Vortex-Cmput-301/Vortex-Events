@@ -24,19 +24,21 @@ import com.google.android.material.navigation.NavigationBarView;
 
 public class MainActivity extends AppCompatActivity {
 
+    FirebaseFirestore db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-
-        DatabaseWorker worker = new DatabaseWorker();
+        db = FirebaseFirestore.getInstance();
+        DatabaseWorker worker = new DatabaseWorker(db);
         Date enroll_start = new Date();
         RegisteredUser user = new RegisteredUser(MainActivity.this, "7805551234",
                 "russelwestbrook@washed.com", "Russel Westbrook");
 
-        Event event = new Event("Washed", "China", "Russel Westbrook", "123456789",
+        Event event = new Event("Washed", "Albania", "Russel Westbrook", "123456789",
                 enroll_start, enroll_start, enroll_start, enroll_start, null, null, 5 );
 
         worker.createEvent(user, event).addOnCompleteListener(task -> {
@@ -47,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
+
 
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
