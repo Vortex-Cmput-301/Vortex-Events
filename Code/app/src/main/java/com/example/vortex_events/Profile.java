@@ -36,7 +36,7 @@ public class Profile extends AppCompatActivity{
 
     private List<Event> pastEventList;
     private MaterialButton buttonDeleteProfile;
-    private DatabaseWorker databaseWorker;
+//    private DatabaseWorker databaseWorker;
     private RegisteredUser currentUser;
     private DialogHelper dialogHelper; // Added DialogHelper
 
@@ -67,12 +67,21 @@ public class Profile extends AppCompatActivity{
 
         // Initialize delete profile button - SINGLE initialization (removed duplicate)
         buttonDeleteProfile = findViewById(R.id.button_log_out);
-        databaseWorker = new DatabaseWorker();
+//        databaseWorker = new DatabaseWorker();
         currentUser = getCurrentUser(); // Use helper method to get current user
         dialogHelper = new DialogHelper(this); // Initialize DialogHelper
         buttonDeleteProfile.setOnClickListener(v -> {
             showDeleteConfirmationDialog();
         });
+
+        // Find the Past Events button
+        MaterialButton pastEventsButton = findViewById(R.id.button_my_events);
+
+        pastEventsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getApplicationContext(), HistoryEvents.class);
+            startActivity(intent);
+        });
+
 
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             //Add the rest of the activities when finished

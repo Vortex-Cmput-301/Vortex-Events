@@ -37,11 +37,13 @@ public class RegisteredUser extends Users{
         this.email = email;
     }
 
-    public ArrayList<String> getEvent_history() {
+    // FIXED: Return type should be Map<String, String>
+    public Map<String, String> getEvent_history() {
         return event_history;
     }
 
-    public void setEvent_history(ArrayList<String> event_history) {
+    // FIXED: Parameter type should be Map<String, String>
+    public void setEvent_history(Map<String, String> event_history) {
         this.event_history = event_history;
     }
 
@@ -89,7 +91,9 @@ public class RegisteredUser extends Users{
         this.notifications = new ArrayList<>();
     }
 
+    // FIXED: Added super() call to parent constructor
     public RegisteredUser(String Id, String number, String email, String name){
+        super(); // Call parent's no-argument constructor
         this.deviceID = Id;
         this.phone_number = number;
         this.email = email;

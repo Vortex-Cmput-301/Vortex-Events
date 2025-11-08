@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
  * DialogHelper class for managing dialog operations
@@ -28,7 +29,7 @@ public class DialogHelper {
 
     public DialogHelper(Context context) {
         this.context = context;
-        this.databaseWorker = new DatabaseWorker();
+        this.databaseWorker = new DatabaseWorker(FirebaseFirestore.getInstance());
     }
 
     /**

@@ -56,14 +56,14 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_confirmation"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
                 android:inputType="textCapCharacters"
                 android:maxLines="1"
-                android:textColor="#333333"
-                android:textSize="16sp"
-                android:gravity="center_vertical"
                 android:paddingStart="12dp"
-                android:paddingEnd="12dp" />
+                android:paddingEnd="12dp"
+                android:textColor="#333333"
+                android:textSize="16sp" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
