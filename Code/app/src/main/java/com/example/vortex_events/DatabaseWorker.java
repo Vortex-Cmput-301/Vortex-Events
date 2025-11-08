@@ -12,6 +12,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +52,13 @@ public class DatabaseWorker {
     public boolean isUserExists() {
         return userExists;
     }
+    public DatabaseWorker() {
+        this.db = FirebaseFirestore.getInstance();
+        this.eventsRef = db.collection("Events");
+        this.usersRef = db.collection("Users");
+
+    }
+
 
 
 
@@ -119,6 +127,10 @@ public class DatabaseWorker {
 
     public Task<QuerySnapshot> getOrganizerEvents(String organizer) {
         return eventsRef.whereEqualTo("organizer", organizer).get();
+    }
+
+    public Task<Void> updateWaitlist(List<String> newList, String eventID){
+       return eventsRef.document(eventID).update("waitlist", newList);
     }
 
     public Task<DocumentSnapshot> getEventByID(String id) {
