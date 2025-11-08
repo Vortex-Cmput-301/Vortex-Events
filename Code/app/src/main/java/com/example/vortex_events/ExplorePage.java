@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.MenuItem;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.activity.EdgeToEdge;
@@ -24,6 +25,7 @@ import java.util.List;
 public class ExplorePage extends AppCompatActivity {
 
     private List<Event> eventList;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,8 +91,10 @@ public class ExplorePage extends AppCompatActivity {
         Date eventDate = calendar.getTime();
 
 
-        Event first_event = new Event("Scream", "UofA", "Bonnie", "123456", enrollmentStart, enrollmentEnd, eventDate, eventDate, arraylist, "description", 20);
+        Event first_event = new Event("Scream", "UofA", "Bonnie", "6dehsaW", enrollmentStart, enrollmentEnd, eventDate, eventDate, arraylist, "description", 20);
         eventList.add(first_event);
+
+
     }
 }
 
