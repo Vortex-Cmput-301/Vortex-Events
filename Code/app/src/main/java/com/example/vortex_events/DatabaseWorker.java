@@ -52,12 +52,6 @@ public class DatabaseWorker {
     public boolean isUserExists() {
         return userExists;
     }
-    public DatabaseWorker() {
-        this.db = FirebaseFirestore.getInstance();
-        this.eventsRef = db.collection("Events");
-        this.usersRef = db.collection("Users");
-
-    }
 
 
 

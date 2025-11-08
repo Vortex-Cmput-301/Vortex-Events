@@ -127,17 +127,14 @@ public class SignUpEvent extends AppCompatActivity {
         });
 
         dbWork.getUserByDeviceID(deviceID).addOnSuccessListener(documentSnapshot -> {
-            if (documentSnapshot.exists()){
-                userType = documentSnapshot.getString("type");
-                if (userType.equals("Guest")){
+
+                if (documentSnapshot.type.equals("Guest")){
                     Toast.makeText(SignUpEvent.this, "Guests can't sign up for events", Toast.LENGTH_SHORT);
                     Intent intent = new Intent(SignUpEvent.this, EventDetails.class);
                     intent.putExtra("EventID", EventID);
                     startActivity(intent);
                 }
-            }else{
-                Log.e("SignUpEvent", "Device ID " + deviceID + "NOWHERE TO BE FOUND");
-            }
+
 
         }).addOnFailureListener(e -> {
             Log.e("SignUpEvent", "DB error");

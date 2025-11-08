@@ -211,10 +211,10 @@ public class CreateActivityEvents extends AppCompatActivity {
 
             //check if the user exists
             dbWorker.getUserByDeviceID(currentDeviceID).addOnSuccessListener(documentSnapshot -> {
-                if (documentSnapshot.exists()) {
+                if (documentSnapshot != null) {
                     Toast.makeText(CreateActivityEvents.this, "Reading User profile", Toast.LENGTH_SHORT).show();
                     // User exists, cast them to RegisteredUser
-                    RegisteredUser currentUser = documentSnapshot.toObject(RegisteredUser.class);
+                    RegisteredUser currentUser = documentSnapshot;
                     if (currentUser == null) {
                         Toast.makeText(CreateActivityEvents.this, "Failed to read user profile.", Toast.LENGTH_SHORT).show();
                         return;
