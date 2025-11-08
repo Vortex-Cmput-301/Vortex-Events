@@ -19,7 +19,10 @@ public class DatabaseWorker {
     CollectionReference usersRef; // 11.6 by Kehan - add users collection
 
 
-
+    /**
+     * @Test for dependency injection
+     * DO NOT USE FOR NON TESTING PURPOSES
+     * */
     public DatabaseWorker(FirebaseFirestore db_arg) {
         this.db = db_arg;
         this.eventsRef = db.collection("Events");
@@ -31,7 +34,7 @@ public class DatabaseWorker {
             }
         }));
     }
-
+    
     public DatabaseWorker() {
         this.db = FirebaseFirestore.getInstance();
         this.eventsRef = db.collection("Events");
@@ -110,6 +113,11 @@ public class DatabaseWorker {
     public Task<DocumentSnapshot> getEventByID(String id) {
         return eventsRef.document(id).get();
     }
+
+    public Task<QuerySnapshot> getAllEvents() {
+        return eventsRef.get();
+    }
+
 
     // 11.6 by Kehan - User related methods
     /**

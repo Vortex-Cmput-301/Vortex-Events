@@ -17,11 +17,8 @@ import java.util.Date;
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MainActivity extends AppCompatActivity {
-
-    FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,8 +26,8 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        db = FirebaseFirestore.getInstance();
-        DatabaseWorker worker = new DatabaseWorker(db);
+
+        DatabaseWorker worker = new DatabaseWorker();
         Date enroll_start = new Date();
         RegisteredUser user = new RegisteredUser(MainActivity.this, "7805551234",
                 "russelwestbrook@washed.com", "Russel Westbrook");
@@ -46,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
-
 
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -71,6 +67,14 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 }else if(itemId == R.id.nav_explore){
                     Intent intent = new Intent(getApplicationContext(), ExplorePage.class);
+                    startActivity(intent);
+                    return true;
+                } else if (itemId == R.id.nav_search) {
+                    Intent intent = new Intent(getApplicationContext(), SearchEvents.class);
+                    startActivity(intent);
+                    return true;
+                } else if (itemId == R.id.nav_search) {
+                    Intent intent = new Intent(getApplicationContext(), SearchEvents.class);
                     startActivity(intent);
                     return true;
                 }
