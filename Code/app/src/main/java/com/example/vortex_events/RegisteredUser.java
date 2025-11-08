@@ -21,6 +21,10 @@ public class RegisteredUser extends Users{
     public static final String STATUS_CANCELLED = "CANCELLED";
     public static final String STATUS_NOT_CHOSEN = "NOT_CHOSEN";
 
+    public RegisteredUser(){
+
+    };
+
     public ArrayList<String> getCreated_events() {
         return created_events;
     }

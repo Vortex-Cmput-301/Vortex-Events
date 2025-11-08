@@ -7,8 +7,7 @@ public class Event {
     String eventID;
     String name;
     String description;
-
-//    Image here somehow
+    String image;
     int capacity;
     String location;
     ArrayList<String> tags;

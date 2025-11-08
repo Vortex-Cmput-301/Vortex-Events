@@ -35,6 +35,12 @@ public class DatabaseWorker {
         }));
     }
 
+    public DatabaseWorker() {
+        this.db = FirebaseFirestore.getInstance();
+        this.eventsRef = db.collection("Events");
+        this.usersRef = db.collection("Users");
+    }
+
 
 
     public Task<Void> createGuest(GuestUser guest){
