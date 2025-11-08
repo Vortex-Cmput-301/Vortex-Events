@@ -73,6 +73,10 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent = new Intent(getApplicationContext(), SearchEvents.class);
                     startActivity(intent);
                     return true;
+                } else if (itemId == R.id.nav_search) {
+                    Intent intent = new Intent(getApplicationContext(), SearchEvents.class);
+                    startActivity(intent);
+                    return true;
                 }
 
                 return false;
