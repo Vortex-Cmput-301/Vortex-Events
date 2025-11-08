@@ -30,12 +30,23 @@
             android:textStyle="bold"/>
 
         <TextView
+            android:id="@+id/textView_event_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_location_pin"
+            android:layout_marginTop="4dp"
+            android:drawablePadding="4dp"
+            android:gravity="center_vertical"
+            android:textSize="12sp"
+            android:text="Example Place" /><!-- 11.6, location was added -->
+
+        <TextView
             android:id="@+id/past_event_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:text="Oct 30, 2025 10:00 PM"
-            android:textColor="#0000FF"
+            android:textColor="@color/project_blue"
             android:textSize="12sp"/>
     </LinearLayout>
 
@@ -50,6 +61,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="Details"/>
+            android:text="state"/>
     </LinearLayout>
 </LinearLayout>

@@ -29,6 +29,9 @@ public abstract class Users {
         @SuppressLint("HardwareIds") String userID = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
         this.deviceID = userID;
     }
+    public Users(){
+        // No-argument constructor
+    }
 
 
 }

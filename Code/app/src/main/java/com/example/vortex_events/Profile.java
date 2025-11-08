@@ -1,17 +1,31 @@
 package com.example.vortex_events;// In ProfileActivity.java
 
+import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView; // Make sure this is imported
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -21,19 +35,18 @@ import java.util.List;
 public class Profile extends AppCompatActivity{
 
     private List<Event> pastEventList;
+    private MaterialButton buttonDeleteProfile;
+//    private DatabaseWorker databaseWorker;
+    private RegisteredUser currentUser;
+    private DialogHelper dialogHelper; // Added DialogHelper
 
 
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-
-
         setContentView(R.layout.activity_profile);
-
         RecyclerView recyclerView = findViewById(R.id.recyclerView_past_events);
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-
         setupPastEventListData();
-
         PastEventAdapter pastEventAdapter = new PastEventAdapter(pastEventList,this);
 
         recyclerView.setLayoutManager(new LinearLayoutManager((this)));
@@ -49,6 +62,23 @@ public class Profile extends AppCompatActivity{
 
         account_settings.setOnClickListener(v ->{
             Intent intent = new Intent(getApplicationContext(), Account_settings.class);
+            startActivity(intent);
+        });
+
+        // Initialize delete profile button - SINGLE initialization (removed duplicate)
+        buttonDeleteProfile = findViewById(R.id.button_log_out);
+//        databaseWorker = new DatabaseWorker();
+        currentUser = getCurrentUser(); // Use helper method to get current user
+        dialogHelper = new DialogHelper(this); // Initialize DialogHelper
+        buttonDeleteProfile.setOnClickListener(v -> {
+            showDeleteConfirmationDialog();
+        });
+
+        // Find the Past Events button
+        MaterialButton pastEventsButton = findViewById(R.id.button_my_events);
+
+        pastEventsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getApplicationContext(), HistoryEvents.class);
             startActivity(intent);
         });
 
@@ -74,7 +104,28 @@ public class Profile extends AppCompatActivity{
                 return false;
             }
         });
+
     }
+
+    /**
+     * Get current user from device ID
+     * This creates a RegisteredUser instance using the device ID
+     */
+    private RegisteredUser getCurrentUser() {
+        try {
+            // Get device ID from Android system
+            @SuppressLint("HardwareIds") String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
+            // Create a RegisteredUser with the device ID
+            // TODO: Replace with actual user data retrieval
+            return new RegisteredUser(deviceID, "unknown", "unknown@example.com", "User");
+        } catch (Exception e) {
+            Toast.makeText(this, "Error getting user data", Toast.LENGTH_SHORT).show();
+            return null;
+        }
+    }
+
+
     //Todo this will also get the events from the DATABASE, however right now it is only a TEST
     private void setupPastEventListData() {
         pastEventList = new ArrayList<>();
@@ -120,5 +171,32 @@ public class Profile extends AppCompatActivity{
         // startActivity(intent);
     }
 
-}
+    /**
+     * Show delete confirmation dialog with input validation
+     * Simplified version using DialogHelper
+     */
+    private void showDeleteConfirmationDialog() {
+        if (currentUser == null) {
+            Toast.makeText(this, "User data not available", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
+        dialogHelper.showDeleteConfirmationDialog(currentUser, this::onDeleteSuccess);
+    }
+
+    /**
+     * Handle successful delete operation
+     */
+    private void onDeleteSuccess() {
+        // Show 5-second countdown (reduced from 10 seconds for better UX)
+        dialogHelper.showExitCountdown(5, this::exitApplication);
+    }
+
+    /**
+     * Exit the application
+     */
+    private void exitApplication() {
+        finishAffinity(); // Close all activities and exit app
+    }
+
+}
