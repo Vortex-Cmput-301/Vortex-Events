@@ -131,7 +131,13 @@ public class DatabaseWorker {
         return eventsRef.document(id).get();
     }
 
+    /**
+     * get all events for Explore page
+     * @return Task<QuerySnapshot>
+     */
+    //TODO: treat search by tag
     public Task<QuerySnapshot> getAllEvents() {
+        Log.d("DatabaseWorker", "Getting all events");
         return eventsRef.get();
     }
 
@@ -217,6 +223,7 @@ public class DatabaseWorker {
         return usersRef.get();
     }
 
+
     /**
      * Convert DocumentSnapshot to RegisteredUser object
      * @param document DocumentSnapshot from Firestore
@@ -257,6 +264,72 @@ public class DatabaseWorker {
 
         } catch (Exception e) {
             Log.e("DatabaseWorker", "Error converting document to RegisteredUser: ", e);
+            return null;
+        }
+    }
+
+    /**
+     * Convert DocumentSnapshot to Event object
+     * @param document DocumentSnapshot from Firestore
+     * @return Event object
+     */
+    public static Event convertDocumentToEvent(DocumentSnapshot document) {
+        try {
+            Event event = new Event();
+
+            // Set basic properties
+            event.setEventID(document.getId());
+            event.setName(document.getString("name"));
+            event.setDescription(document.getString("description"));
+            event.setLocation(document.getString("location"));
+            event.setOrganizer(document.getString("organizer"));
+            event.setCapacity(document.getLong("capacity") != null ? document.getLong("capacity").intValue() : 0);
+
+            // Set time properties
+            event.setEnrollement_start(document.getDate("enrollement_start"));
+            event.setEnrollement_end(document.getDate("enrollement_end"));
+            event.setStart_time(document.getDate("start_time"));
+            event.setEnd_time(document.getDate("end_time"));
+
+            // Set tags list
+            List<String> tags = (List<String>) document.get("tags");
+            if (tags != null) {
+                event.setTags(new ArrayList<>(tags));
+            } else {
+                event.setTags(new ArrayList<>());
+            }
+
+            // Set image URL
+            event.setImage(document.getString("image"));
+
+            // Load accepted participants (directly as ArrayList<String>)
+            List<String> acceptedUserIDs = (List<String>) document.get("accepted");
+            if (acceptedUserIDs != null) {
+                event.setAccepted(new ArrayList<>(acceptedUserIDs));
+            } else {
+                event.setAccepted(new ArrayList<>());
+            }
+
+            // Load declined participants (directly as ArrayList<String>)
+            List<String> declinedUserIDs = (List<String>) document.get("declined");
+            if (declinedUserIDs != null) {
+                event.setDeclined(new ArrayList<>(declinedUserIDs));
+            } else {
+                event.setDeclined(new ArrayList<>());
+            }
+
+            // Load waitlist participants (directly as ArrayList<String>)
+            List<String> waitlistUserIDs = (List<String>) document.get("waitlist");
+            if (waitlistUserIDs != null) {
+                event.setWaitlist(new ArrayList<>(waitlistUserIDs));
+            } else {
+                event.setWaitlist(new ArrayList<>());
+            }
+
+            return event;
+
+        } catch (Exception e) {
+            Log.e("DatabaseWorker", "Error converting document to Event", e);
             return null;
         }
     }

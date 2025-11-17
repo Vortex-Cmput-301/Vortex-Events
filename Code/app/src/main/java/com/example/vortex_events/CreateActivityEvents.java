@@ -49,13 +49,21 @@ import java.util.Locale;
  */
 public class CreateActivityEvents extends AppCompatActivity {
 
-    /** Handles database read/write operations for Events and Users. */
+    /**
+     * Handles database read/write operations for Events and Users.
+     */
     private DatabaseWorker dbWorker;
-    /** Handles setting waitlist limits. */
+    /**
+     * Handles setting waitlist limits.
+     */
     private WaitlistManager waitlistManager;
-    /** Utility for generating and reversing event IDs. */
+    /**
+     * Utility for generating and reversing event IDs.
+     */
     private HashWorker hashWorker;
-    /** The unique Android device ID of the current user. */
+    /**
+     * The unique Android device ID of the current user.
+     */
     private String currentDeviceID;
 
 

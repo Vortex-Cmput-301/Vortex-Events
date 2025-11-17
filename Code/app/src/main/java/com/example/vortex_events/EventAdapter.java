@@ -65,6 +65,12 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
         // Bind the data to the views in the ViewHolder
         holder.eventTitle.setText(currentEvent.getName());
+        // FIX: Add event location display
+        if (currentEvent.getLocation() != null && !currentEvent.getLocation().isEmpty()) {
+            holder.eventLocation.setText(currentEvent.getLocation());
+        } else {
+            holder.eventLocation.setText("Unknown location");
+        }
         Date eventStartTime = currentEvent.getStart_time();
         if (eventStartTime != null) {
             SimpleDateFormat formatter = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
@@ -74,25 +80,28 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         }
 
         // Set the click listener to call the Activity's public method directly
-        holder.detailsButton.setOnClickListener(v -> {
-            int currentPosition = holder.getAdapterPosition();
-            // Check for a valid position, as it can be NO_POSITION during layout changes
-            if (currentPosition != RecyclerView.NO_POSITION) {
-                //TODO will switch the details of events, yet to be implemented tho, original function will be in EXPLORE PAGE
-//                activity.onDetailsClick(currentPosition);
-            }
-        });
-
-
-//        OnClick listener for eventDetails button - Saleh
         holder.detailsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(activity, EventDetails.class);
-                intent.putExtra("EventID", currentEvent.eventID);
-                activity.startActivity(intent);
-
+                // TODO COMPLETED: Implement event details functionality in ExplorePage
+                // Call the public method in ExplorePage to handle details click
+                activity.onEventDetailsClick(currentEvent);
             }
         });
     }
 }
+
+
+//        OnClick listener for eventDetails button - Saleh
+        // todo completed
+//        holder.detailsButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(activity, EventDetails.class);
+//                intent.putExtra("EventID", currentEvent.eventID);
+//                activity.startActivity(intent);
+//
+//            }
+//        });
+//    }
+//}

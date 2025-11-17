@@ -4,3 +4,4 @@ Code/local.properties
 Code/.idea/
 Code/build
 .gradle
+Code/build/reports/problems/problems-report.html

@@ -1,7 +1,9 @@
 package com.example.vortex_events;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.MenuItem;
@@ -14,8 +16,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -25,6 +31,8 @@ import java.util.List;
 public class ExplorePage extends AppCompatActivity {
 
     private List<Event> eventList;
+    private EventAdapter eventAdapter; //set up adapter
+    private DatabaseWorker databaseWorker; //set up database worker
 
 
     @Override
@@ -33,12 +41,18 @@ public class ExplorePage extends AppCompatActivity {
 
         setContentView(R.layout.activity_explore_page);
 
+        databaseWorker = new DatabaseWorker(); // Initialize the database worker
+
         RecyclerView recyclerView = findViewById(R.id.recyclerView_events);
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-        setupEventListData();//adds events to list
-        EventAdapter eventAdapter = new EventAdapter(eventList, this);
+
+        // Initialize eventList only once
+        eventList = new ArrayList<>();
+        eventAdapter = new EventAdapter(eventList, this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(eventAdapter);
+
+        loadEventsFromDatabase();
 
         View imageView_profile = findViewById(R.id.imageView_profile);
 
@@ -69,33 +83,86 @@ public class ExplorePage extends AppCompatActivity {
     }
 
         //TODO THis is just a test to see if events list work, need to get events from DATABASE in order to finish.
-        private void setupEventListData() {
-            eventList = new ArrayList<>();
-            ArrayList<String> arraylist = new ArrayList<String>();
-            arraylist.add("trending");
-            arraylist.add("local");
 
+    /*
+     * Load events from database
+     */
+    // Load events from database
+    private void loadEventsFromDatabase() {
+        databaseWorker.getAllEvents().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    eventList.clear();
 
-        Calendar calendar = Calendar.getInstance();
+                    for (DocumentSnapshot document : task.getResult()) {
+                        Event event = DatabaseWorker.convertDocumentToEvent(document);
+                        if (event != null) {
+                            eventList.add(event);
+                        }
+                    }
 
-        // Create the enrollment start date: October 1, 2025
-        calendar.set(2025, Calendar.OCTOBER, 1); // Month is 0-indexed, OCTOBER is 9
-        Date enrollmentStart = calendar.getTime();
+                    eventAdapter.notifyDataSetChanged();
 
-        // Create the enrollment end date: November 15, 2025
-        calendar.set(2025, Calendar.NOVEMBER, 15); // NOVEMBER is 10
-        Date enrollmentEnd = calendar.getTime();
+                    Log.d("ExplorePage", "Loaded " + eventList.size() + " events from database");
 
-        // Create the event start/end date: November 20, 2025
-        calendar.set(2025, Calendar.NOVEMBER, 20);
-        Date eventDate = calendar.getTime();
+                    // If no events found, use test data
+                    if (eventList.isEmpty()) {
+                        setupTestEventListData();
+                    }
 
-
-        Event first_event = new Event("Scream", "UofA", "Bonnie", "6dehsaW", enrollmentStart, enrollmentEnd, eventDate, eventDate, arraylist, "description", 20);
-        eventList.add(first_event);
-
-
+                } else {
+                    Log.e("ExplorePage", "Error getting events", task.getException());
+                    setupTestEventListData();
+                }
+            }
+        });
     }
+
+    /**
+     * Handles event details click from EventAdapter
+     * @param event The event to show details for
+     */
+    public void onEventDetailsClick(Event event) {
+        // TODO: Implement event details navigation
+        Intent intent = new Intent(this, EventDetails.class);
+        intent.putExtra("EventID", event.getEventID());
+        intent.putExtra("EventName", event.getName());
+        intent.putExtra("EventLocation", event.getLocation());
+        intent.putExtra("EventDate", event.getStart_time() != null ?
+                event.getStart_time().getTime() : 0);
+        intent.putExtra("EventDescription", event.getDescription());
+        startActivity(intent);
+    }
+
+    private void setupTestEventListData() {
+        eventList = new ArrayList<>();
+        ArrayList<String> arraylist = new ArrayList<String>();
+        arraylist.add("trending");
+        arraylist.add("local");
+
+
+    Calendar calendar = Calendar.getInstance();
+
+    // Create the enrollment start date: October 1, 2025
+    calendar.set(2025, Calendar.OCTOBER, 1); // Month is 0-indexed, OCTOBER is 9
+    Date enrollmentStart = calendar.getTime();
+
+    // Create the enrollment end date: November 15, 2025
+    calendar.set(2025, Calendar.NOVEMBER, 15); // NOVEMBER is 10
+    Date enrollmentEnd = calendar.getTime();
+
+    // Create the event start/end date: November 20, 2025
+    calendar.set(2025, Calendar.NOVEMBER, 20);
+    Date eventDate = calendar.getTime();
+
+
+    Event first_event = new Event("Scream", "UofA", "Bonnie", "6dehsaW", enrollmentStart, enrollmentEnd, eventDate, eventDate, arraylist, "description", 20);
+    eventList.add(first_event);
+
+
+}
 }
 
 

@@ -85,6 +85,12 @@ public class DatabaseWorkerTest {
         verify(mockDocRef).set(testEvent);
     }
 
+    private Users createMockRegisteredUser() {
+        RegisteredUser user = new RegisteredUser();
+        user.setDeviceID("fake ID");
+        return user;
+    }
+
     @Test
     public void createEvent_failure() {
         // create a failed task

@@ -25,6 +25,11 @@ public abstract class Users {
         this.type = type;
     }
 
+
+//    public Users(){
+//        // No-argument constructor
+//    }
+
     public Users(Context context){
         @SuppressLint("HardwareIds") String userID = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
         this.deviceID = userID;
