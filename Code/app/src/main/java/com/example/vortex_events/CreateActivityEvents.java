@@ -49,13 +49,21 @@ import java.util.Locale;
  */
 public class CreateActivityEvents extends AppCompatActivity {
 
-    /** Handles database read/write operations for Events and Users. */
+    /**
+     * Handles database read/write operations for Events and Users.
+     */
     private DatabaseWorker dbWorker;
-    /** Handles setting waitlist limits. */
+    /**
+     * Handles setting waitlist limits.
+     */
     private WaitlistManager waitlistManager;
-    /** Utility for generating and reversing event IDs. */
+    /**
+     * Utility for generating and reversing event IDs.
+     */
     private HashWorker hashWorker;
-    /** The unique Android device ID of the current user. */
+    /**
+     * The unique Android device ID of the current user.
+     */
     private String currentDeviceID;
 
 
@@ -100,8 +108,8 @@ public class CreateActivityEvents extends AppCompatActivity {
      * Initializes the UI, sets up listeners, and handles the event creation logic.
      *
      * @param savedInstanceState If the activity is being re-initialized after
-     * previously being shut down then this Bundle contains the data it most
-     * recently supplied in onSaveInstanceState(Bundle).
+     *                           previously being shut down then this Bundle contains the data it most
+     *                           recently supplied in onSaveInstanceState(Bundle).
      */
     @SuppressLint("HardwareIds") // Suppress warning for device ID
     @Override
@@ -208,95 +216,103 @@ public class CreateActivityEvents extends AppCompatActivity {
             ArrayList<String> tagsList = new ArrayList<>(Arrays.asList(tagString.split(" ")));
 
 
-
             //check if the user exists
-            dbWorker.getUserByDeviceID(currentDeviceID).addOnSuccessListener(documentSnapshot -> {
-                if (documentSnapshot.exists()) {
-                    Toast.makeText(CreateActivityEvents.this, "Reading User profile", Toast.LENGTH_SHORT).show();
+            //Kehan 11.16 -- There are errors here, I need to do some change.
+//            dbWorker.getUserByDeviceID(currentDeviceID).addOnSuccessListener(documentSnapshot -> {
+//                if (documentSnapshot.exists()) {
+//                    Toast.makeText(CreateActivityEvents.this, "Reading User profile", Toast.LENGTH_SHORT).show();
+//                    // User exists, cast them to RegisteredUser
+//                    RegisteredUser currentUser = documentSnapshot.toObject(RegisteredUser.class);
+//                    if (currentUser == null) {
+//                        Toast.makeText(CreateActivityEvents.this, "Failed to read user profile.", Toast.LENGTH_SHORT).show();
+//                        return;
+//                    }
+            dbWorker.userExists(currentDeviceID).addOnSuccessListener(exists -> {
+                if (exists) {
+                    Toast.makeText(CreateActivityEvents.this, "User exists. Reading User profile", Toast.LENGTH_SHORT).show();
+
                     // User exists, cast them to RegisteredUser
-                    RegisteredUser currentUser = documentSnapshot.toObject(RegisteredUser.class);
-                    if (currentUser == null) {
-                        Toast.makeText(CreateActivityEvents.this, "Failed to read user profile.", Toast.LENGTH_SHORT).show();
-                        return;
+                    dbWorker.getUserByDeviceID(currentDeviceID).addOnSuccessListener(registeredUser -> {
+                        if (registeredUser != null) {
+                            RegisteredUser currentUser = registeredUser;
+
+
+                            // Build the Event object
+                            Event event = new Event(
+                                    eventName,
+                                    eventLocation,
+                                    currentUser.deviceID, // Use real user ID
+                                    hashWorker.generateEventID(eventName, currentUser.deviceID), // Use real event ID
+                                    enrollmentStartTime,
+                                    enrollmentEndTime,
+                                    eventStartTime,
+                                    eventEndTime,
+                                    tagsList,
+                                    description,
+                                    capacity
+                            );
+
+
+                            // Create the event in the database
+                            dbWorker.createEvent(currentUser, event).addOnSuccessListener(aVoid -> {
+                                Log.d("FormData", "Event document created.");
+
+                                Toast.makeText(CreateActivityEvents.this, "Creating Event", Toast.LENGTH_SHORT).show();
+
+                                // Now that event is created, set the waitlist limit
+                                waitlistManager.setWaitlistLimit(event.getEventID(), waitingListLimit).addOnSuccessListener(aVoid1 -> {
+
+                                    // FINAL SUCCESS
+                                    Toast.makeText(CreateActivityEvents.this, "Event Created Successfully!", Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                    startActivity(intent);
+                                    finish(); // Close this activity
+
+                                }).addOnFailureListener(e -> {
+                                    Log.e("FormData", "Event created, but failed to set waitlist limit", e);
+                                    Toast.makeText(CreateActivityEvents.this, "Event created (limit error)", Toast.LENGTH_SHORT).show();
+                                    finish();
+                                });
+
+                            }).addOnFailureListener(e -> {
+                                Log.e("FormData", "Failed to create event.", e);
+                                Toast.makeText(CreateActivityEvents.this, "Failed to create event.", Toast.LENGTH_SHORT).show();
+                            });
+
+                        } else {
+                            // User does not exist, block event creation
+                            Toast.makeText(CreateActivityEvents.this, "User not found. Cannot create event.", Toast.LENGTH_SHORT).show();
+                        }
+                    }).addOnFailureListener(e -> {
+                        Log.e("FormData", "Error checking user.", e);
+                        Toast.makeText(CreateActivityEvents.this, "Error checking user.", Toast.LENGTH_SHORT).show();
+                    });
+                }
+            });
+            //Add to every activity
+            BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+
+            bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+                //Add the rest of the activities when finished
+                //made a boolean function to implement highlighting items. will implement later
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    int itemId = item.getItemId();
+                    if (itemId == R.id.nav_home) {
+                        return true;
+                    } else if (itemId == R.id.nav_create) {
+                        Intent intent = new Intent(getApplicationContext(), CreateActivityEvents.class);
+                        startActivity(intent);
+                        return true;
+                    } else if (itemId == R.id.nav_explore) {
+                        Intent intent = new Intent(getApplicationContext(), ExplorePage.class);
+                        startActivity(intent);
+                        return true;
                     }
 
-
-
-
-                    // Build the Event object
-                    Event event = new Event(
-                            eventName,
-                            eventLocation,
-                            currentUser.deviceID, // Use real user ID
-                            hashWorker.generateEventID(eventName, currentUser.deviceID), // Use real event ID
-                            enrollmentStartTime,
-                            enrollmentEndTime,
-                            eventStartTime,
-                            eventEndTime,
-                            tagsList,
-                            description,
-                            capacity
-                    );
-
-
-
-
-                    // Create the event in the database
-                    dbWorker.createEvent(currentUser, event).addOnSuccessListener(aVoid -> {
-                        Log.d("FormData", "Event document created.");
-
-                        Toast.makeText(CreateActivityEvents.this, "Creating Event", Toast.LENGTH_SHORT).show();
-
-                        // Now that event is created, set the waitlist limit
-                        waitlistManager.setWaitlistLimit(event.getEventID(), waitingListLimit).addOnSuccessListener(aVoid1 -> {
-
-                            // FINAL SUCCESS
-                            Toast.makeText(CreateActivityEvents.this, "Event Created Successfully!", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                            startActivity(intent);
-                            finish(); // Close this activity
-
-                        }).addOnFailureListener(e -> {
-                            Log.e("FormData", "Event created, but failed to set waitlist limit", e);
-                            Toast.makeText(CreateActivityEvents.this, "Event created (limit error)", Toast.LENGTH_SHORT).show();
-                            finish();
-                        });
-
-                    }).addOnFailureListener(e -> {
-                        Log.e("FormData", "Failed to create event.", e);
-                        Toast.makeText(CreateActivityEvents.this, "Failed to create event.", Toast.LENGTH_SHORT).show();
-                    });
-
-                } else {
-                    // User does not exist, block event creation
-                    Toast.makeText(CreateActivityEvents.this, "User not found. Cannot create event.", Toast.LENGTH_SHORT).show();
+                    return false;
                 }
-            }).addOnFailureListener(e -> {
-                Log.e("FormData", "Error checking user.", e);
-                Toast.makeText(CreateActivityEvents.this, "Error checking user.", Toast.LENGTH_SHORT).show();
             });
         });
-
-
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-
-
-        bottomNavigationView.setSelectedItemId(R.id.nav_create);
-
-
-        bottomNavigationView.setOnItemSelectedListener(item -> {
-            int itemId = item.getItemId();
-            if (itemId == R.id.nav_home){
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
-                overridePendingTransition(0, 0); // No transition animation
-                return true;
-            } else if(itemId == R.id.nav_create) {
-                return true; // Do nothing, we are already on this screen
-            }
-            // Add other navigation
-
-            return false;
-        });
     }
-}
+}//fixed wrong brace closing
