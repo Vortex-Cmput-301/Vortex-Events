@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SignUpEvent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="100"
+        android:gravity="center_horizontal"
+
+        >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Event Lottery Sign Up"
+                android:textSize="36dp"
+                android:textStyle="bold"
+                android:layout_margin="30dp"
+                >
+
+            </TextView>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="40"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginTop="30dp"
+                android:orientation="vertical"
+                android:padding="10dp"
+                android:weightSum="100"
+                >
+                <TextView
+                    android:id="@+id/sign_up_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Name"
+                    android:textStyle="bold"
+                    android:textSize="36dp"
+                    >
+
+                </TextView>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="40"
+                    >
+
+                </View>
+
+                <TextView
+                    android:id="@+id/sign_up_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Time"
+                    android:textSize="20dp"
+                    >
+
+                </TextView>
+
+                <TextView
+                    android:id="@+id/sign_up_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Location"
+                    android:textSize="20dp"
+                    >
+
+                </TextView>
+            </LinearLayout>
+
+        <TextView
+            android:id="@+id/sign_up_warning"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lottery warning"
+            android:textSize="20dp"
+            >
+
+        </TextView>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="30"
+            >
+
+        </View>
+
+        <Button
+            android:id="@+id/sign_up_sign_up"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/loading"
+            android:backgroundTint="@android:color/black"
+            android:textColor="@android:color/white"
+            android:paddingVertical="12dp"
+            android:textSize="18sp"/>
+
+        <Button
+            android:id="@+id/sign_up_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/loading"
+            android:backgroundTint="@android:color/black"
+            android:textColor="@android:color/white"
+            android:paddingVertical="12dp"
+            android:textSize="18sp"
+            />
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -12,6 +12,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,13 @@ public class DatabaseWorker {
     CollectionReference eventsRef;
     CollectionReference usersRef; // 11.6 by Kehan - add users collection
 
+
+
+    /**
+     * @Test for dependency injection
+     * DO NOT USE FOR NON TESTING PURPOSES
+     * */
+    boolean userExists;
 
 
     public DatabaseWorker(FirebaseFirestore db_arg) {
@@ -40,6 +48,11 @@ public class DatabaseWorker {
         this.eventsRef = db.collection("Events");
         this.usersRef = db.collection("Users");
     }
+
+    public boolean isUserExists() {
+        return userExists;
+    }
+
 
 
 
@@ -110,9 +123,18 @@ public class DatabaseWorker {
         return eventsRef.whereEqualTo("organizer", organizer).get();
     }
 
+    public Task<Void> updateWaitlist(List<String> newList, String eventID){
+       return eventsRef.document(eventID).update("waitlist", newList);
+    }
+
     public Task<DocumentSnapshot> getEventByID(String id) {
         return eventsRef.document(id).get();
     }
+
+    public Task<QuerySnapshot> getAllEvents() {
+        return eventsRef.get();
+    }
+
 
     // 11.6 by Kehan - User related methods
     /**
@@ -170,7 +192,6 @@ public class DatabaseWorker {
             }
         });
     }
-
 
     /**
      * check if user exists

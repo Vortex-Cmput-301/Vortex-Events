@@ -11,6 +11,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Vortexevents">
+
+
+        <activity
+            android:name=".SignUpEvent"
+            android:exported="false" />
+        <activity
+            android:name=".EventDetails"
+            android:exported="false" />
+        <activity
+            android:name=".SearchEvents"
+            android:exported="false" />
         <activity
             android:name=".OrganizerViewParticipant"
             android:exported="false" />
@@ -26,7 +37,6 @@
         <activity
             android:name=".LoadingActivity"
             android:exported="true">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -38,16 +48,14 @@
             android:exported="false" />
         <activity
             android:name=".WelcomePage"
-            android:exported="false">
-
-        </activity>
-
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="false" />
         <activity
             android:name=".CreateActivityEvents"
             android:exported="false" />
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
