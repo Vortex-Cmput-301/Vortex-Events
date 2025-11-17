@@ -302,10 +302,29 @@ public class DatabaseWorker {
             // Set image URL
             event.setImage(document.getString("image"));
 
-            // Initialize participant lists (may need separate handling when loading from database)
-            event.setAccepted(new ArrayList<>());
-            event.setDeclined(new ArrayList<>());
-            event.setWaitlist(new ArrayList<>());
+            // Load accepted participants (directly as ArrayList<String>)
+            List<String> acceptedUserIDs = (List<String>) document.get("accepted");
+            if (acceptedUserIDs != null) {
+                event.setAccepted(new ArrayList<>(acceptedUserIDs));
+            } else {
+                event.setAccepted(new ArrayList<>());
+            }
+
+            // Load declined participants (directly as ArrayList<String>)
+            List<String> declinedUserIDs = (List<String>) document.get("declined");
+            if (declinedUserIDs != null) {
+                event.setDeclined(new ArrayList<>(declinedUserIDs));
+            } else {
+                event.setDeclined(new ArrayList<>());
+            }
+
+            // Load waitlist participants (directly as ArrayList<String>)
+            List<String> waitlistUserIDs = (List<String>) document.get("waitlist");
+            if (waitlistUserIDs != null) {
+                event.setWaitlist(new ArrayList<>(waitlistUserIDs));
+            } else {
+                event.setWaitlist(new ArrayList<>());
+            }
 
             return event;
 

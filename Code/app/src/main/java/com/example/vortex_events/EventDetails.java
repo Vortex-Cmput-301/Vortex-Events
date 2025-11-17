@@ -82,13 +82,14 @@ public class EventDetails extends AppCompatActivity {
         dbWorker.getEventByID(EventID).addOnSuccessListener(documentSnapshot -> { // Note: singular
             if (documentSnapshot.exists()) {
                 Log.d("OrganizerViewParticipant", "Event 'accepted' field: " + documentSnapshot.get("accepted"));
-                description = documentSnapshot.getString("description");
-                title = documentSnapshot.getString("name");
-                capacity =  documentSnapshot.getLong("capacity").intValue();
-                location = documentSnapshot.getString("location");
-                regLimit = documentSnapshot.getDate("enrollement_end");
-                time = documentSnapshot.getDate("start_time");
-                orgID = documentSnapshot.getString("organizer");
+                Event event = dbWorker.convertDocumentToEvent(documentSnapshot);//use method in DatabaseWorker instead
+                description = event.getDescription();
+                title = event.getName();
+                capacity =  event.getCapacity();
+                location = event.getLocation();
+                regLimit = event.getEnrollement_end();
+                time = event.getStart_time();
+                orgID = event.getOrganizer();
 
                 eventTitle.setText(title);
                 eventDesc.setText("Description: " + description);
@@ -122,16 +123,30 @@ public class EventDetails extends AppCompatActivity {
                     });
 
                 }else{
-                    signupButton.setText("Sign up for this event");
+                    if (event.getWaitlist().contains(deviceID)) {
+                        signupButton.setText("Registered, leave or edit");
 //                    Listener for sign up for event
-                    signupButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Intent intent = new Intent(EventDetails.this, SignUpEvent.class);
-                            intent.putExtra("EventID", EventID);
-                            startActivity(intent);
-                        }
-                    });
+                        signupButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            //Todo: link to edit page with leave button --Kehan 11.16
+                            public void onClick(View view) {
+                                Intent intent = new Intent(EventDetails.this, SignUpEvent.class);
+                                intent.putExtra("EventID", EventID);
+                                startActivity(intent);
+                            }
+                        });
+                    }else{
+                        signupButton.setText("Sign up for this event");
+//                    Listener for sign up for event
+                        signupButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Intent intent = new Intent(EventDetails.this, SignUpEvent.class);
+                                intent.putExtra("EventID", EventID);
+                                startActivity(intent);
+                            }
+                        });
+                    }
                 }
 
 

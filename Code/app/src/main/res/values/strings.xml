@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">vortex-events</string>
-    <!-- In the policy text Article 2, paragraph 3，we need to provide formated date string-->
     <string name="lottery_policy">
         <![CDATA[
         Lottery Policy Statement
@@ -11,7 +10,6 @@
         2. Registration and Waitlist
         - During the registration period, users may submit an application to join the event waitlist.
         - No new applications will be accepted after the registration deadline.
-        - The registration period for this event is %1$s to %2$s .
 
         3. Lottery Process
         - The lottery will be conducted after the registration period ends.
