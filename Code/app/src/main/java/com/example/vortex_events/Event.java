@@ -29,6 +29,7 @@ public class Event {
         this.location = location;
         this.organizer = organizer;
         this.eventID = eventID;
+        this.image = null; //TODO: add image
         this.enrollement_start = enrollement_start;
         this.enrollement_end = enrollement_end;
         this.end_time = end_time;
@@ -98,6 +99,14 @@ public class Event {
 
     public void setEnrollement_start(Date enrollement_start) {
         this.enrollement_start = enrollement_start;
+    }
+    public String getImage() {
+        //TODO: develop the image getter
+        return null;
+    }
+
+    public void setImage(String image) {
+        //TODO: develop the image set up
     }
 
     public String getEventID() {
