@@ -172,7 +172,16 @@ public class RegisteredUser extends Users{
         return new HashMap<>(event_history);
     }
 
-
+    /**
+     * Add an event ID to the user's signed up events list
+     * @param eventID The event ID to add
+     */
+    public void addSignedUpEvent(String eventID) {
+        if (signed_up_events == null) {
+            signed_up_events = new ArrayList<>();
+        }
+        signed_up_events.add(eventID);
+    }
 
 
 }
