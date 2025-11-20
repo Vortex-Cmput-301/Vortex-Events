@@ -2,6 +2,6 @@
 Code/local.properties
 .idea
 Code/.idea/
+Code/build/reports/problems
 Code/build
 .gradle
-Code/build/reports/problems/problems-report.html

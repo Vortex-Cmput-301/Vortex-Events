@@ -83,28 +83,27 @@ public class SignUpEvent extends AppCompatActivity {
                 sign_up.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-//                Waitlist logic
+                        // Waitlist logic
                         dbWork.getEventByID(EventID).addOnSuccessListener(documentSnapshot -> {
                             if (documentSnapshot.exists()) {
                                 List<String> waitlist = (ArrayList<String>) documentSnapshot.get("waitlist");
                                 waitlist.add(deviceID);
-                                dbWork.updateWaitlist(waitlist, EventID);
-                            }else{
+
+                                dbWork.updateWaitlist(waitlist, EventID).addOnSuccessListener(aVoid -> {
+                                    // After updating waitlist, update user's signed_up_events
+                                    updateUserEvents(EventID);
+                                }).addOnFailureListener(e -> {
+                                    Log.e("SignUpEvent", "DB error updating waitlist");
+                                });
+                            } else {
                                 Log.e("SignUpEvent", "Device ID " + deviceID + "NOWHERE TO BE FOUND");
                             }
-
                         }).addOnFailureListener(e -> {
-                            Log.e("SignUpEvent", "DB error");
+                            Log.e("SignUpEvent", "DB error getting event");
                         });
-
-
-
-
-
-                        Intent intent = new Intent(SignUpEvent.this, MainActivity.class);
-                        startActivity(intent);
                     }
                 });
+
 
                 cancel.setText("Cancel Sign Up");
                 cancel.setOnClickListener(new View.OnClickListener() {
@@ -116,9 +115,6 @@ public class SignUpEvent extends AppCompatActivity {
                     }
                 });
 
-
-
-
             } else {
                 Log.e("SignUpEvent", "No such document found with that ID.");
             }
@@ -126,24 +122,18 @@ public class SignUpEvent extends AppCompatActivity {
             Log.e("SignUpEvent", "Error getting document", e);
         });
 
-        dbWork.getUserByDeviceID(deviceID).addOnSuccessListener(documentSnapshot -> {
-
-                if (documentSnapshot.type.equals("Guest")){
-                    Toast.makeText(SignUpEvent.this, "Guests can't sign up for events", Toast.LENGTH_SHORT);
-                    Intent intent = new Intent(SignUpEvent.this, EventDetails.class);
-                    intent.putExtra("EventID", EventID);
-                    startActivity(intent);
-                }
-
-
+        // Check if user is guest (original logic)
+        dbWork.getUserByDeviceID(deviceID).addOnSuccessListener(user -> {
+            if (user != null && user.getType().equals("Guest")) {
+                Toast.makeText(SignUpEvent.this, "Guests can't sign up for events", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(SignUpEvent.this, EventDetails.class);
+                intent.putExtra("EventID", EventID);
+                startActivity(intent);
+                finish(); // Close activity for guest users
+            }
         }).addOnFailureListener(e -> {
-            Log.e("SignUpEvent", "DB error");
+            Log.e("SignUpEvent", "DB error getting user type");
         });
-
-
-
-
-
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -151,4 +141,32 @@ public class SignUpEvent extends AppCompatActivity {
             return insets;
         });
     }
+    private void updateUserEvents(String eventID) {
+        dbWork.getUserByDeviceID(deviceID).addOnSuccessListener(user -> {
+            if (user != null) {
+                // Use the convenience method
+                user.addSignedUpEvent(eventID);
+
+                // Update user in database
+                dbWork.updateUser(user).addOnSuccessListener(aVoid -> {
+                    Log.d("SignUpEvent", "User events updated successfully");
+                    Intent intent = new Intent(SignUpEvent.this, MainActivity.class);
+                    startActivity(intent);
+                }).addOnFailureListener(e -> {
+                    Log.e("SignUpEvent", "DB error updating user");
+                    Intent intent = new Intent(SignUpEvent.this, MainActivity.class);
+                    startActivity(intent);
+                });
+            } else {
+                Log.e("SignUpEvent", "User not found");
+                Intent intent = new Intent(SignUpEvent.this, MainActivity.class);
+                startActivity(intent);
+            }
+        }).addOnFailureListener(e -> {
+            Log.e("SignUpEvent", "DB error getting user");
+            Intent intent = new Intent(SignUpEvent.this, MainActivity.class);
+            startActivity(intent);
+        });
+    }
+
 }
