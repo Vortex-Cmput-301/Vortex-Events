@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,21 +37,38 @@ public class Profile extends AppCompatActivity{
 
     private List<Event> pastEventList;
     private MaterialButton buttonDeleteProfile;
-//    private DatabaseWorker databaseWorker;
+    // private DatabaseWorker databaseWorker;
+    private DatabaseWorker databaseWorker;
     private RegisteredUser currentUser;
     private DialogHelper dialogHelper; // Added DialogHelper
+    private PastEventAdapter pastEventAdapter; // Add Adapter reference
+    private RecyclerView recyclerView; // Add RecyclerView reference
+
+    // Control flag for switching between event display modes
+    private final boolean SHOW_SIGNED_UP_EVENTS = true;
 
 
+    @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-        RecyclerView recyclerView = findViewById(R.id.recyclerView_past_events);
+        // Initialize views
+        recyclerView = findViewById(R.id.recyclerView_past_events);
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-        setupPastEventListData();
-        PastEventAdapter pastEventAdapter = new PastEventAdapter(pastEventList,this);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager((this)));
+        // Initialize empty list and adapter
+        pastEventList = new ArrayList<>();
+        pastEventAdapter = new PastEventAdapter(pastEventList, this);
+
+        // Setup RecyclerView
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(pastEventAdapter);
+
+        // Initialize DatabaseWorker
+        databaseWorker = new DatabaseWorker();
+
+        // load Data
+        setupPastEventListData();
 
         View back_button = findViewById(R.id.button_back);
 
@@ -104,7 +122,6 @@ public class Profile extends AppCompatActivity{
                 return false;
             }
         });
-
     }
 
     /**
@@ -125,9 +142,125 @@ public class Profile extends AppCompatActivity{
         }
     }
 
-
-    //Todo this will also get the events from the DATABASE, however right now it is only a TEST
+    /**
+     * Setup past event list data - now shows signed up events by default
+     */
     private void setupPastEventListData() {
+        // clear the list
+        pastEventList.clear();
+
+        if (SHOW_SIGNED_UP_EVENTS) {
+            // show signed up events
+            loadSignedUpEvents();
+        } else {
+            // show historical events
+            loadHistoricalEvents();
+        }
+    }
+
+    /**
+     * Load signed up events from database
+     */
+    private void loadSignedUpEvents() {
+        if (currentUser == null) {
+            currentUser = getCurrentUser();
+        }
+
+        // Add loading message
+        Toast.makeText(this, "Loading events...", Toast.LENGTH_SHORT).show();
+
+        if (currentUser != null) {
+            // find User data from database to get signed_up_events
+            databaseWorker.getUserByDeviceID(currentUser.getDeviceID()).addOnSuccessListener(user -> {
+                if (user != null && user.getSigned_up_events() != null) {
+                    List<String> signedUpEventIDs = user.getSigned_up_events();
+
+                    if (signedUpEventIDs.isEmpty()) {
+                        // No signed up events found
+                        pastEventList.clear();
+                        Toast.makeText(this, "No signed up events found", Toast.LENGTH_SHORT).show();
+                        updateRecyclerView();
+                        return;
+                    }
+
+                    // load all events find
+                    loadEventsFromIDs(signedUpEventIDs);
+                } else {
+                    pastEventList.clear();
+                    Toast.makeText(this, "No signed up events available", Toast.LENGTH_SHORT).show();
+                    updateRecyclerView();
+                }
+            }).addOnFailureListener(e -> {
+                Log.e("Profile", "Error loading user data: " + e.getMessage());
+                Toast.makeText(this, "Error loading events, showing historical events", Toast.LENGTH_SHORT).show();
+                // goback to historical(sample) events
+                loadHistoricalEvents();
+            });
+        } else {
+            Toast.makeText(this, "User data not available", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * Load events from a list of event IDs
+     */
+    private void loadEventsFromIDs(List<String> eventIDs) {
+        pastEventList.clear();
+
+        if (eventIDs.isEmpty()) {
+            updateRecyclerView();
+            return;
+        }
+
+        final int[] loadedCount = {0};
+
+        for (String eventID : eventIDs) {
+            databaseWorker.getEventByID(eventID).addOnSuccessListener(documentSnapshot -> {
+                if (documentSnapshot.exists()) {
+                    Event event = DatabaseWorker.convertDocumentToEvent(documentSnapshot);
+                    if (event != null) {
+                        pastEventList.add(event);
+                    }
+                }
+                loadedCount[0]++;
+
+                // check if all events have been loaded
+                if (loadedCount[0] == eventIDs.size()) {
+                    // All events loaded, update RecyclerView
+                    updateRecyclerView();
+
+                    if (pastEventList.isEmpty()) {
+                        Toast.makeText(this, "No valid events found", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(this, "Loaded " + pastEventList.size() + " events", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }).addOnFailureListener(e -> {
+                Log.e("Profile", "Error loading event: " + eventID, e);
+                loadedCount[0]++;
+                if (loadedCount[0] == eventIDs.size()) {
+                    updateRecyclerView();
+                }
+            });
+        }
+    }
+
+    /**
+     * Update the RecyclerView with the loaded events
+     */
+    private void updateRecyclerView() {
+        runOnUiThread(() -> {
+            if (pastEventAdapter != null) {
+                pastEventAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+    /**
+     * Load historical events (original hardcoded implementation)
+     */
+    //Todo this will also get the events from the DATABASE, however right now it is only a TEST
+    private void loadHistoricalEvents() {
         pastEventList = new ArrayList<>();
         ArrayList<String> arraylist = new ArrayList<String>();
         arraylist.add("trending");
