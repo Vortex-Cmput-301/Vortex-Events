@@ -1,27 +1,24 @@
 package com.example.vortex_events;
 
+import java.sql.Time;
 import java.util.Date;
+import java.util.UUID;
 
-/**
- * AppNotification model class.
- */
 public class AppNotification {
-
-    private String authorID;
-    private String notificationID;
-    private String title;
-    private String description;
-    private Date time_created;
-
-    // No-argument constructor required for Firestore serialization
-    public AppNotification() {
-    }
+    String authorID;
+    String notificationID;
+    String title;
+    String description;
+    Date time_created;
+    boolean read;
 
     public AppNotification(String authorID, String description, Date time_created, String title) {
         this.authorID = authorID;
         this.description = description;
         this.time_created = time_created;
         this.title = title;
+        this.read = false;
+        this.notificationID = UUID.randomUUID().toString();
     }
 
     public String getAuthorID() {
@@ -63,4 +60,14 @@ public class AppNotification {
     public void setTime_created(Date time_created) {
         this.time_created = time_created;
     }
+
+    public boolean isRead() {
+        return read;
+    }
+
+    public void setRead(boolean read) {
+        this.read = read;
+    }
+
+
 }

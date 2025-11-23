@@ -275,7 +275,7 @@ public class DatabaseWorker {
                 user.created_events = new ArrayList<>(createdEvents);
             }
             if (notifications != null) {
-                user.notifications = new ArrayList<>(notifications);
+                user.notifications = new ArrayList<>();
             }
 
             Log.d("DatabaseWorker", "Successfully converted document to RegisteredUser: " + deviceID);

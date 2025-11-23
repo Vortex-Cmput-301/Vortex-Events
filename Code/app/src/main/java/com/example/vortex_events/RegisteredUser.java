@@ -15,7 +15,7 @@ public class RegisteredUser extends Users{
     ArrayList<String> signed_up_events;
     Map<String, String> event_history;
     ArrayList<String> created_events;
-    ArrayList<AppNotification> notifications;
+    ArrayList<String> notifications;
     // Event status constants
     public static final String STATUS_ACCEPTED = "ACCEPTED";
     public static final String STATUS_DECLINED = "DECLINED";

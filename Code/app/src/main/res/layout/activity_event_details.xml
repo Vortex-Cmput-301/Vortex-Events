@@ -154,6 +154,17 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="100dp" />
+            <Button
+                android:id="@+id/organizer_notifications_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="  @string/notifications_dashboard"
+                android:backgroundTint="@android:color/black"
+                android:textColor="@android:color/white"
+                android:paddingVertical="12dp"
+                android:textSize="18sp"
+                android:visibility="gone"/>
+
         </LinearLayout>
     </ScrollView>
 
