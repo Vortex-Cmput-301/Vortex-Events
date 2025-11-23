@@ -89,6 +89,27 @@
                 android:id="@+id/btn_push_to_waitlist"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="@string/push_to_waitlisted_applicants"
+                android:backgroundTint="@android:color/black"
+                android:textColor="@android:color/white"
+                android:paddingVertical="12dp"
+                android:textSize="18sp"/>
+
+            <Button
+                android:id="@+id/btn_push_to_accepted"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/push_to_accepted_applicants"
+                android:backgroundTint="@android:color/black"
+                android:textColor="@android:color/white"
+                android:paddingVertical="12dp"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/btn_push_to_declined"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/push_to_declined_applicants"
                 android:text="Push to group"
                 android:backgroundTint="@android:color/black"
                 android:textColor="@android:color/white"

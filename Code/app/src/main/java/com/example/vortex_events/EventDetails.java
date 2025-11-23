@@ -59,6 +59,7 @@ public class EventDetails extends AppCompatActivity {
 
     Button signupButton;
     Button editEventButton;
+    Button notifcationsDashBoardButton;
     ImageView posterPreview;
     Button notifcationsDashBoardButton;
 

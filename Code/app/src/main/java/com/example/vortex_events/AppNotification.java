@@ -8,6 +8,12 @@ import java.util.UUID;
  * AppNotification model class.
  */
 public class AppNotification {
+    String authorID;
+    String notificationID;
+    String title;
+    String description;
+    Date time_created;
+    boolean read;
 
 
 
