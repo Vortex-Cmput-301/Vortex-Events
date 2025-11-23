@@ -46,6 +46,7 @@ public class EventDetails extends AppCompatActivity {
 
     Button signupButton;
     Button editEventButton;
+    Button notifcationsDashBoardButton;
 
 
 
@@ -75,6 +76,7 @@ public class EventDetails extends AppCompatActivity {
 
         signupButton = findViewById(R.id.btn_details_sign_up);
         editEventButton = findViewById(R.id.edit_event_button);
+        notifcationsDashBoardButton = findViewById(R.id.organizer_notifications_button);
 
 
 
@@ -101,6 +103,7 @@ public class EventDetails extends AppCompatActivity {
                 if (orgID.equals(deviceID)){
                     signupButton.setText("Edit Events");
                     editEventButton.setVisibility(VISIBLE);
+                    notifcationsDashBoardButton.setVisibility(VISIBLE);
 
 //                    Listeneer for edit details intents
 
@@ -117,6 +120,15 @@ public class EventDetails extends AppCompatActivity {
                         @Override
                         public void onClick(View view) {
                             Intent intent = new Intent(EventDetails.this, OrganizerViewParticipant.class);
+                            intent.putExtra("EventID", EventID);
+                            startActivity(intent);
+                        }
+                    });
+
+                    notifcationsDashBoardButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(EventDetails.this, OrganizerNotificationsDashboard.class);
                             intent.putExtra("EventID", EventID);
                             startActivity(intent);
                         }

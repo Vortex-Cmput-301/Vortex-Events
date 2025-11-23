@@ -5,7 +5,9 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".EventDetails">
+    tools:context=".OrganizerNotificationsDashboard">
+
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -29,7 +31,7 @@
                 android:layout_height="wrap_content"
 
                 android:layout_marginBottom="24dp"
-                android:text="@string/event_details"
+                android:text="@string/notification_dashboard"
                 android:textColor="@android:color/black"
                 android:textSize="28sp"
 
@@ -37,119 +39,81 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/event_details_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/name_of_event"
-                android:textSize="23sp"
-                android:textColor="@color/black"
-                android:textStyle="bold"/>
+                android:text="@string/notification_title"
+                android:textSize="16sp" />
 
-            <FrameLayout
-                android:id="@+id/fl_poster_upload"
-                android:layout_width="match_parent"
-                android:layout_weight="60"
-                android:layout_height="0dp"
-                android:layout_marginTop="8dp"
+            <EditText
+
+                android:id="@+id/notification_title_editor"
+                android:layout_width="341dp"
+                android:layout_height="40dp"
                 android:layout_marginBottom="16dp"
-                android:background="#E0E0E0">
-
-                <ImageView
-                    android:id="@+id/iv_upload_icon"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/ic_upload"
-                    app:tint="#757575" />
-            </FrameLayout>
-
+                android:autofillHints=""
+                android:background="@drawable/edit_text_border"
+                android:hint="@string/title"
+                android:inputType="textCapWords" />
 
             <TextView
-                android:id="@+id/event_details_location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/location"
-                android:textSize="16sp"/>
+                android:text="@string/notification_content"
+                android:textSize="16sp" />
 
+            <EditText
 
-            <TextView
-                android:id="@+id/event_details_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Time"
-                android:textSize="16sp"/>
-
-
-
-
-
-            <TextView
-                android:id="@+id/event_details_capacity"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/capacity1"
-                android:textSize="16sp"/>
-
-
-            <TextView
-                android:id="@+id/event_details_reg_period"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Registration period ends"
-                android:textSize="16sp"/>
-
-
-            <TextView
-                android:id="@+id/event_details_desc"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Despcription"
-                android:textSize="16sp"/>
+                android:id="@+id/notification_content_editor"
+                android:layout_width="341dp"
+                android:layout_height="80dp"
+                android:layout_marginBottom="16dp"
+                android:autofillHints=""
+                android:background="@drawable/edit_text_border"
+                android:hint="@string/content"
+                android:inputType="textCapWords" />
 
 
 
 
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="15"
-            >
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="65"
+                >
 
-        </View>
+            </View>
 
 
             <Button
-                android:id="@+id/btn_details_sign_up"
+                android:id="@+id/btn_push_to_waitlist"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/loading"
+                android:text="@string/push_to_waitlisted_applicants"
                 android:backgroundTint="@android:color/black"
                 android:textColor="@android:color/white"
                 android:paddingVertical="12dp"
                 android:textSize="18sp"/>
 
             <Button
-                android:id="@+id/edit_event_button"
+                android:id="@+id/btn_push_to_accepted"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Participants"
+                android:text="@string/push_to_accepted_applicants"
                 android:backgroundTint="@android:color/black"
                 android:textColor="@android:color/white"
                 android:paddingVertical="12dp"
-                android:textSize="18sp"
-                android:visibility="gone"/>
+                android:textSize="18sp" />
 
             <Button
-                android:id="@+id/organizer_notifications_button"
+                android:id="@+id/btn_push_to_declined"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="  @string/notifications_dashboard"
+                android:text="@string/push_to_declined_applicants"
                 android:backgroundTint="@android:color/black"
                 android:textColor="@android:color/white"
                 android:paddingVertical="12dp"
-                android:textSize="18sp"
-                android:visibility="gone"/>
+                android:textSize="18sp"/>
 
         </LinearLayout>
     </ScrollView>
@@ -165,5 +129,6 @@
         app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/bottom_nav_menu" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
