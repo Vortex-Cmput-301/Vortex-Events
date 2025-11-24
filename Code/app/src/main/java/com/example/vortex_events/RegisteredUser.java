@@ -129,11 +129,16 @@ public class RegisteredUser extends Users{
     }
     public RegisteredUser(String Id, String number, String email, String name, double latitude, double longitude, String type){
         super();
+    public RegisteredUser(String Id, String number, String email, String name, double latitude, double longitude){
+        super(); // Call parent's no-argument constructor
         this.deviceID = Id;
         this.phone_number = number;
         this.email = email;
         this.name = name;
         this.type = type;  // add type
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.type = "Registered User";
         this.latitude = latitude;
         this.longitude = longitude;
         this.signed_up_events = new ArrayList<>();
