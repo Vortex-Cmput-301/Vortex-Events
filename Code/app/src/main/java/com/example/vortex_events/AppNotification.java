@@ -16,17 +16,9 @@ public class AppNotification {
     boolean read;
 
 
-
     // No-argument constructor required for Firestore serialization
     public AppNotification() {
     }
-    String authorID;
-    String notificationID;
-    String title;
-    String description;
-    Date time_created;
-    boolean read;
-
     public AppNotification(String authorID, String title, String description) {
         this.authorID = authorID;
         this.description = description;
