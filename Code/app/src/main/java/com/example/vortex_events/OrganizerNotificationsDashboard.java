@@ -27,10 +27,11 @@ import java.util.ArrayList;
 public class OrganizerNotificationsDashboard extends AppCompatActivity {
     String eventID;
     String deviceID;
-    String notifyMode;
 
     Event currentEvent;
     AppNotification notification;
+    String notifyMode;
+
 
     DatabaseWorker dbWorker;
 
@@ -40,6 +41,13 @@ public class OrganizerNotificationsDashboard extends AppCompatActivity {
 
     Button pushToWaitlist;
 
+
+
+    Button pushToAccepted;
+    Button pushToDeclined;
+
+
+    @SuppressLint("HardwareIds")
 
 
     @SuppressLint("HardwareIds")
