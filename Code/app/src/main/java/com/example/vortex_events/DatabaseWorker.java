@@ -4,12 +4,14 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.auth.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +23,8 @@ public class DatabaseWorker {
     FirebaseFirestore db;
     CollectionReference eventsRef;
     CollectionReference usersRef; // 11.6 by Kehan - add users collection
+
+    CollectionReference notificationsRef; // 11.22 by Saleh - For notifications collection
 
 
 
@@ -35,6 +39,7 @@ public class DatabaseWorker {
         this.db = db_arg;
         this.eventsRef = db.collection("Events");
         this.usersRef = db.collection("Users");
+        this.notificationsRef = db.collection("Notifications");
 
         eventsRef.addSnapshotListener(((value, error) -> {
             if (error != null){
@@ -47,6 +52,8 @@ public class DatabaseWorker {
         this.db = FirebaseFirestore.getInstance();
         this.eventsRef = db.collection("Events");
         this.usersRef = db.collection("Users");
+        this.notificationsRef = db.collection("Notifications");
+
     }
 
     public boolean isUserExists() {
@@ -94,6 +101,22 @@ public class DatabaseWorker {
         DocumentReference docuRef = usersRef.document(user.deviceID);
 
         return  docuRef.set(user);
+    }
+
+    /**
+     * For adding notifications to the database 11.22 - Saleh
+     * **/
+    public Task<Void> pushNotificationToDB(AppNotification notification){
+        DocumentReference docuRef = notificationsRef.document(notification.notificationID);
+
+        return docuRef.set(notification);
+    }
+
+    /**
+     * For adding notifications to the users 11.22 - Saleh
+     * **/
+    public Task<Void> pushNotiToUser(List<String> newNotifications, String userID){
+        return usersRef.document(userID).update("notifications", newNotifications);
     }
 
 
