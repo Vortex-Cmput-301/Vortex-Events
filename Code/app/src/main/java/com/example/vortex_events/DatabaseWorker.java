@@ -258,6 +258,9 @@ public class DatabaseWorker {
             String phoneNumber = document.getString("phone_number");
             String email = document.getString("email");
             String name = document.getString("name");
+            double latitude = document.getDouble("latitude");
+            double longitude = document.getDouble("longitude");
+
 
             // Handle lists - get them from document or create empty lists
             List<String> signedUpEvents = (List<String>) document.get("signed_up_events");
@@ -266,7 +269,7 @@ public class DatabaseWorker {
             List<AppNotification> notifications = (List<AppNotification>) document.get("notifications");
 
             // Create RegisteredUser object
-            RegisteredUser user = new RegisteredUser(deviceID, phoneNumber, email, name);
+            RegisteredUser user = new RegisteredUser(deviceID, phoneNumber, email, name, latitude, longitude);
 
             // Set the lists
             if (signedUpEvents != null) {

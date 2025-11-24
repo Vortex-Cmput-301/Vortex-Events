@@ -13,6 +13,7 @@ monitor = "1.8.0"
 core = "1.7.0"
 firebaseFirestore = "26.0.2"
 firebaseAuth = "24.0.1"
+playServicesLocation = "21.3.0"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -28,6 +29,7 @@ monitor = { group = "androidx.test", name = "monitor", version.ref = "monitor" }
 core = { group = "androidx.test", name = "core", version.ref = "core" }
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
+play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
