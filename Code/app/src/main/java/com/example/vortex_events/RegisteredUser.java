@@ -75,10 +75,11 @@ public class RegisteredUser extends Users{
     }
 
     public ArrayList<AppNotification> getNotifications() {
+    public ArrayList<String> getNotifications() {
         return notifications;
     }
 
-    public void setNotifications(ArrayList<AppNotification> notifications) {
+    public void setNotifications(ArrayList<String> notifications) {
         this.notifications = notifications;
     }
 

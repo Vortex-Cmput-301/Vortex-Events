@@ -12,10 +12,10 @@ public class AppNotification {
     Date time_created;
     boolean read;
 
-    public AppNotification(String authorID, String description, Date time_created, String title) {
+    public AppNotification(String authorID, String title, String description) {
         this.authorID = authorID;
         this.description = description;
-        this.time_created = time_created;
+        this.time_created = new Date();
         this.title = title;
         this.read = false;
         this.notificationID = UUID.randomUUID().toString();
