@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         DatabaseWorker worker = new DatabaseWorker();
         Date enroll_start = new Date();
         RegisteredUser user = new RegisteredUser(MainActivity.this, "7805551234",
-                "russelwestbrook@washed.com", "Russel Westbrook");
+                "russelwestbrook@washed.com", "Russel Westbrook", 0,0);
 
         Event event = new Event("Washed", "Albania", "Russel Westbrook", "123456789",
                 enroll_start, enroll_start, enroll_start, enroll_start, null, null, 5 );
