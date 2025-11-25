@@ -46,6 +46,8 @@ public class Event {
 
 
 
+
+
     public ArrayList<String> getAccepted() {
         return accepted;
     }
@@ -102,12 +104,12 @@ public class Event {
         this.enrollement_start = enrollement_start;
     }
     public String getImage() {
-        //TODO: develop the image getter
-        return null;
+
+        return image;
     }
 
     public void setImage(String image) {
-        //TODO: develop the image set up
+        this.image = image;
     }
 
     public String getEventID() {

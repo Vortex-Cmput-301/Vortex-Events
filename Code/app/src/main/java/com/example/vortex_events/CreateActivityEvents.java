@@ -66,10 +66,15 @@ public class CreateActivityEvents extends AppCompatActivity {
      */
     private String currentDeviceID;
 
+    private android.net.Uri imageUri; // Stores the image path on the phone
+    private android.widget.ImageView posterPreview;
+
+    private androidx.activity.result.ActivityResultLauncher<String> selectImageLauncher; //Opens gallery
+
 
     /**
      * Displays a DatePickerDialog followed by a TimePickerDialog.
-     * The result is formatted and set as the text of the provided EditText.
+     * The result is formatted and set as the text of the provided EditText
      *
      * @param fieldToUpdate The EditText field that will receive the formatted date/time string.
      */
@@ -115,10 +120,23 @@ public class CreateActivityEvents extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        selectImageLauncher = registerForActivityResult(
+                new androidx.activity.result.contract.ActivityResultContracts.GetContent(),
+                uri -> {
+                    if (uri != null) {
+                        imageUri = uri;
+                        // Show the selected image on screen
+                        ((android.widget.ImageView) findViewById(R.id.iv_upload_icon)).setImageURI(uri);
+                        // Hide the upload icon so the image is visible
+                        findViewById(R.id.iv_upload_icon).setVisibility(View.GONE);
+                    }
+                }
+        );
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_create_events);
 
-        // Setup edge-to-edge display
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -145,6 +163,9 @@ public class CreateActivityEvents extends AppCompatActivity {
         eventEndTimeField.setOnClickListener(dateTimePickerListener);
         enrollStartTimeField.setOnClickListener(dateTimePickerListener);
         enrollEndTimeField.setOnClickListener(dateTimePickerListener);
+        findViewById(R.id.fl_poster_upload).setOnClickListener(v -> {
+            selectImageLauncher.launch("image/*"); // Open gallery for images only
+        });
 
         //Submit Button
         Button submitButton = findViewById(R.id.submit_btn);
@@ -159,6 +180,7 @@ public class CreateActivityEvents extends AppCompatActivity {
             String waitingListString = ((EditText) findViewById(R.id.et_waiting_list_limit)).getText().toString();
             String eventStartString = ((EditText) findViewById(R.id.et_event_start_time)).getText().toString();
             String eventEndString = ((EditText) findViewById(R.id.et_event_end_time)).getText().toString();
+            //IDK why this is giving a warning, works so dont touch
 
             // Get text using the correct IDs
             String enrollStartString = ((EditText) findViewById(R.id.et_registration_period_start)).getText().toString();
@@ -215,12 +237,19 @@ public class CreateActivityEvents extends AppCompatActivity {
             // Parse tag string into a list
             ArrayList<String> tagsList = new ArrayList<>(Arrays.asList(tagString.split(" ")));
 
+            String imageString = encodeImage(imageUri); // Call the helper function
+
+            if (imageString == null) {
+                Toast.makeText(CreateActivityEvents.this, "Image is too large or invalid.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
 
 
             //check if the user exists
             dbWorker.getUserByDeviceID(currentDeviceID).addOnSuccessListener(documentSnapshot -> {
                 if (documentSnapshot != null) {
-                    Toast.makeText(CreateActivityEvents.this, "Reading User profile", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(CreateActivityEvents.this, "Reading User profile", Toast.LENGTH_SHORT).show();
                     // User exists, cast them to RegisteredUser
                     RegisteredUser currentUser = documentSnapshot;
                     if (currentUser == null) {
@@ -246,6 +275,8 @@ public class CreateActivityEvents extends AppCompatActivity {
                             capacity
                     );
 
+                    event.setImage(imageString);
+
 
 
 
@@ -255,7 +286,7 @@ public class CreateActivityEvents extends AppCompatActivity {
 
                         Toast.makeText(CreateActivityEvents.this, "Creating Event", Toast.LENGTH_SHORT).show();
 
-                        // Now that event is created, set the waitlist limit
+
                         waitlistManager.setWaitlistLimit(event.getEventID(), waitingListLimit).addOnSuccessListener(aVoid1 -> {
 
                             // FINAL SUCCESS
@@ -300,11 +331,30 @@ public class CreateActivityEvents extends AppCompatActivity {
                 overridePendingTransition(0, 0); // No transition animation
                 return true;
             } else if(itemId == R.id.nav_create) {
-                return true; // Do nothing, we are already on this screen
+                return true;
             }
             // Add other navigation
 
             return false;
         });
+    }
+
+    private String encodeImage(android.net.Uri imageUri) {
+        try {
+            //Get the image from gallery
+            android.graphics.Bitmap bitmap = android.provider.MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
+
+
+            java.io.ByteArrayOutputStream stream = new java.io.ByteArrayOutputStream();
+            // JPEG format
+            bitmap.compress(android.graphics.Bitmap.CompressFormat.JPEG, 50, stream);
+            byte[] bytes = stream.toByteArray();
+
+
+            return android.util.Base64.encodeToString(bytes, android.util.Base64.DEFAULT);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

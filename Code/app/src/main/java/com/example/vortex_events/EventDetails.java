@@ -9,6 +9,7 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -23,6 +24,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.Date;
 
+import com.bumptech.glide.Glide;
+
 public class EventDetails extends AppCompatActivity {
     String EventID;
     FirebaseFirestore db;
@@ -32,6 +35,8 @@ public class EventDetails extends AppCompatActivity {
     String title;
     TextView eventCapacity;
     int capacity;
+
+    ImageView eventPoster;
 
     TextView eventTime;
     Date time;
@@ -44,8 +49,11 @@ public class EventDetails extends AppCompatActivity {
     String orgID;
     String deviceID;
 
+    String image;
+
     Button signupButton;
     Button editEventButton;
+    ImageView posterPreview;
     Button notifcationsDashBoardButton;
 
 
@@ -67,6 +75,8 @@ public class EventDetails extends AppCompatActivity {
         dbWorker = new DatabaseWorker(db);
 
 //      Set the ui elemts
+        eventPoster = findViewById(R.id.iv_upload_icon);
+        posterPreview = findViewById(R.id.iv_poster_preview);
         eventTitle = findViewById(R.id.event_details_title);
         eventDesc  = findViewById(R.id.event_details_desc);
         eventCapacity = findViewById(R.id.event_details_capacity);
@@ -92,6 +102,26 @@ public class EventDetails extends AppCompatActivity {
                 regLimit = event.getEnrollement_end();
                 time = event.getStart_time();
                 orgID = event.getOrganizer();
+                image = event.getImage();
+
+                if (image != null && !image.isEmpty()) {
+                    try {
+
+                        byte[] imageBytes = android.util.Base64.decode(image, android.util.Base64.DEFAULT);
+
+
+                        Glide.with(this).load(imageBytes).into(posterPreview);
+                        eventPoster.setVisibility(View.GONE);
+
+                    } catch (Exception e) {
+                        Log.e("EventDetails", "Failed to load image", e);
+                    }
+                } else {
+                    eventPoster.setVisibility(View.GONE);
+                }
+
+
+
 
                 eventTitle.setText(title);
                 eventDesc.setText("Description: " + description);
@@ -99,6 +129,7 @@ public class EventDetails extends AppCompatActivity {
                 eventLocation.setText("Location: " + location);
                 eventTime.setText("Time: " + time.toString());
                 eventRegLimit.setText("Registration ends: " + regLimit.toString());
+
 
                 if (orgID.equals(deviceID)){
                     signupButton.setText("Edit Events");
