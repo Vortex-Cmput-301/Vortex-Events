@@ -96,6 +96,17 @@ public class EventDetails extends AppCompatActivity {
 
         qrImage = findViewById(R.id.event_details_qr);
 
+        Button mapButton = findViewById(R.id.btn_details_open_map);
+
+        mapButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(EventDetails.this, EntrantsMap.class);
+                intent.putExtra("EventID", EventID);
+                startActivity(intent);
+            }
+        });
+
 
 
 //      Get event info
