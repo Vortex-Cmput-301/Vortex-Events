@@ -25,13 +25,10 @@
                 android:id="@+id/tv_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
                 android:layout_marginBottom="24dp"
                 android:text="@string/event_details"
                 android:textColor="@android:color/black"
                 android:textSize="28sp"
-
-
                 android:textStyle="bold" />
 
             <TextView
@@ -41,7 +38,7 @@
                 android:text="@string/name_of_event"
                 android:textSize="23sp"
                 android:textColor="@color/black"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
             <FrameLayout
                 android:id="@+id/fl_poster_upload"
@@ -75,43 +72,44 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/location"
-                android:textSize="16sp"/>
-
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/event_details_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Time"
-                android:textSize="16sp"/>
-
-
-
-
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/event_details_capacity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/capacity1"
-                android:textSize="16sp"/>
-
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/event_details_reg_period"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Registration period ends"
-                android:textSize="16sp"/>
-
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/event_details_desc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Despcription"
-                android:textSize="16sp"/>
+                android:textSize="16sp" />
 
+            <!-- ✅ ADDED: QR code at the bottom of the scrollable content -->
+            <ImageView
+                android:id="@+id/event_details_qr"
+                android:layout_width="250dp"
+                android:layout_height="250dp"
+                android:layout_gravity="center_horizontal"
+                android:paddingTop="16dp"
+                android:contentDescription="QR code for this event" />
             <ImageView
                 android:id="@+id/event_details_qr"
                 android:layout_width="250dp"

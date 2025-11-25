@@ -26,6 +26,10 @@ import com.google.zxing.WriterException;
 import java.util.ArrayList;
 import java.util.Date;
 
+import android.graphics.Bitmap;
+import android.widget.ImageView;
+import com.google.zxing.WriterException;
+
 import com.bumptech.glide.Glide;
 
 public class EventDetails extends AppCompatActivity {
@@ -103,6 +107,8 @@ public class EventDetails extends AppCompatActivity {
             }
         });
 
+        qrImage = findViewById(R.id.event_details_qr);
+
 
 
 //      Get event info
@@ -144,6 +150,19 @@ public class EventDetails extends AppCompatActivity {
                 eventLocation.setText("Location: " + location);
                 eventTime.setText("Time: " + time.toString());
                 eventRegLimit.setText("Registration ends: " + regLimit.toString());
+
+
+
+                //displays QR code
+                String payload = "vortex://event/" + EventID;
+
+                try {
+                    Bitmap bmp = QRCodeGenerator.generateQRCodeBitmap(payload, 600, 600);
+                    qrImage.setImageBitmap(bmp);
+                } catch (WriterException e) {
+                    Log.e("EventDetails", "Failed to generate QR", e);
+                }
+
 
 
 

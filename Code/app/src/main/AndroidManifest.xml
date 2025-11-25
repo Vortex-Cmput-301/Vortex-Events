@@ -10,6 +10,11 @@
         android:required="false" />
     <uses-permission android:name="android.permission.CAMERA" />
 
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
@@ -22,6 +27,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Vortexevents">
+        <activity
+            android:name=".OrganizerNotificationsDashboard"
+            android:exported="false" />
         <activity
             android:name=".QRCodeScanner"
             android:exported="false" />
@@ -90,5 +98,6 @@
             </intent-filter>
         </service>
     </application>
+
 
 </manifest>
