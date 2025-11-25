@@ -53,9 +53,6 @@ public class DatabaseWorker {
         return userExists;
     }
 
-
-
-
     public Task<Void> createGuest(GuestUser guest){
         DocumentReference docuRef = usersRef.document(guest.deviceID);
 
@@ -121,6 +118,18 @@ public class DatabaseWorker {
 
     public Task<QuerySnapshot> getOrganizerEvents(String organizer) {
         return eventsRef.whereEqualTo("organizer", organizer).get();
+    }
+
+    public Task<QuerySnapshot> getEventWaitlist(String eventID) {
+        return eventsRef.document(eventID).collection("waitlist").get();
+    }
+
+    public Task<QuerySnapshot> getEventAccepted(String eventID) {
+        return eventsRef.document(eventID).collection("accepted").get();
+    }
+
+    public Task<QuerySnapshot> getEventDeclined(String eventID) {
+        return eventsRef.document(eventID).collection("declined").get();
     }
 
     public Task<Void> updateWaitlist(List<String> newList, String eventID){

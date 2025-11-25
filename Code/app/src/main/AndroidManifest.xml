@@ -14,8 +14,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Vortexevents">
-
-
+        <activity
+            android:name=".EntrantsMap"
+            android:exported="false" />
         <activity
             android:name=".SignUpEvent"
             android:exported="false" />
@@ -62,6 +63,7 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+
         <activity
             android:name=".HistoryEvents"
             android:exported="false" />
