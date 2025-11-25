@@ -67,6 +67,7 @@
 
             </FrameLayout>
 
+
             <TextView
                 android:id="@+id/event_details_location"
                 android:layout_width="wrap_content"
@@ -162,6 +163,12 @@
                 android:paddingVertical="12dp"
                 android:textSize="18sp"
                 android:visibility="gone"/>
+
+            <Button
+                android:id="@+id/btn_details_open_map"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Open Map" />
 
         </LinearLayout>
     </ScrollView>
