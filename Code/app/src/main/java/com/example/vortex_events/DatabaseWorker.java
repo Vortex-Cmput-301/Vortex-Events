@@ -103,7 +103,6 @@ public class DatabaseWorker {
 
         return docuref.set(targetEvent);
     }
-
     public Task<Void> updateEvent(Event targetEvent) {
         DocumentReference docuref = eventsRef.document(targetEvent.getName());
 
@@ -135,6 +134,7 @@ public class DatabaseWorker {
     public Task<Void> updateWaitlist(List<String> newList, String eventID){
        return eventsRef.document(eventID).update("waitlist", newList);
     }
+
 
     public Task<DocumentSnapshot> getEventByID(String id) {
         return eventsRef.document(id).get();
