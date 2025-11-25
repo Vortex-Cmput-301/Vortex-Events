@@ -38,6 +38,7 @@ android {
 }
 
 dependencies {
+    implementation("com.github.bumptech.glide:glide:4.16.0")
     implementation("com.google.android.material:material:1.10.0")
     implementation(libs.appcompat)
     implementation(libs.material)
@@ -48,6 +49,7 @@ dependencies {
     implementation(libs.core)
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.auth)
+    implementation(libs.play.services.location)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

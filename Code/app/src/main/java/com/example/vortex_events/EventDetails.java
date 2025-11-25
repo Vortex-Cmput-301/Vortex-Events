@@ -26,9 +26,7 @@ import com.google.zxing.WriterException;
 import java.util.ArrayList;
 import java.util.Date;
 
-import android.graphics.Bitmap;
-import android.widget.ImageView;
-import com.google.zxing.WriterException;
+import com.bumptech.glide.Glide;
 
 public class EventDetails extends AppCompatActivity {
     String EventID;
@@ -39,6 +37,8 @@ public class EventDetails extends AppCompatActivity {
     String title;
     TextView eventCapacity;
     int capacity;
+
+    ImageView eventPoster;
 
     TextView eventTime;
     Date time;
@@ -51,8 +51,11 @@ public class EventDetails extends AppCompatActivity {
     String orgID;
     String deviceID;
 
+    String image;
+
     Button signupButton;
     Button editEventButton;
+    ImageView posterPreview;
 
     ImageView qrImage;
 
@@ -73,6 +76,8 @@ public class EventDetails extends AppCompatActivity {
         dbWorker = new DatabaseWorker(db);
 
 //      Set the ui elemts
+        eventPoster = findViewById(R.id.iv_upload_icon);
+        posterPreview = findViewById(R.id.iv_poster_preview);
         eventTitle = findViewById(R.id.event_details_title);
         eventDesc  = findViewById(R.id.event_details_desc);
         eventCapacity = findViewById(R.id.event_details_capacity);
@@ -84,6 +89,17 @@ public class EventDetails extends AppCompatActivity {
         editEventButton = findViewById(R.id.edit_event_button);
 
         qrImage = findViewById(R.id.event_details_qr);
+
+        Button mapButton = findViewById(R.id.btn_details_open_map);
+
+        mapButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(EventDetails.this, EntrantsMap.class);
+                intent.putExtra("EventID", EventID);
+                startActivity(intent);
+            }
+        });
 
 
 
@@ -99,6 +115,26 @@ public class EventDetails extends AppCompatActivity {
                 regLimit = event.getEnrollement_end();
                 time = event.getStart_time();
                 orgID = event.getOrganizer();
+                image = event.getImage();
+
+                if (image != null && !image.isEmpty()) {
+                    try {
+
+                        byte[] imageBytes = android.util.Base64.decode(image, android.util.Base64.DEFAULT);
+
+
+                        Glide.with(this).load(imageBytes).into(posterPreview);
+                        eventPoster.setVisibility(View.GONE);
+
+                    } catch (Exception e) {
+                        Log.e("EventDetails", "Failed to load image", e);
+                    }
+                } else {
+                    eventPoster.setVisibility(View.GONE);
+                }
+
+
+
 
                 eventTitle.setText(title);
                 eventDesc.setText("Description: " + description);
@@ -118,6 +154,7 @@ public class EventDetails extends AppCompatActivity {
                 } catch (WriterException e) {
                     Log.e("EventDetails", "Failed to generate QR", e);
                 }
+
 
 
                 if (orgID.equals(deviceID)){
