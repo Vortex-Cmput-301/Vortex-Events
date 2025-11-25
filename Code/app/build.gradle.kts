@@ -73,4 +73,14 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore")
     // https://firebase.google.com/docs/android/setup#available-libraries
 
+
+    implementation ("com.google.zxing:core:3.5.2")
+    implementation ("com.google.mlkit:barcode-scanning:17.2.0")
+
+    val camerax_version = "1.5.1"
+    implementation ("androidx.camera:camera-core:$camerax_version")
+    implementation ("androidx.camera:camera-camera2:$camerax_version")
+    implementation ("androidx.camera:camera-lifecycle:$camerax_version")
+    implementation ("androidx.camera:camera-view:$camerax_version")
+
 }

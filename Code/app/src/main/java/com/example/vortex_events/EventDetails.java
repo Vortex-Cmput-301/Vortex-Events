@@ -4,11 +4,13 @@ import static android.view.View.VISIBLE;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -19,9 +21,14 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.zxing.WriterException;
 
 import java.util.ArrayList;
 import java.util.Date;
+
+import android.graphics.Bitmap;
+import android.widget.ImageView;
+import com.google.zxing.WriterException;
 
 public class EventDetails extends AppCompatActivity {
     String EventID;
@@ -47,7 +54,7 @@ public class EventDetails extends AppCompatActivity {
     Button signupButton;
     Button editEventButton;
 
-
+    ImageView qrImage;
 
 
     @SuppressLint("HardwareIds")
@@ -76,6 +83,8 @@ public class EventDetails extends AppCompatActivity {
         signupButton = findViewById(R.id.btn_details_sign_up);
         editEventButton = findViewById(R.id.edit_event_button);
 
+        qrImage = findViewById(R.id.event_details_qr);
+
 
 
 //      Get event info
@@ -97,6 +106,19 @@ public class EventDetails extends AppCompatActivity {
                 eventLocation.setText("Location: " + location);
                 eventTime.setText("Time: " + time.toString());
                 eventRegLimit.setText("Registration ends: " + regLimit.toString());
+
+
+
+                //displays QR code
+                String payload = "vortex://event/" + EventID;
+
+                try {
+                    Bitmap bmp = QRCodeGenerator.generateQRCodeBitmap(payload, 600, 600);
+                    qrImage.setImageBitmap(bmp);
+                } catch (WriterException e) {
+                    Log.e("EventDetails", "Failed to generate QR", e);
+                }
+
 
                 if (orgID.equals(deviceID)){
                     signupButton.setText("Edit Events");
