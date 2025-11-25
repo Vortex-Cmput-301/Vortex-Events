@@ -55,8 +55,8 @@ public class EventDetails extends AppCompatActivity {
 
     Button signupButton;
     Button editEventButton;
-    Button notifcationsDashBoardButton;
     ImageView posterPreview;
+    Button notifcationsDashBoardButton;
 
     ImageView qrImage;
 
@@ -144,6 +144,7 @@ public class EventDetails extends AppCompatActivity {
                 eventLocation.setText("Location: " + location);
                 eventTime.setText("Time: " + time.toString());
                 eventRegLimit.setText("Registration ends: " + regLimit.toString());
+
 
 
 
