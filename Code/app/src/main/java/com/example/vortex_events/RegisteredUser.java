@@ -11,6 +11,7 @@ public class RegisteredUser extends Users{
     String phone_number;
     String email;
     String name;
+    String notificationToken;
     ArrayList<String> signed_up_events;
     Map<String, String> event_history;
     ArrayList<String> created_events;
@@ -24,6 +25,14 @@ public class RegisteredUser extends Users{
     public RegisteredUser(){
 
     };
+
+    public String getNotificationToken() {
+        return notificationToken;
+    }
+
+    public void setNotificationToken(String notificationToken) {
+        this.notificationToken = notificationToken;
+    }
 
     public ArrayList<String> getCreated_events() {
         return created_events;
@@ -83,11 +92,12 @@ public class RegisteredUser extends Users{
         this.signed_up_events = signed_up_events;
     }
 
-    public RegisteredUser(Context context, String number, String email, String name){
+    public RegisteredUser(Context context, String number, String email, String name, String notificationToken){
         super(context);
         this.phone_number = number;
         this.email = email;
         this.name = name;
+        this.notificationToken = notificationToken;
 
         this.signed_up_events = new ArrayList<>();
         this.created_events = new ArrayList<>();

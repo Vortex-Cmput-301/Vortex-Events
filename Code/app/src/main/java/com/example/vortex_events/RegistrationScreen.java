@@ -14,6 +14,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.auth.User;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 public class RegistrationScreen extends AppCompatActivity {
     EditText phoneField;
@@ -57,8 +58,19 @@ public class RegistrationScreen extends AppCompatActivity {
                 emailAddress = emailField.getText().toString();
                 userName = nameField.getText().toString();
 
-                RegisteredUser user = new RegisteredUser(RegistrationScreen.this, phoneNumber, emailAddress, userName);
-                dbWorker.createRegisteredUser(user);
+                FirebaseMessaging.getInstance().getToken()
+                        .addOnCompleteListener(task -> {
+                            if (!task.isSuccessful()) {
+                                android.util.Log.w("FCM", "Fetching FCM registration token failed", task.getException());
+                                return;
+                            }
+                            String token = task.getResult();
+                            android.util.Log.d("FCM", "Token: " + token);
+                            RegisteredUser user = new RegisteredUser(RegistrationScreen.this, phoneNumber, emailAddress, userName, token);
+                            dbWorker.createRegisteredUser(user);
+                        });
+
+
 
                 Intent intent = new Intent(RegistrationScreen.this, MainActivity.class);
                 startActivity(intent);
