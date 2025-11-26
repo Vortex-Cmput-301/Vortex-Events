@@ -10,6 +10,7 @@ public class RegisteredUser extends Users{
     String phone_number;
     String email;
     String name;
+    String notificationToken;
     double latitude;
     double longitude;
     String notificationToken;
@@ -108,15 +109,15 @@ public class RegisteredUser extends Users{
         this.signed_up_events = signed_up_events;
     }
 
-    public RegisteredUser(Context context, String number, String email, String name, double latitude, double longitude){
-    public RegisteredUser(Context context, String number, String email, String name, String notificationToken){
+    public RegisteredUser(Context context, String number, String email, String name, String notificationToken, double latitude, double longitude){
         super(context);
         this.phone_number = number;
         this.email = email;
         this.name = name;
+        this.notificationToken = notificationToken;
+
         this.latitude = latitude;
         this.longitude = longitude;
-        this.notificationToken = notificationToken;
 
         this.signed_up_events = new ArrayList<>();
         this.created_events = new ArrayList<>();
