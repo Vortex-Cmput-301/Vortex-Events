@@ -2,7 +2,6 @@ package com.example.vortex_events;
 
 import android.content.Context;
 
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,6 +10,8 @@ public class RegisteredUser extends Users{
     String phone_number;
     String email;
     String name;
+    double latitude;
+    double longitude;
     ArrayList<String> signed_up_events;
     Map<String, String> event_history;
     ArrayList<String> created_events;
@@ -41,12 +42,10 @@ public class RegisteredUser extends Users{
         this.email = email;
     }
 
-    // FIXED: Return type should be Map<String, String>
     public Map<String, String> getEvent_history() {
         return event_history;
     }
 
-    // FIXED: Parameter type should be Map<String, String>
     public void setEvent_history(Map<String, String> event_history) {
         this.event_history = event_history;
     }
@@ -57,6 +56,22 @@ public class RegisteredUser extends Users{
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
     public ArrayList<AppNotification> getNotifications() {
@@ -83,41 +98,34 @@ public class RegisteredUser extends Users{
         this.signed_up_events = signed_up_events;
     }
 
-    public RegisteredUser(Context context, String number, String email, String name){
+    public RegisteredUser(Context context, String number, String email, String name, double latitude, double longitude){
         super(context);
         this.phone_number = number;
         this.email = email;
         this.name = name;
-
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.signed_up_events = new ArrayList<>();
         this.created_events = new ArrayList<>();
         this.event_history = new HashMap<>();
         this.notifications = new ArrayList<>();
     }
 
-    // FIXED: Added super() call to parent constructor
-    public RegisteredUser(String Id, String number, String email, String name){
+    public RegisteredUser(String Id, String number, String email, String name, double latitude, double longitude){
         super(); // Call parent's no-argument constructor
         this.deviceID = Id;
         this.phone_number = number;
         this.email = email;
         this.name = name;
         this.type = "Registered User";
-
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.signed_up_events = new ArrayList<>();
         this.created_events = new ArrayList<>();
         this.event_history = new HashMap<>();
         this.notifications = new ArrayList<>();
     }
 
-
-
-    /**
-     * Move an event to history with specified status
-     * @param eventID The ID of the event to move to history
-     * @param status The status of the event
-     * @return true if successful, false if eventID not found in signed_up_events
-     */
     public boolean moveToHistory(String eventID, String status) {
         if (signed_up_events.contains(eventID)) {
             signed_up_events.remove(eventID);
@@ -132,56 +140,31 @@ public class RegisteredUser extends Users{
             if (targetEvent.getWaitlist() != null) {
                 targetEvent.getWaitlist().remove(deviceID); // remove from waitlist
             }
-            // Move to history with CANCELLED status
             return moveToHistory(targetEvent.getEventID(), STATUS_CANCELLED);
         }
         return false;
     }
 
-    /**
-     * Get the status of an event in history
-     * @param eventID The ID of the event
-     * @return The status of the event, or null if not found in history
-     */
     public String getEventStatus(String eventID) {
         return event_history.get(eventID);
     }
 
-    /**
-     * Check if an event is in history
-     * @param eventID The ID of the event
-     * @return true if the event is in history, false otherwise
-     */
     public boolean isEventInHistory(String eventID) {
         return event_history.containsKey(eventID);
     }
 
-    /**
-     * Get all event IDs in history
-     * @return ArrayList of event IDs in history
-     */
     public ArrayList<String> getHistoricalEventIDs() {
         return new ArrayList<>(event_history.keySet());
     }
 
-    /**
-     * Get the complete event history map
-     * @return Map containing event IDs and their statuses
-     */
     public Map<String, String> getEventHistory() {
         return new HashMap<>(event_history);
     }
 
-    /**
-     * Add an event ID to the user's signed up events list
-     * @param eventID The event ID to add
-     */
     public void addSignedUpEvent(String eventID) {
         if (signed_up_events == null) {
             signed_up_events = new ArrayList<>();
         }
         signed_up_events.add(eventID);
     }
-
-
 }

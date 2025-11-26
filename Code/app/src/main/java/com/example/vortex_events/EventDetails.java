@@ -4,6 +4,7 @@ import static android.view.View.VISIBLE;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -20,6 +21,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.zxing.WriterException;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -55,6 +57,8 @@ public class EventDetails extends AppCompatActivity {
     Button editEventButton;
     ImageView posterPreview;
 
+    ImageView qrImage;
+
 
     @SuppressLint("HardwareIds")
     @Override
@@ -83,6 +87,19 @@ public class EventDetails extends AppCompatActivity {
 
         signupButton = findViewById(R.id.btn_details_sign_up);
         editEventButton = findViewById(R.id.edit_event_button);
+
+        qrImage = findViewById(R.id.event_details_qr);
+
+        Button mapButton = findViewById(R.id.btn_details_open_map);
+
+        mapButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(EventDetails.this, EntrantsMap.class);
+                intent.putExtra("EventID", EventID);
+                startActivity(intent);
+            }
+        });
 
 
 
@@ -125,6 +142,19 @@ public class EventDetails extends AppCompatActivity {
                 eventLocation.setText("Location: " + location);
                 eventTime.setText("Time: " + time.toString());
                 eventRegLimit.setText("Registration ends: " + regLimit.toString());
+
+
+
+                //displays QR code
+                String payload = "vortex://event/" + EventID;
+
+                try {
+                    Bitmap bmp = QRCodeGenerator.generateQRCodeBitmap(payload, 600, 600);
+                    qrImage.setImageBitmap(bmp);
+                } catch (WriterException e) {
+                    Log.e("EventDetails", "Failed to generate QR", e);
+                }
+
 
 
                 if (orgID.equals(deviceID)){
