@@ -130,11 +130,15 @@ public class RegisteredUser extends Users{
     public RegisteredUser(String Id, String number, String email, String name, double latitude, double longitude, String type){
         super();
     public RegisteredUser(String Id, String number, String email, String name, double latitude, double longitude){
-        super(); // Call parent's no-argument constructor
+        this(Id, number, email, name, latitude, longitude, "Registered User");
+    }
+    public RegisteredUser(String Id, String number, String email, String name, double latitude, double longitude, String type){
+        super();
         this.deviceID = Id;
         this.phone_number = number;
         this.email = email;
         this.name = name;
+        this.type = type;  // add type
         this.type = type;  // add type
         this.latitude = latitude;
         this.longitude = longitude;
