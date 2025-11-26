@@ -12,12 +12,23 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class DatabaseWorker {
     FirebaseFirestore db;
     CollectionReference eventsRef;
     CollectionReference usersRef; // 11.6 by Kehan - add users collection
 
+
+
+    /**
+     * @Test for dependency injection
+     * DO NOT USE FOR NON TESTING PURPOSES
+     * */
+    boolean userExists;
 
 
     public DatabaseWorker(FirebaseFirestore db_arg) {
@@ -32,7 +43,15 @@ public class DatabaseWorker {
         }));
     }
 
+    public DatabaseWorker() {
+        this.db = FirebaseFirestore.getInstance();
+        this.eventsRef = db.collection("Events");
+        this.usersRef = db.collection("Users");
+    }
 
+    public boolean isUserExists() {
+        return userExists;
+    }
 
     public Task<Void> createGuest(GuestUser guest){
         DocumentReference docuRef = usersRef.document(guest.deviceID);
@@ -84,7 +103,6 @@ public class DatabaseWorker {
 
         return docuref.set(targetEvent);
     }
-
     public Task<Void> updateEvent(Event targetEvent) {
         DocumentReference docuref = eventsRef.document(targetEvent.getName());
 
@@ -101,9 +119,37 @@ public class DatabaseWorker {
         return eventsRef.whereEqualTo("organizer", organizer).get();
     }
 
+    public Task<QuerySnapshot> getEventWaitlist(String eventID) {
+        return eventsRef.document(eventID).collection("waitlist").get();
+    }
+
+    public Task<QuerySnapshot> getEventAccepted(String eventID) {
+        return eventsRef.document(eventID).collection("accepted").get();
+    }
+
+    public Task<QuerySnapshot> getEventDeclined(String eventID) {
+        return eventsRef.document(eventID).collection("declined").get();
+    }
+
+    public Task<Void> updateWaitlist(List<String> newList, String eventID){
+       return eventsRef.document(eventID).update("waitlist", newList);
+    }
+
+
     public Task<DocumentSnapshot> getEventByID(String id) {
         return eventsRef.document(id).get();
     }
+
+    /**
+     * get all events for Explore page
+     * @return Task<QuerySnapshot>
+     */
+    //TODO: treat search by tag
+    public Task<QuerySnapshot> getAllEvents() {
+        Log.d("DatabaseWorker", "Getting all events");
+        return eventsRef.get();
+    }
+
 
     // 11.6 by Kehan - User related methods
     /**
@@ -111,7 +157,7 @@ public class DatabaseWorker {
      * @param user  new user object
      * @return Task<Void>
      */
-    public Task<Void> createUser(Users user) {
+    public Task<Void> createUser(RegisteredUser user) {
         Log.d("DatabaseWorker", "Creating user with deviceID: " + user.deviceID);
         DocumentReference docRef = usersRef.document(user.deviceID);
         return docRef.set(user);
@@ -122,7 +168,7 @@ public class DatabaseWorker {
      * @param user object need to update
      * @return Task<Void>
      */
-    public Task<Void> updateUser(Users user) {
+    public Task<Void> updateUser(RegisteredUser user) {
         Log.d("DatabaseWorker", "Updating user with deviceID: " + user.deviceID);
         DocumentReference docRef = usersRef.document(user.deviceID);
         return docRef.set(user);
@@ -133,20 +179,33 @@ public class DatabaseWorker {
      * @param user object need to remove
      * @return Task<Void>
      */
-    public Task<Void> deleteUser(Users user) {
+    public Task<Void> deleteUser(RegisteredUser user) {
         Log.d("DatabaseWorker", "Deleting user with deviceID: " + user.deviceID);
         DocumentReference docRef = usersRef.document(user.deviceID);
         return docRef.delete();
     }
 
     /**
-     * get user by deviceID
+     * Get user by deviceID and convert to RegisteredUser object
      * @param deviceID
-     * @return Task<DocumentSnapshot> stored user data
+     * @return Task<RegisteredUser> stored user data as RegisteredUser object
      */
-    public Task<DocumentSnapshot> getUserByDeviceID(String deviceID) {
+    public Task<RegisteredUser> getUserByDeviceID(String deviceID) {
         Log.d("DatabaseWorker", "Getting user by deviceID: " + deviceID);
-        return usersRef.document(deviceID).get();
+        return usersRef.document(deviceID).get().continueWith(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document != null && document.exists()) {
+                    return convertDocumentToRegisteredUser(document);
+                } else {
+                    Log.d("DatabaseWorker", "User not found with deviceID: " + deviceID);
+                    return null;
+                }
+            } else {
+                Log.e("DatabaseWorker", "Error getting user: ", task.getException());
+                return null;
+            }
+        });
     }
 
     /**
@@ -172,4 +231,119 @@ public class DatabaseWorker {
         Log.d("DatabaseWorker", "Getting all users");
         return usersRef.get();
     }
+
+
+    /**
+     * Convert DocumentSnapshot to RegisteredUser object
+     * @param document DocumentSnapshot from Firestore
+     * @return RegisteredUser object
+     */
+    private RegisteredUser convertDocumentToRegisteredUser(DocumentSnapshot document) {
+        try {
+            String deviceID = document.getId();
+            String phoneNumber = document.getString("phone_number");
+            String email = document.getString("email");
+            String name = document.getString("name");
+            double latitude = document.getDouble("latitude");
+            double longitude = document.getDouble("longitude");
+
+
+            // Handle lists - get them from document or create empty lists
+            List<String> signedUpEvents = (List<String>) document.get("signed_up_events");
+            Map<String, String> eventHistory = (Map<String, String>) document.get("event_history");
+            List<String> createdEvents = (List<String>) document.get("created_events");
+            List<AppNotification> notifications = (List<AppNotification>) document.get("notifications");
+
+            // Create RegisteredUser object
+            RegisteredUser user = new RegisteredUser(deviceID, phoneNumber, email, name, latitude, longitude);
+
+            // Set the lists
+            if (signedUpEvents != null) {
+                user.signed_up_events = new ArrayList<>(signedUpEvents);
+            }
+            if (eventHistory != null) {
+                user.event_history = new HashMap<>(eventHistory);
+            }
+            if (createdEvents != null) {
+                user.created_events = new ArrayList<>(createdEvents);
+            }
+            if (notifications != null) {
+                user.notifications = new ArrayList<>(notifications);
+            }
+
+            Log.d("DatabaseWorker", "Successfully converted document to RegisteredUser: " + deviceID);
+            return user;
+
+        } catch (Exception e) {
+            Log.e("DatabaseWorker", "Error converting document to RegisteredUser: ", e);
+            return null;
+        }
+    }
+
+    /**
+     * Convert DocumentSnapshot to Event object
+     * @param document DocumentSnapshot from Firestore
+     * @return Event object
+     */
+    public static Event convertDocumentToEvent(DocumentSnapshot document) {
+        try {
+            Event event = new Event();
+
+            // Set basic properties
+            event.setEventID(document.getId());
+            event.setName(document.getString("name"));
+            event.setDescription(document.getString("description"));
+            event.setLocation(document.getString("location"));
+            event.setOrganizer(document.getString("organizer"));
+            event.setCapacity(document.getLong("capacity") != null ? document.getLong("capacity").intValue() : 0);
+
+            // Set time properties
+            event.setEnrollement_start(document.getDate("enrollement_start"));
+            event.setEnrollement_end(document.getDate("enrollement_end"));
+            event.setStart_time(document.getDate("start_time"));
+            event.setEnd_time(document.getDate("end_time"));
+
+            // Set tags list
+            List<String> tags = (List<String>) document.get("tags");
+            if (tags != null) {
+                event.setTags(new ArrayList<>(tags));
+            } else {
+                event.setTags(new ArrayList<>());
+            }
+
+            // Set image URL
+            event.setImage(document.getString("image"));
+
+            // Load accepted participants (directly as ArrayList<String>)
+            List<String> acceptedUserIDs = (List<String>) document.get("accepted");
+            if (acceptedUserIDs != null) {
+                event.setAccepted(new ArrayList<>(acceptedUserIDs));
+            } else {
+                event.setAccepted(new ArrayList<>());
+            }
+
+            // Load declined participants (directly as ArrayList<String>)
+            List<String> declinedUserIDs = (List<String>) document.get("declined");
+            if (declinedUserIDs != null) {
+                event.setDeclined(new ArrayList<>(declinedUserIDs));
+            } else {
+                event.setDeclined(new ArrayList<>());
+            }
+
+            // Load waitlist participants (directly as ArrayList<String>)
+            List<String> waitlistUserIDs = (List<String>) document.get("waitlist");
+            if (waitlistUserIDs != null) {
+                event.setWaitlist(new ArrayList<>(waitlistUserIDs));
+            } else {
+                event.setWaitlist(new ArrayList<>());
+            }
+
+            return event;
+
+        } catch (Exception e) {
+            Log.e("DatabaseWorker", "Error converting document to Event", e);
+            return null;
+        }
+    }
+
 }

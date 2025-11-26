@@ -1,17 +1,32 @@
 package com.example.vortex_events;// In ProfileActivity.java
 
+import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView; // Make sure this is imported
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -21,23 +36,39 @@ import java.util.List;
 public class Profile extends AppCompatActivity{
 
     private List<Event> pastEventList;
+    private MaterialButton buttonDeleteProfile;
+    // private DatabaseWorker databaseWorker;
+    private DatabaseWorker databaseWorker;
+    private RegisteredUser currentUser;
+    private DialogHelper dialogHelper; // Added DialogHelper
+    private PastEventAdapter pastEventAdapter; // Add Adapter reference
+    private RecyclerView recyclerView; // Add RecyclerView reference
+
+    // Control flag for switching between event display modes
+    private final boolean SHOW_SIGNED_UP_EVENTS = true;
 
 
+    @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-
-
         setContentView(R.layout.activity_profile);
-
-        RecyclerView recyclerView = findViewById(R.id.recyclerView_past_events);
+        // Initialize views
+        recyclerView = findViewById(R.id.recyclerView_past_events);
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
 
-        setupPastEventListData();
+        // Initialize empty list and adapter
+        pastEventList = new ArrayList<>();
+        pastEventAdapter = new PastEventAdapter(pastEventList, this);
 
-        PastEventAdapter pastEventAdapter = new PastEventAdapter(pastEventList,this);
-
-        recyclerView.setLayoutManager(new LinearLayoutManager((this)));
+        // Setup RecyclerView
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(pastEventAdapter);
+
+        // Initialize DatabaseWorker
+        databaseWorker = new DatabaseWorker();
+
+        // load Data
+        setupPastEventListData();
 
         View back_button = findViewById(R.id.button_back);
 
@@ -49,6 +80,23 @@ public class Profile extends AppCompatActivity{
 
         account_settings.setOnClickListener(v ->{
             Intent intent = new Intent(getApplicationContext(), Account_settings.class);
+            startActivity(intent);
+        });
+
+        // Initialize delete profile button - SINGLE initialization (removed duplicate)
+        buttonDeleteProfile = findViewById(R.id.button_log_out);
+//        databaseWorker = new DatabaseWorker();
+        currentUser = getCurrentUser(); // Use helper method to get current user
+        dialogHelper = new DialogHelper(this); // Initialize DialogHelper
+        buttonDeleteProfile.setOnClickListener(v -> {
+            showDeleteConfirmationDialog();
+        });
+
+        // Find the Past Events button
+        MaterialButton pastEventsButton = findViewById(R.id.button_my_events);
+
+        pastEventsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getApplicationContext(), HistoryEvents.class);
             startActivity(intent);
         });
 
@@ -75,8 +123,144 @@ public class Profile extends AppCompatActivity{
             }
         });
     }
-    //Todo this will also get the events from the DATABASE, however right now it is only a TEST
+
+    /**
+     * Get current user from device ID
+     * This creates a RegisteredUser instance using the device ID
+     */
+    private RegisteredUser getCurrentUser() {
+        try {
+            // Get device ID from Android system
+            @SuppressLint("HardwareIds") String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
+            // Create a RegisteredUser with the device ID
+            // TODO: Replace with actual user data retrieval
+            return new RegisteredUser(deviceID, "unknown", "unknown@example.com", "User", 0.0, 0.0);
+        } catch (Exception e) {
+            Toast.makeText(this, "Error getting user data", Toast.LENGTH_SHORT).show();
+            return null;
+        }
+    }
+
+    /**
+     * Setup past event list data - now shows signed up events by default
+     */
     private void setupPastEventListData() {
+        // clear the list
+        pastEventList.clear();
+
+        if (SHOW_SIGNED_UP_EVENTS) {
+            // show signed up events
+            loadSignedUpEvents();
+        } else {
+            // show historical events
+            loadHistoricalEvents();
+        }
+    }
+
+    /**
+     * Load signed up events from database
+     */
+    private void loadSignedUpEvents() {
+        if (currentUser == null) {
+            currentUser = getCurrentUser();
+        }
+
+        // Add loading message
+        Toast.makeText(this, "Loading events...", Toast.LENGTH_SHORT).show();
+
+        if (currentUser != null) {
+            // find User data from database to get signed_up_events
+            databaseWorker.getUserByDeviceID(currentUser.getDeviceID()).addOnSuccessListener(user -> {
+                if (user != null && user.getSigned_up_events() != null) {
+                    List<String> signedUpEventIDs = user.getSigned_up_events();
+
+                    if (signedUpEventIDs.isEmpty()) {
+                        // No signed up events found
+                        pastEventList.clear();
+                        Toast.makeText(this, "No signed up events found", Toast.LENGTH_SHORT).show();
+                        updateRecyclerView();
+                        return;
+                    }
+
+                    // load all events find
+                    loadEventsFromIDs(signedUpEventIDs);
+                } else {
+                    pastEventList.clear();
+                    Toast.makeText(this, "No signed up events available", Toast.LENGTH_SHORT).show();
+                    updateRecyclerView();
+                }
+            }).addOnFailureListener(e -> {
+                Log.e("Profile", "Error loading user data: " + e.getMessage());
+                Toast.makeText(this, "Error loading events, showing historical events", Toast.LENGTH_SHORT).show();
+                // goback to historical(sample) events
+                loadHistoricalEvents();
+            });
+        } else {
+            Toast.makeText(this, "User data not available", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * Load events from a list of event IDs
+     */
+    private void loadEventsFromIDs(List<String> eventIDs) {
+        pastEventList.clear();
+
+        if (eventIDs.isEmpty()) {
+            updateRecyclerView();
+            return;
+        }
+
+        final int[] loadedCount = {0};
+
+        for (String eventID : eventIDs) {
+            databaseWorker.getEventByID(eventID).addOnSuccessListener(documentSnapshot -> {
+                if (documentSnapshot.exists()) {
+                    Event event = DatabaseWorker.convertDocumentToEvent(documentSnapshot);
+                    if (event != null) {
+                        pastEventList.add(event);
+                    }
+                }
+                loadedCount[0]++;
+
+                // check if all events have been loaded
+                if (loadedCount[0] == eventIDs.size()) {
+                    // All events loaded, update RecyclerView
+                    updateRecyclerView();
+
+                    if (pastEventList.isEmpty()) {
+                        Toast.makeText(this, "No valid events found", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(this, "Loaded " + pastEventList.size() + " events", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }).addOnFailureListener(e -> {
+                Log.e("Profile", "Error loading event: " + eventID, e);
+                loadedCount[0]++;
+                if (loadedCount[0] == eventIDs.size()) {
+                    updateRecyclerView();
+                }
+            });
+        }
+    }
+
+    /**
+     * Update the RecyclerView with the loaded events
+     */
+    private void updateRecyclerView() {
+        runOnUiThread(() -> {
+            if (pastEventAdapter != null) {
+                pastEventAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+    /**
+     * Load historical events (original hardcoded implementation)
+     */
+    //Todo this will also get the events from the DATABASE, however right now it is only a TEST
+    private void loadHistoricalEvents() {
         pastEventList = new ArrayList<>();
         ArrayList<String> arraylist = new ArrayList<String>();
         arraylist.add("trending");
@@ -120,5 +304,32 @@ public class Profile extends AppCompatActivity{
         // startActivity(intent);
     }
 
-}
+    /**
+     * Show delete confirmation dialog with input validation
+     * Simplified version using DialogHelper
+     */
+    private void showDeleteConfirmationDialog() {
+        if (currentUser == null) {
+            Toast.makeText(this, "User data not available", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
+        dialogHelper.showDeleteConfirmationDialog(currentUser, this::onDeleteSuccess);
+    }
+
+    /**
+     * Handle successful delete operation
+     */
+    private void onDeleteSuccess() {
+        // Show 5-second countdown (reduced from 10 seconds for better UX)
+        dialogHelper.showExitCountdown(5, this::exitApplication);
+    }
+
+    /**
+     * Exit the application
+     */
+    private void exitApplication() {
+        finishAffinity(); // Close all activities and exit app
+    }
+
+}

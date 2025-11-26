@@ -11,10 +11,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.lifecycle.ViewModelProvider;
-
-import com.google.firebase.Firebase;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Date;
 
@@ -24,21 +20,19 @@ import com.google.android.material.navigation.NavigationBarView;
 
 public class MainActivity extends AppCompatActivity {
 
-    FirebaseFirestore db;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        db = FirebaseFirestore.getInstance();
-        DatabaseWorker worker = new DatabaseWorker(db);
+
+        DatabaseWorker worker = new DatabaseWorker();
         Date enroll_start = new Date();
         RegisteredUser user = new RegisteredUser(MainActivity.this, "7805551234",
-                "russelwestbrook@washed.com", "Russel Westbrook");
+                "russelwestbrook@washed.com", "Russel Westbrook", 0,0);
 
-        Event event = new Event("Washed", "China", "Russel Westbrook", "123456789",
+        Event event = new Event("Washed", "Albania", "Russel Westbrook", "123456789",
                 enroll_start, enroll_start, enroll_start, enroll_start, null, null, 5 );
 
         worker.createEvent(user, event).addOnCompleteListener(task -> {
@@ -49,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
+
 
 
 
@@ -75,6 +70,18 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 }else if(itemId == R.id.nav_explore){
                     Intent intent = new Intent(getApplicationContext(), ExplorePage.class);
+                    startActivity(intent);
+                    return true;
+                } else if (itemId == R.id.nav_search) {
+                    Intent intent = new Intent(getApplicationContext(), SearchEvents.class);
+                    startActivity(intent);
+                    return true;
+                } else if (itemId == R.id.nav_search) {
+                    Intent intent = new Intent(getApplicationContext(), SearchEvents.class);
+                    startActivity(intent);
+                    return true;
+                }else if (itemId == R.id.nav_scan_qr) {
+                    Intent intent = new Intent(getApplicationContext(), QRCodeScanner.class);
                     startActivity(intent);
                     return true;
                 }

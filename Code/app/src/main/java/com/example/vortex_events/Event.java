@@ -7,25 +7,30 @@ public class Event {
     String eventID;
     String name;
     String description;
-
-//    Image here somehow
+    String image;
     int capacity;
+    int waitlist_limit;
     String location;
     ArrayList<String> tags;
     Date start_time;
     Date end_time;
     Date enrollement_start;
     Date enrollement_end;
-    ArrayList<Users> waitlist;
-    ArrayList<Users> accepted;
-    ArrayList<Users> declined;
+    ArrayList<String> waitlist;
+    ArrayList<String> accepted;
+    ArrayList<String> declined;
     String organizer;
+
+    public Event() {
+
+    }
 
     public Event(String name, String location, String organizer, String eventID, Date enrollement_start, Date enrollement_end, Date end_time, Date start_time, ArrayList<String> tags, String description, int capacity) {
         this.name = name;
         this.location = location;
         this.organizer = organizer;
         this.eventID = eventID;
+        this.image = null; //TODO: add image
         this.enrollement_start = enrollement_start;
         this.enrollement_end = enrollement_end;
         this.end_time = end_time;
@@ -34,18 +39,20 @@ public class Event {
         this.description = description;
         this.capacity = capacity;
 
-        this.waitlist = new ArrayList<>();
-        this.accepted = new ArrayList<>();
-        this.declined = new ArrayList<>();
+        this.waitlist = new ArrayList<String>();
+        this.accepted = new ArrayList<String>();
+        this.declined = new ArrayList<String>();
     }
 
 
 
-    public ArrayList<Users> getAccepted() {
+
+
+    public ArrayList<String> getAccepted() {
         return accepted;
     }
 
-    public void setAccepted(ArrayList<Users> accepted) {
+    public void setAccepted(ArrayList<String> accepted) {
         this.accepted = accepted;
     }
 
@@ -57,11 +64,11 @@ public class Event {
         this.capacity = capacity;
     }
 
-    public ArrayList<Users> getDeclined() {
+    public ArrayList<String> getDeclined() {
         return declined;
     }
 
-    public void setDeclined(ArrayList<Users> declined) {
+    public void setDeclined(ArrayList<String> declined) {
         this.declined = declined;
     }
 
@@ -95,6 +102,14 @@ public class Event {
 
     public void setEnrollement_start(Date enrollement_start) {
         this.enrollement_start = enrollement_start;
+    }
+    public String getImage() {
+
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public String getEventID() {
@@ -145,11 +160,18 @@ public class Event {
         this.tags = tags;
     }
 
-    public ArrayList<Users> getWaitlist() {
+    public ArrayList<String> getWaitlist() {
         return waitlist;
     }
 
-    public void setWaitlist(ArrayList<Users> waitlist) {
+    public void setWaitlist(ArrayList<String> waitlist) {
         this.waitlist = waitlist;
+    }
+
+    public int getWaitlist_limit() {
+        return waitlist_limit;
+    }
+    public void setWaitlist_limit(int waitlist_limit) {
+        this.waitlist_limit = waitlist_limit;
     }
 }

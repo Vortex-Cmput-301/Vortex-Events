@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">vortex-events</string>
-    <!-- In the policy text Article 2, paragraph 3，we need to provide formated date string-->
     <string name="lottery_policy">
         <![CDATA[
         Lottery Policy Statement
@@ -11,7 +10,6 @@
         2. Registration and Waitlist
         - During the registration period, users may submit an application to join the event waitlist.
         - No new applications will be accepted after the registration deadline.
-        - The registration period for this event is %1$s to %2$s .
 
         3. Lottery Process
         - The lottery will be conducted after the registration period ends.
@@ -37,7 +35,7 @@
     <string name="location">location</string>
     <string name="a_place">a place</string>
     <string name="time_of_event">Time of event</string>
-    <string name="yyyy_mm_dd_hh_mm_hh_mm">YYYY-MM-DD, HH:MM-HH:MM</string>
+    <string name="yyyy_mm_dd_hh_mm">YYYY-MM-DD, HH:MM</string>
     <string name="tag">Tag</string>
     <string name="start_with">start with #</string>
     <string name="capacity">capacity</string>
@@ -60,9 +58,19 @@
     <string name="participantsViewTitle">Participants</string>
     <string name="create_profile">Create profile</string>
     <string name="your_name">Your Name</string>
+    <string name="event_details">Event Details</string>
+    <string name="capacity1">Capacity</string>
+    <string name="edit_event">Edit event</string>
+    <string name="loading">Loading</string>
     <string-array name="item_dropdown">
         <item>Accepted</item>
         <item>Declined</item>
         <item>Waitlist</item>
     </string-array>
+    <string name="end_of_event">End of event</string>
+    <string name="start_at_yyyy_mm_dd_hh_mm">start at: YYYY-MM-DD, HH:MM</string>
+
+    <string name="empty"></string>
+    <string name="no_enrolled_entrants">No enrolled entrants yet</string>
+
 </resources>

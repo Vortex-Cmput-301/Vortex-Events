@@ -38,6 +38,7 @@ android {
 }
 
 dependencies {
+    implementation("com.github.bumptech.glide:glide:4.16.0")
     implementation("com.google.android.material:material:1.10.0")
     implementation(libs.appcompat)
     implementation(libs.material)
@@ -48,6 +49,7 @@ dependencies {
     implementation(libs.core)
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.auth)
+    implementation(libs.play.services.location)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -72,5 +74,15 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:34.3.0"))
     implementation("com.google.firebase:firebase-firestore")
     // https://firebase.google.com/docs/android/setup#available-libraries
+
+
+    implementation ("com.google.zxing:core:3.5.2")
+    implementation ("com.google.mlkit:barcode-scanning:17.2.0")
+
+    val camerax_version = "1.5.1"
+    implementation ("androidx.camera:camera-core:$camerax_version")
+    implementation ("androidx.camera:camera-camera2:$camerax_version")
+    implementation ("androidx.camera:camera-lifecycle:$camerax_version")
+    implementation ("androidx.camera:camera-view:$camerax_version")
 
 }

@@ -40,10 +40,13 @@ public class DatabaseWorkerTest {
         return mockup;
     }
 
+    /**
+
     public RegisteredUser createMockRegisteredUser(){
-        RegisteredUser user = new RegisteredUser("SomeID", "780-THE-GOAT", "elbron@gamil.com", "Lebron");
+        RegisteredUser user = new RegisteredUser("SomeID", "780-THE-GOAT", "elbron@gamil.com", "Lebron", 0.0, 0.0);
         return  user;
     }
+     **/
 
     private DatabaseWorker worker; // worker to test
 
@@ -80,6 +83,12 @@ public class DatabaseWorkerTest {
         assertTrue(resultTask.isSuccessful());
         //  verify that the set method was actually called
         verify(mockDocRef).set(testEvent);
+    }
+
+    private Users createMockRegisteredUser() {
+        RegisteredUser user = new RegisteredUser();
+        user.setDeviceID("fake ID");
+        return user;
     }
 
     @Test
