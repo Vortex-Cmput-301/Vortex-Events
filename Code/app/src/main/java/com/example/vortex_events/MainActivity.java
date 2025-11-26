@@ -17,6 +17,7 @@ import java.util.Date;
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,6 +28,22 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
+
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        android.util.Log.w("FCM", "Fetching FCM registration token failed", task.getException());
+                        return;
+                    }
+                    String token = task.getResult();
+                    android.util.Log.d("FCM", "Token: " + token);
+                });
+
+
+        DatabaseWorker worker = new DatabaseWorker();
+        Date enroll_start = new Date();
+        RegisteredUser user = new RegisteredUser(MainActivity.this, "7805551234",
+                "russelwestbrook@washed.com", "Russel Westbrook", 0,0);
 
 
         DatabaseWorker worker = new DatabaseWorker();
