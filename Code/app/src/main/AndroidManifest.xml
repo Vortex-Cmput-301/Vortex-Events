@@ -74,7 +74,6 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
-
         <activity
             android:name=".HistoryEvents"
             android:exported="false" />
@@ -86,6 +85,9 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+        <activity
+            android:name=".AdminActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

@@ -4,7 +4,16 @@ import java.sql.Time;
 import java.util.Date;
 import java.util.UUID;
 
+/**
+ * AppNotification model class.
+ */
 public class AppNotification {
+
+
+
+    // No-argument constructor required for Firestore serialization
+    public AppNotification() {
+    }
     String authorID;
     String notificationID;
     String title;

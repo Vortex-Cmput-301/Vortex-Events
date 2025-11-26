@@ -198,13 +198,19 @@ public class DatabaseWorker {
     }
 
     /**
-     * Delete user's profile
+     * Delete user's profile by deviceID from RegisteredUser object
      * @param user object need to remove
      * @return Task<Void>
      */
     public Task<Void> deleteUser(RegisteredUser user) {
-        Log.d("DatabaseWorker", "Deleting user with deviceID: " + user.deviceID);
-        DocumentReference docRef = usersRef.document(user.deviceID);
+        if (user == null || user.getDeviceID() == null) {
+            Log.e("DatabaseWorker", "deleteUser: user or deviceID is null");
+            return null;
+        }
+
+        String deviceID = user.getDeviceID();
+        Log.d("DatabaseWorker", "Deleting user with deviceID: " + deviceID);
+        DocumentReference docRef = usersRef.document(deviceID);
         return docRef.delete();
     }
 
@@ -269,6 +275,7 @@ public class DatabaseWorker {
             String name = document.getString("name");
             double latitude = document.getDouble("latitude");
             double longitude = document.getDouble("longitude");
+            String type = document.getString("type");
 
 
             // Handle lists - get them from document or create empty lists
@@ -278,7 +285,7 @@ public class DatabaseWorker {
             List<AppNotification> notifications = (List<AppNotification>) document.get("notifications");
 
             // Create RegisteredUser object
-            RegisteredUser user = new RegisteredUser(deviceID, phoneNumber, email, name, latitude, longitude);
+            RegisteredUser user = new RegisteredUser(deviceID, phoneNumber, email, name, latitude, longitude, type);
 
             // Set the lists
             if (signedUpEvents != null) {
@@ -368,5 +375,26 @@ public class DatabaseWorker {
             return null;
         }
     }
+
+    /**
+     * Clear image field of an event by eventID. For admin use only
+     *
+     * @param eventID id of event to update
+     * @return Task<Void>
+     */
+    public Task<Void> clearEventImage(String eventID) {
+        return eventsRef.document(eventID).update("image", null);
+    }
+    /**
+     * Replace notifications array for a specific user. For admin use only
+     *
+     * @param deviceID      user id
+     * @param notifications new list of notifications
+     * @return Task<Void>
+     */
+    public Task<Void> updateUserNotifications(String deviceID, List<AppNotification> notifications) {
+        return usersRef.document(deviceID).update("notifications", notifications);
+    }
+
 
 }

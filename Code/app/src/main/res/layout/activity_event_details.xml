@@ -154,7 +154,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Open Map" />
-
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="100dp" />
         </LinearLayout>
     </ScrollView>
 
