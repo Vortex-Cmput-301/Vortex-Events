@@ -5,9 +5,13 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,6 +35,7 @@ import com.google.android.material.switchmaterial.SwitchMaterial;
 import org.checkerframework.checker.units.qual.Time;
 import org.checkerframework.common.returnsreceiver.qual.This;
 
+import java.io.ByteArrayOutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -339,19 +344,47 @@ public class CreateActivityEvents extends AppCompatActivity {
         });
     }
 
-    private String encodeImage(android.net.Uri imageUri) {
+    private String encodeImage(Uri imageUri) {
         try {
-            //Get the image from gallery
-            android.graphics.Bitmap bitmap = android.provider.MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
 
+            Bitmap originalBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
 
-            java.io.ByteArrayOutputStream stream = new java.io.ByteArrayOutputStream();
-            // JPEG format
-            bitmap.compress(android.graphics.Bitmap.CompressFormat.JPEG, 50, stream);
+            //Calculate new size
+            int maxWidth = 800;
+            int width = originalBitmap.getWidth();
+            int height = originalBitmap.getHeight();
+
+            //resize if the image is actually bigger than 800px
+            if (width > maxWidth) {
+                float ratio = (float) width / maxWidth;
+                width = maxWidth;
+                height = (int) (height / ratio);
+            }
+
+            //resized bitmap
+            Bitmap resizedBitmap = Bitmap.createScaledBitmap(originalBitmap, width, height, true);
+
+            //Compress the resized image
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+
+            resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 60, stream);
             byte[] bytes = stream.toByteArray();
 
+            //Check if its bigger, compress again
+            if (bytes.length > 800000) {
+                stream.reset(); // Clear stream
+                resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 30, stream); // Drop to 30%
+                bytes = stream.toByteArray();
+            }
 
-            return android.util.Base64.encodeToString(bytes, android.util.Base64.DEFAULT);
+            //Check if its bigger, compress again just incase
+            if (bytes.length > 1000000) {
+                Toast.makeText(this, "Image is still too large. Please pick another.", Toast.LENGTH_SHORT).show();
+                return null;
+            }
+
+            return Base64.encodeToString(bytes, Base64.DEFAULT);
+
         } catch (Exception e) {
             e.printStackTrace();
             return null;
