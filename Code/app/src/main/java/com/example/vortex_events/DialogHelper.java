@@ -132,4 +132,36 @@ public class DialogHelper {
             onCountdownComplete.run();
         }, countdownSeconds * 1000L);
     }
+    /**
+     * Show a simple confirmation dialog with message and two buttons.
+     * This dialog does not require any text input.
+     *
+     * @param title       dialog title
+     * @param message     dialog message
+     * @param onConfirmed callback when user clicks confirm
+     */
+    public void showSimpleConfirmationDialog(String title, String message, Runnable onConfirmed) {
+        try {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle(title)
+                    .setMessage(message)
+                    .setCancelable(true)
+                    .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
+                    .setPositiveButton("Confirm", (dialog, which) -> {
+                        dialog.dismiss();
+                        if (onConfirmed != null) {
+                            onConfirmed.run();
+                        }
+                    });
+
+            AlertDialog dialog = builder.create();
+            if (dialog.getWindow() != null) {
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
+            }
+            dialog.show();
+        } catch (Exception e) {
+            Log.e("DialogHelper", "Error showing simple confirmation dialog: " + e.getMessage());
+            Toast.makeText(context, "Error showing dialog", Toast.LENGTH_SHORT).show();
+        }
+    }
 }
