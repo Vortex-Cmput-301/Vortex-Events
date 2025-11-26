@@ -10,6 +10,7 @@ public class RegisteredUser extends Users{
     String phone_number;
     String email;
     String name;
+    String notificationToken;
     double latitude;
     double longitude;
     ArrayList<String> signed_up_events;
@@ -25,6 +26,14 @@ public class RegisteredUser extends Users{
     public RegisteredUser(){
 
     };
+
+    public String getNotificationToken() {
+        return notificationToken;
+    }
+
+    public void setNotificationToken(String notificationToken) {
+        this.notificationToken = notificationToken;
+    }
 
     public ArrayList<String> getCreated_events() {
         return created_events;
@@ -100,12 +109,15 @@ public class RegisteredUser extends Users{
     }
 
     public RegisteredUser(Context context, String number, String email, String name, double latitude, double longitude){
+    public RegisteredUser(Context context, String number, String email, String name, String notificationToken){
         super(context);
         this.phone_number = number;
         this.email = email;
         this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.notificationToken = notificationToken;
+
         this.signed_up_events = new ArrayList<>();
         this.created_events = new ArrayList<>();
         this.event_history = new HashMap<>();

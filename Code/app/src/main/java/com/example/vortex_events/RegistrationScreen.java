@@ -23,6 +23,8 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.auth.User;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 public class RegistrationScreen extends AppCompatActivity {
     EditText phoneField;
@@ -85,6 +87,19 @@ public class RegistrationScreen extends AppCompatActivity {
 
                 RegisteredUser user = new RegisteredUser(RegistrationScreen.this, phoneNumber, emailAddress, userName, latitude, longitude);
                 dbWorker.createRegisteredUser(user);
+                FirebaseMessaging.getInstance().getToken()
+                        .addOnCompleteListener(task -> {
+                            if (!task.isSuccessful()) {
+                                android.util.Log.w("FCM", "Fetching FCM registration token failed", task.getException());
+                                return;
+                            }
+                            String token = task.getResult();
+                            android.util.Log.d("FCM", "Token: " + token);
+                            RegisteredUser user = new RegisteredUser(RegistrationScreen.this, phoneNumber, emailAddress, userName, token);
+                            dbWorker.createRegisteredUser(user);
+                        });
+
+
 
                 Intent intent = new Intent(RegistrationScreen.this, MainActivity.class);
                 startActivity(intent);
