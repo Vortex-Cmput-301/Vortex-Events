@@ -27,6 +27,7 @@ import java.util.ArrayList;
 public class OrganizerNotificationsDashboard extends AppCompatActivity {
     String eventID;
     String deviceID;
+    String notifyMode;
 
     Event currentEvent;
     AppNotification notification;
@@ -38,8 +39,7 @@ public class OrganizerNotificationsDashboard extends AppCompatActivity {
     EditText notificationContentEditor;
 
     Button pushToWaitlist;
-    Button pushToAccepted;
-    Button pushToDeclined;
+
 
 
     @SuppressLint("HardwareIds")
@@ -50,7 +50,8 @@ public class OrganizerNotificationsDashboard extends AppCompatActivity {
         setContentView(R.layout.activity_organizer_notifications_dashboard);
 
         Intent returnedID = getIntent();
-        eventID = returnedID.getStringExtra("EventID");
+        eventID = returnedID.getStringExtra("eventID");
+        notifyMode = returnedID.getStringExtra("notifyMode");
 
         deviceID = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
 
@@ -77,8 +78,7 @@ public class OrganizerNotificationsDashboard extends AppCompatActivity {
         notificationContentEditor = findViewById(R.id.notification_content_editor);
         notificationTitleEditor = findViewById(R.id.notification_title_editor);
         pushToWaitlist = findViewById(R.id.btn_push_to_waitlist);
-        pushToAccepted = findViewById(R.id.btn_push_to_accepted);
-        pushToDeclined = findViewById(R.id.btn_push_to_declined);
+
 
 
 
@@ -91,8 +91,17 @@ public class OrganizerNotificationsDashboard extends AppCompatActivity {
                 notification = new AppNotification(deviceID, title, content);
 
                 dbWorker.pushNotificationToDB(notification);
+                ArrayList<String> group = new ArrayList<>();
 
-                for (String user: currentEvent.waitlist){
+                if (notifyMode.equals("Accepted")){
+                    group = currentEvent.accepted;
+                }else if (notifyMode.equals("Declined")){
+                    group = currentEvent.declined;
+                }else if (notifyMode.equals("Waitlist")){
+                    group = currentEvent.waitlist;
+                }
+
+                for (String user: group){
                     dbWorker.getUserByDeviceID(user).addOnCompleteListener(new OnCompleteListener<RegisteredUser>() {
                         @Override
                         public void onComplete(@NonNull Task<RegisteredUser> task) {
@@ -108,10 +117,72 @@ public class OrganizerNotificationsDashboard extends AppCompatActivity {
                         }
                     });
                 }
+                Intent intent = new Intent(OrganizerNotificationsDashboard.this, OrganizerViewParticipant.class);
+                intent.putExtra("eventID", eventID);
+                startActivity(intent);
             }
+
         });
 
-
+//        pushToAccepted.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                String title = notificationTitleEditor.getText().toString();
+//                String content = notificationContentEditor.getText().toString();
+//
+//                notification = new AppNotification(deviceID, title, content);
+//
+//                dbWorker.pushNotificationToDB(notification);
+//
+//                for (String user: currentEvent.accepted){
+//                    dbWorker.getUserByDeviceID(user).addOnCompleteListener(new OnCompleteListener<RegisteredUser>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<RegisteredUser> task) {
+//                            if (task.isSuccessful()){
+//                                RegisteredUser user = task.getResult();
+//                                ArrayList<String> notificartions = user.notifications;
+//                                notificartions.add(notification.notificationID);
+//                                dbWorker.pushNotiToUser(notificartions, user.deviceID);
+//                                Log.d("NOTIFICATIONM SENDING", "WORKED");
+//                            }else {
+//                                Log.d("USER FETCHING", "USER DONT EXIST");
+//                            }
+//                        }
+//                    });
+//                }
+//            }
+//        });
+//
+//        pushToDeclined.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                String title = notificationTitleEditor.getText().toString();
+//                String content = notificationContentEditor.getText().toString();
+//
+//                notification = new AppNotification(deviceID, title, content);
+//
+//                dbWorker.pushNotificationToDB(notification);
+//
+//                for (String user: currentEvent.declined){
+//                    dbWorker.getUserByDeviceID(user).addOnCompleteListener(new OnCompleteListener<RegisteredUser>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<RegisteredUser> task) {
+//                            if (task.isSuccessful()){
+//                                RegisteredUser user = task.getResult();
+//                                ArrayList<String> notificartions = user.notifications;
+//                                notificartions.add(notification.notificationID);
+//                                dbWorker.pushNotiToUser(notificartions, user.deviceID);
+//                                Log.d("NOTIFICATIONM SENDING", "WORKED");
+//                            }else {
+//                                Log.d("USER FETCHING", "USER DONT EXIST");
+//                            }
+//                        }
+//                    });
+//                }
+//            }
+//        });
+//
+//
 
 
 
