@@ -33,7 +33,7 @@ public class WelcomePage extends AppCompatActivity {
         @SuppressLint("HardwareIds") String userID = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
 
 
-
+        Log.d("IN THE WELCOME PAGE", "MADE IT PAST");
 
 
 

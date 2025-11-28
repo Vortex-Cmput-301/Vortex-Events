@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -33,7 +34,8 @@ import java.util.concurrent.atomic.AtomicReference;
  * Depends on: DatabaseWorker.getParticipants(eventId, ValueEventListener)
  */
 public class OrganizerViewParticipant extends AppCompatActivity {
-
+    Button notifyGroup;
+    String eventID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +43,10 @@ public class OrganizerViewParticipant extends AppCompatActivity {
         setContentView(R.layout.activity_organizer_view_participant);
         Spinner spinner = findViewById(R.id.participant_filter_dropdown);
 
+        Intent returnedID = getIntent();
+        eventID = returnedID.getStringExtra("EventID");
+
+        notifyGroup = findViewById(R.id.notify_group_btn);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 this,
                 R.array.item_dropdown,
@@ -61,8 +67,22 @@ public class OrganizerViewParticipant extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
-//        TODO: get event id from intent
-        setupParticipantLists(spinner, listAdapter, "6dehsaW");
+
+
+//        TODO: get event id from intent || DONE
+        setupParticipantLists(spinner, listAdapter, eventID);
+
+        notifyGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String mode = spinner.getSelectedItem().toString();
+                Intent intent = new Intent(OrganizerViewParticipant.this, OrganizerNotificationsDashboard.class);
+                intent.putExtra("notifyMode", mode);
+                intent.putExtra("eventID", eventID);
+                startActivity(intent);
+            }
+        });
+
 
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {

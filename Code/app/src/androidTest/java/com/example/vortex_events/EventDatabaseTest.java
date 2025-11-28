@@ -31,7 +31,7 @@ public class EventDatabaseTest {
         @SuppressLint("HardwareIds") String deviceID = Settings.Secure.getString(appContext.getContentResolver(), Settings.Secure.ANDROID_ID);
         double latitude = 53.5232;
         double longitude = -113.5263;
-        RegisteredUser user = new RegisteredUser(deviceID, "1234567890", "test@test.com", "LeBron", latitude, longitude);
+        RegisteredUser user = new RegisteredUser(deviceID, "1234567890", "test@test.com", "Test User", latitude, longitude);
 
         // Save the user to the database
         Tasks.await(dbWorker.createRegisteredUser(user));
