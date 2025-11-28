@@ -55,6 +55,8 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.play.services.location)
     implementation(libs.play.services.maps)
+    implementation(libs.play.services.location)
+    implementation(libs.firebase.messaging)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -78,6 +80,7 @@ dependencies {
     // Add the dependencies for any other desired Firebase products
     implementation(platform("com.google.firebase:firebase-bom:34.3.0"))
     implementation("com.google.firebase:firebase-firestore")
+    implementation ("com.google.firebase:firebase-messaging")
     // https://firebase.google.com/docs/android/setup#available-libraries
 
 

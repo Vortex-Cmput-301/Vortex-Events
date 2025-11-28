@@ -30,6 +30,10 @@ import com.google.zxing.WriterException;
 import java.util.ArrayList;
 import java.util.Date;
 
+import android.graphics.Bitmap;
+import android.widget.ImageView;
+import com.google.zxing.WriterException;
+
 import com.bumptech.glide.Glide;
 
 public class EventDetails extends AppCompatActivity {
@@ -59,6 +63,7 @@ public class EventDetails extends AppCompatActivity {
 
     Button signupButton;
     Button editEventButton;
+    Button notifcationsDashBoardButton;
     ImageView posterPreview;
 
     ImageView qrImage;
@@ -94,12 +99,25 @@ public class EventDetails extends AppCompatActivity {
 
         signupButton = findViewById(R.id.btn_details_sign_up);
         editEventButton = findViewById(R.id.edit_event_button);
+        notifcationsDashBoardButton = findViewById(R.id.organizer_notifications_button);
 
         qrImage = findViewById(R.id.event_details_qr);
 
         Button mapButton = findViewById(R.id.btn_details_open_map);
 
+        mapButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(EventDetails.this, EntrantsMap.class);
+                intent.putExtra("EventID", EventID);
+                startActivity(intent);
+            }
+        });
 
+
+
+
+        qrImage = findViewById(R.id.event_details_qr);
 
 
 
@@ -156,11 +174,27 @@ public class EventDetails extends AppCompatActivity {
                 }
 
 
+
+
+
+                //displays QR code
+                 payload = "vortex://event/" + EventID;
+
+                try {
+                    Bitmap bmp = QRCodeGenerator.generateQRCodeBitmap(payload, 600, 600);
+                    qrImage.setImageBitmap(bmp);
+                } catch (WriterException e) {
+                    Log.e("EventDetails", "Failed to generate QR", e);
+                }
+
+
+
 // if the event is owned by the current device id
                 if (orgID.equals(deviceID)){
                     signupButton.setText("Edit Events");
                     editEventButton.setVisibility(VISIBLE);
                     mapButton.setVisibility(VISIBLE);
+                    notifcationsDashBoardButton.setVisibility(VISIBLE);
 
 //                    Listeneer for edit details intents
 
@@ -182,14 +216,16 @@ public class EventDetails extends AppCompatActivity {
                         }
                     });
 
-                    mapButton.setOnClickListener(new View.OnClickListener() {
+                    notifcationsDashBoardButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            Intent intent = new Intent(EventDetails.this, MapEntrants.class);
+                            Intent intent = new Intent(EventDetails.this, OrganizerNotificationsDashboard.class);
                             intent.putExtra("EventID", EventID);
                             startActivity(intent);
                         }
                     });
+
+
 
                 }else{
                     if (event.getWaitlist().contains(deviceID)) {
