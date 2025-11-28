@@ -49,9 +49,6 @@
             android:name=".QRCodeScanner"
             android:exported="false" />
         <activity
-            android:name=".EntrantsMap"
-            android:exported="false" />
-        <activity
             android:name=".SignUpEvent"
             android:exported="false" />
         <activity

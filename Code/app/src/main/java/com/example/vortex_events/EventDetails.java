@@ -149,7 +149,7 @@ public class EventDetails extends AppCompatActivity {
                 }
 
 
-
+// if the event is owned by the current device id
                 if (orgID.equals(deviceID)){
                     signupButton.setText("Edit Events");
                     editEventButton.setVisibility(VISIBLE);
