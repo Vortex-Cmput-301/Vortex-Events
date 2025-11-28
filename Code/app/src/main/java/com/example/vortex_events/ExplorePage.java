@@ -58,10 +58,12 @@ public class ExplorePage extends AppCompatActivity {
         imageView_profile.setOnClickListener(v -> {
             // Create an Intent to launch ProfileActivity
             Intent intent = new Intent(getApplicationContext(), Profile.class);
+            intent.putExtra("prev_activity", "explore");
             startActivity(intent);
         });
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.nav_explore);
 
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             //Add the rest of the activities when finished
@@ -146,6 +148,7 @@ public class ExplorePage extends AppCompatActivity {
         intent.putExtra("EventDate", event.getStart_time() != null ?
                 event.getStart_time().getTime() : 0);
         intent.putExtra("EventDescription", event.getDescription());
+        intent.putExtra("prev_activity", "explore");
         startActivity(intent);
     }
 

@@ -73,6 +73,9 @@ public class EventDetails extends AppCompatActivity {
 
         Intent returnedID = getIntent();
         EventID = returnedID.getStringExtra("EventID").toString();
+        String prevActivity = returnedID.getStringExtra("prev_activity");
+        if (prevActivity == null) prevActivity = "home";  // or "home"
+
 
         deviceID = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
 
@@ -235,6 +238,24 @@ public class EventDetails extends AppCompatActivity {
         });
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        assert prevActivity != null;
+        switch (prevActivity) {
+            case "home":
+                bottomNavigationView.setSelectedItemId(R.id.nav_home);
+                break;
+            case "explore":
+                bottomNavigationView.setSelectedItemId(R.id.nav_explore);
+                break;
+            case "create":
+                bottomNavigationView.setSelectedItemId(R.id.nav_create);
+                break;
+            case "search":
+                bottomNavigationView.setSelectedItemId(R.id.nav_search);
+                break;
+            case "scan":
+                bottomNavigationView.setSelectedItemId(R.id.nav_scan_qr);
+                break;
+        }
 
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             //Add the rest of the activities when finished
