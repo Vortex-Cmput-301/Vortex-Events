@@ -81,7 +81,7 @@
             android:name=".OrganizerViewParticipant"
             android:exported="false" />
         <activity
-            android:name=".Account_settings"
+            android:name=".AccountSettings"
             android:exported="false" />
         <activity
             android:name=".Profile"
