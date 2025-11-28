@@ -191,9 +191,11 @@ public class EventDetails extends AppCompatActivity {
 
 
 
+// if the event is owned by the current device id
                 if (orgID.equals(deviceID)){
                     signupButton.setText("Edit Events");
                     editEventButton.setVisibility(VISIBLE);
+                    mapButton.setVisibility(VISIBLE);
                     notifcationsDashBoardButton.setVisibility(VISIBLE);
 
 //                    Listeneer for edit details intents
@@ -220,6 +222,15 @@ public class EventDetails extends AppCompatActivity {
                         @Override
                         public void onClick(View view) {
                             Intent intent = new Intent(EventDetails.this, OrganizerNotificationsDashboard.class);
+                            intent.putExtra("EventID", EventID);
+                            startActivity(intent);
+                        }
+                    });
+
+                    mapButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(EventDetails.this, MapEntrants.class);
                             intent.putExtra("EventID", EventID);
                             startActivity(intent);
                         }

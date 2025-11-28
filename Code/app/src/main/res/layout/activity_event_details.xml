@@ -149,7 +149,12 @@
                 android:id="@+id/btn_details_open_map"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Open Map" />
+                android:text="Open Map"
+                android:backgroundTint="@android:color/black"
+                android:textColor="@android:color/white"
+                android:paddingVertical="12dp"
+                android:textSize="18sp"
+                android:visibility="gone" />
             <View
                 android:layout_width="match_parent"
                 android:layout_height="100dp" />
