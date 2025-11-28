@@ -390,23 +390,4 @@ public class CreateActivityEvents extends AppCompatActivity {
             return null;
         }
     }
-
-    private String encodeImage(android.net.Uri imageUri) {
-        try {
-            //Get the image from gallery
-            android.graphics.Bitmap bitmap = android.provider.MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
-
-
-            java.io.ByteArrayOutputStream stream = new java.io.ByteArrayOutputStream();
-            // JPEG format
-            bitmap.compress(android.graphics.Bitmap.CompressFormat.JPEG, 50, stream);
-            byte[] bytes = stream.toByteArray();
-
-
-            return android.util.Base64.encodeToString(bytes, android.util.Base64.DEFAULT);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
 }

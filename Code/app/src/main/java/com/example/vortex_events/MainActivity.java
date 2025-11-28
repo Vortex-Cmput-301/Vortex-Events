@@ -28,8 +28,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
+        DatabaseWorker worker = new DatabaseWorker();
+        Date enroll_start = new Date();
+        RegisteredUser user = new RegisteredUser(MainActivity.this, "7805551234",
+                "russelwestbrook@washed.com", "Russel Westbrook");
 
-
+        Event event = new Event("Washed", "Albania", "Russel Westbrook", "123456789",
+                enroll_start, enroll_start, enroll_start, enroll_start, null, null, 5 );
 
 //
 //        DatabaseWorker worker = new DatabaseWorker();
@@ -50,10 +55,6 @@ public class MainActivity extends AppCompatActivity {
 //        );
 //
 
-        DatabaseWorker worker = new DatabaseWorker();
-        Date enroll_start = new Date();
-        RegisteredUser user = new RegisteredUser(MainActivity.this, "7805551234",
-                "russelwestbrook@washed.com", "Russel Westbrook", 0,0);
 
 //
 //        DatabaseWorker worker = new DatabaseWorker();

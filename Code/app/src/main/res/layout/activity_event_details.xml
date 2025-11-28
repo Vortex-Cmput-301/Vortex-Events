@@ -111,13 +111,6 @@
                 android:layout_gravity="center_horizontal"
                 android:paddingTop="16dp"
                 android:contentDescription="QR code for this event" />
-            <ImageView
-                android:id="@+id/event_details_qr"
-                android:layout_width="250dp"
-                android:layout_height="250dp"
-                android:layout_gravity="center_horizontal"
-                android:paddingTop="16dp"
-                android:contentDescription="QR code for this event" />
 
             <View
                 android:layout_width="match_parent"
@@ -167,7 +160,7 @@
                 android:textColor="@android:color/white"
                 android:paddingVertical="12dp"
                 android:textSize="18sp"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/btn_details_open_map"
