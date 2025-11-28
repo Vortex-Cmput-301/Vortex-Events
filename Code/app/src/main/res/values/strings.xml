@@ -72,15 +72,6 @@
 
     <string name="empty"></string>
     <string name="no_enrolled_entrants">No enrolled entrants yet</string>
-    <string name="notifications_dashboard">Notifications dashboard</string>
-    <string name="push_to_declined_applicants">Push to declined applicants</string>
-    <string name="title">Title</string>
-    <string name="notification_title">Notification Title</string>
-    <string name="content">content</string>
-    <string name="notification_content">Notification Content</string>
-    <string name="push_to_waitlisted_applicants">Push to waitlisted applicants</string>
-    <string name="push_to_accepted_applicants">Push to accepted applicants</string>
-    <string name="notification_dashboard">Notification Dashboard</string>
     <string name="title_activity_map_entrants">MapEntrants</string>
     <string name="map_of_entrants">Map of Entrants</string>
     <string name="back">Back</string>

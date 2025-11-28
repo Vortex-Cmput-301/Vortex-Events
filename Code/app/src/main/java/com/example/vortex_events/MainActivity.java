@@ -28,53 +28,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        DatabaseWorker worker = new DatabaseWorker();
-        Date enroll_start = new Date();
-        RegisteredUser user = new RegisteredUser(MainActivity.this, "7805551234",
-                "russelwestbrook@washed.com", "Russel Westbrook");
-
-        Event event = new Event("Washed", "Albania", "Russel Westbrook", "123456789",
-                enroll_start, enroll_start, enroll_start, enroll_start, null, null, 5 );
-
-//
-//        DatabaseWorker worker = new DatabaseWorker();
-//        Date enroll_start = new Date();
-//        RegisteredUser user = new RegisteredUser(MainActivity.this, "7805551234",
-//                "russelwestbrook@washed.com", "Russel Westbrook", "-0-0");
-//
-//        Event event = new Event("Washed", "Albania", "Russel Westbrook", "123456789",
-//                enroll_start, enroll_start, enroll_start, enroll_start, null, null, 5 );
-//
-//        worker.createEvent(user, event).addOnCompleteListener(task -> {
-//                    if (task.isSuccessful()) {
-//                        Log.d("Event", "Success");
-//                    } else {
-//                        Log.d("Event","Failure");
-//                    }
-//                }
-//        );
-//
-
-
-//
-//        DatabaseWorker worker = new DatabaseWorker();
-//        Date enroll_start = new Date();
-//        RegisteredUser user = new RegisteredUser(MainActivity.this, "7805551234",
-//                "russelwestbrook@washed.com", "Russel Westbrook", "-0-0");
-//
-//        Event event = new Event("Washed", "Albania", "Russel Westbrook", "123456789",
-//                enroll_start, enroll_start, enroll_start, enroll_start, null, null, 5 );
-//
-//        worker.createEvent(user, event).addOnCompleteListener(task -> {
-//                    if (task.isSuccessful()) {
-//                        Log.d("Event", "Success");
-//                    } else {
-//                        Log.d("Event","Failure");
-//                    }
-//                }
-//        );
-//
-
 
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {

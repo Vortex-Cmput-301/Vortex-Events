@@ -48,26 +48,15 @@
                 </intent-filter>
         </activity>
 
-        <activity
-            android:name=".OrganizerNotificationsDashboard"
-            android:exported="false" />
-        <activity
-            android:name=".QRCodeScanner"
-            android:name=".OrganizerNotificationsDashboard"
-            android:exported="false" />
+
+
         <activity
             android:name=".QRCodeScanner"
             android:exported="false" />
         <activity
             android:name=".OrganizerNotificationsDashboard"
             android:exported="false" />
-        <activity
-            android:name=".QRCodeScanner"
-            android:name=".OrganizerNotificationsDashboard"
-            android:exported="false" />
-        <activity
-            android:name=".QRCodeScanner"
-            android:exported="false" />
+
         <activity
             android:name=".SignUpEvent"
             android:exported="false" />
@@ -119,13 +108,6 @@
             android:name=".HistoryEvents"
             android:exported="false" />
 
-        <service
-            android:name=".MyFirebaseMessagingService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
         <activity
             android:name=".AdminActivity"
             android:exported="false" />

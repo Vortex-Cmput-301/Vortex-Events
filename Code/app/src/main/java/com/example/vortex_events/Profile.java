@@ -254,26 +254,6 @@ public class Profile extends AppCompatActivity {
                 }
             }
         });
-    private void loadUserByDeviceID(String deviceID, UserLoadCallback callback) {
-        databaseWorker.getUserByDeviceID(deviceID).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                RegisteredUser user = task.getResult();
-                if (callback != null) {
-                    callback.onUserLoaded(user);
-                }
-            } else {
-                if (callback != null) {
-                    callback.onError(task.getException());
-                }
-            }
-        });
-            // Create a RegisteredUser with the device ID
-            // TODO: Replace with actual user data retrieval
-            return new RegisteredUser(deviceID, "unknown", "unknown@example.com", "User", 0.0, 0.0);
-        } catch (Exception e) {
-            Toast.makeText(this, "Error getting user data", Toast.LENGTH_SHORT).show();
-            return null;
-        }
     }
 
     /**

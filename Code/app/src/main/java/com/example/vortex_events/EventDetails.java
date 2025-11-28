@@ -65,7 +65,6 @@ public class EventDetails extends AppCompatActivity {
     Button editEventButton;
     Button notifcationsDashBoardButton;
     ImageView posterPreview;
-    Button notifcationsDashBoardButton;
 
     ImageView qrImage;
 
@@ -115,16 +114,8 @@ public class EventDetails extends AppCompatActivity {
             }
         });
 
-        Button mapButton = findViewById(R.id.btn_details_open_map);
 
-        mapButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(EventDetails.this, EntrantsMap.class);
-                intent.putExtra("EventID", EventID);
-                startActivity(intent);
-            }
-        });
+
 
         qrImage = findViewById(R.id.event_details_qr);
 
@@ -187,7 +178,7 @@ public class EventDetails extends AppCompatActivity {
 
 
                 //displays QR code
-                String payload = "vortex://event/" + EventID;
+                 payload = "vortex://event/" + EventID;
 
                 try {
                     Bitmap bmp = QRCodeGenerator.generateQRCodeBitmap(payload, 600, 600);
@@ -234,14 +225,7 @@ public class EventDetails extends AppCompatActivity {
                         }
                     });
 
-                    mapButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Intent intent = new Intent(EventDetails.this, MapEntrants.class);
-                            intent.putExtra("EventID", EventID);
-                            startActivity(intent);
-                        }
-                    });
+
 
                 }else{
                     if (event.getWaitlist().contains(deviceID)) {

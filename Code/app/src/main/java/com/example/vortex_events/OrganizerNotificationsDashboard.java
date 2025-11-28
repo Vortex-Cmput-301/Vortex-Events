@@ -47,7 +47,6 @@ public class OrganizerNotificationsDashboard extends AppCompatActivity {
     Button pushToDeclined;
 
 
-    @SuppressLint("HardwareIds")
 
 
     @SuppressLint("HardwareIds")
@@ -85,7 +84,7 @@ public class OrganizerNotificationsDashboard extends AppCompatActivity {
 //        Get all UI elements
         notificationContentEditor = findViewById(R.id.notification_content_editor);
         notificationTitleEditor = findViewById(R.id.notification_title_editor);
-        pushToWaitlist = findViewById(R.id.btn_push_to_waitlist);
+        pushToWaitlist = findViewById(R.id.btn_push_to_declined);
 
 
 
@@ -131,67 +130,6 @@ public class OrganizerNotificationsDashboard extends AppCompatActivity {
             }
 
         });
-
-//        pushToAccepted.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                String title = notificationTitleEditor.getText().toString();
-//                String content = notificationContentEditor.getText().toString();
-//
-//                notification = new AppNotification(deviceID, title, content);
-//
-//                dbWorker.pushNotificationToDB(notification);
-//
-//                for (String user: currentEvent.accepted){
-//                    dbWorker.getUserByDeviceID(user).addOnCompleteListener(new OnCompleteListener<RegisteredUser>() {
-//                        @Override
-//                        public void onComplete(@NonNull Task<RegisteredUser> task) {
-//                            if (task.isSuccessful()){
-//                                RegisteredUser user = task.getResult();
-//                                ArrayList<String> notificartions = user.notifications;
-//                                notificartions.add(notification.notificationID);
-//                                dbWorker.pushNotiToUser(notificartions, user.deviceID);
-//                                Log.d("NOTIFICATIONM SENDING", "WORKED");
-//                            }else {
-//                                Log.d("USER FETCHING", "USER DONT EXIST");
-//                            }
-//                        }
-//                    });
-//                }
-//            }
-//        });
-//
-//        pushToDeclined.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                String title = notificationTitleEditor.getText().toString();
-//                String content = notificationContentEditor.getText().toString();
-//
-//                notification = new AppNotification(deviceID, title, content);
-//
-//                dbWorker.pushNotificationToDB(notification);
-//
-//                for (String user: currentEvent.declined){
-//                    dbWorker.getUserByDeviceID(user).addOnCompleteListener(new OnCompleteListener<RegisteredUser>() {
-//                        @Override
-//                        public void onComplete(@NonNull Task<RegisteredUser> task) {
-//                            if (task.isSuccessful()){
-//                                RegisteredUser user = task.getResult();
-//                                ArrayList<String> notificartions = user.notifications;
-//                                notificartions.add(notification.notificationID);
-//                                dbWorker.pushNotiToUser(notificartions, user.deviceID);
-//                                Log.d("NOTIFICATIONM SENDING", "WORKED");
-//                            }else {
-//                                Log.d("USER FETCHING", "USER DONT EXIST");
-//                            }
-//                        }
-//                    });
-//                }
-//            }
-//        });
-//
-//
-
 
 
 

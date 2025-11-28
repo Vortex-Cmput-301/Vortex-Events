@@ -23,18 +23,6 @@ public class RegisteredUser extends Users{
     public static final String STATUS_CANCELLED = "CANCELLED";
     public static final String STATUS_NOT_CHOSEN = "NOT_CHOSEN";
 
-    public RegisteredUser(){
-
-    };
-
-    public String getNotificationToken() {
-        return notificationToken;
-    }
-
-    public void setNotificationToken(String notificationToken) {
-        this.notificationToken = notificationToken;
-    }
-
     public ArrayList<String> getCreated_events() {
         return created_events;
     }
@@ -59,14 +47,6 @@ public class RegisteredUser extends Users{
         this.event_history = event_history;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public double getLatitude() {
         return latitude;
     }
@@ -83,13 +63,28 @@ public class RegisteredUser extends Users{
         this.longitude = longitude;
     }
 
-    public ArrayList<AppNotification> getNotifications() {
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public ArrayList<String> getNotifications() {
         return notifications;
     }
 
     public void setNotifications(ArrayList<String> notifications) {
         this.notifications = notifications;
+    }
+
+    public String getNotificationToken() {
+        return notificationToken;
+    }
+
+    public void setNotificationToken(String notificationToken) {
+        this.notificationToken = notificationToken;
     }
 
     public String getPhone_number() {

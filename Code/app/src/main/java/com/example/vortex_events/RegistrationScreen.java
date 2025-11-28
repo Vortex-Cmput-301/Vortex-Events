@@ -1,6 +1,7 @@
 package com.example.vortex_events;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -93,24 +94,11 @@ public class RegistrationScreen extends AppCompatActivity {
                             }
                             String token = task.getResult();
                             android.util.Log.d("FCM", "Token: " + token);
-                            RegisteredUser user = new RegisteredUser(RegistrationScreen.this, phoneNumber, emailAddress, userName, token);
+                            RegisteredUser user =  new RegisteredUser( RegistrationScreen.this, phoneNumber, emailAddress, userName, token, longitude, latitude);
                             dbWorker.createRegisteredUser(user);
                         });
 
 
-                RegisteredUser user = new RegisteredUser(RegistrationScreen.this, phoneNumber, emailAddress, userName, latitude, longitude);
-                dbWorker.createRegisteredUser(user);
-                FirebaseMessaging.getInstance().getToken()
-                        .addOnCompleteListener(task -> {
-                            if (!task.isSuccessful()) {
-                                android.util.Log.w("FCM", "Fetching FCM registration token failed", task.getException());
-                                return;
-                            }
-                            String token = task.getResult();
-                            android.util.Log.d("FCM", "Token: " + token);
-                            RegisteredUser user = new RegisteredUser(RegistrationScreen.this, phoneNumber, emailAddress, userName, token);
-                            dbWorker.createRegisteredUser(user);
-                        });
 
 
 
