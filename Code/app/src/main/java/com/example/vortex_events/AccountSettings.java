@@ -2,23 +2,16 @@ package com.example.vortex_events;
 
 import static android.content.ContentValues.TAG;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -26,7 +19,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Account_settings extends AppCompatActivity {
+public class AccountSettings extends AppCompatActivity {
 
     private EditText editTextName, editTextEmail, editTextPhone;
     private Button buttonSaveChanges;
@@ -68,7 +61,6 @@ public class Account_settings extends AppCompatActivity {
         }
         setupClickListeners();
         loadUserData();
-
     }
 
     private void setupClickListeners() {
@@ -142,14 +134,16 @@ public class Account_settings extends AppCompatActivity {
                 .addOnSuccessListener(aVoid -> {
                     // This block runs if the update is successful
                     Log.d(TAG, "User data successfully updated!");
-                    Toast.makeText(Account_settings.this, "Changes saved successfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AccountSettings.this, "Changes saved successfully", Toast.LENGTH_SHORT).show();
                     finish(); // Optionally, close the activity after saving
                 })
                 .addOnFailureListener(e -> {
                     // This block runs if the update fails
                     Log.w(TAG, "Error updating document", e);
-                    Toast.makeText(Account_settings.this, "Error saving changes. Please try again.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(AccountSettings.this, "Error saving changes. Please try again.", Toast.LENGTH_LONG).show();
                 });
     }
+
+
 
 }

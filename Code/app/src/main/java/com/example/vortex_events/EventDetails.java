@@ -8,17 +8,21 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.zxing.WriterException;
@@ -223,10 +227,46 @@ public class EventDetails extends AppCompatActivity {
 
 
 
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            //Add the rest of the activities when finished
+            //made a boolean function to implement highlighting items. will implement later
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item){
+                int itemId = item.getItemId();
+                if (itemId == R.id.nav_home){
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(intent);
+                    return true;
+                }else if(itemId == R.id.nav_create) {
+                    Intent intent = new Intent(getApplicationContext(), CreateActivityEvents.class);
+                    startActivity(intent);
+                    return true;
+                }else if(itemId == R.id.nav_explore){
+                    Intent intent = new Intent(getApplicationContext(), ExplorePage.class);
+                    startActivity(intent);
+                    return true;
+                } else if (itemId == R.id.nav_search) {
+                    Intent intent = new Intent(getApplicationContext(), SearchEvents.class);
+                    startActivity(intent);
+                    return true;
+                }else if (itemId == R.id.nav_scan_qr) {
+                    Intent intent = new Intent(getApplicationContext(), QRCodeScanner.class);
+                    startActivity(intent);
+                    return true;
+                }
+
+                return false;
+            }
+        });
+
     }
 }

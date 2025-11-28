@@ -93,7 +93,6 @@ public class SearchEvents extends AppCompatActivity {
             return insets;
         });
 
-        //Add to every activity
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
 
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
@@ -110,8 +109,17 @@ public class SearchEvents extends AppCompatActivity {
                     Intent intent = new Intent(getApplicationContext(), CreateActivityEvents.class);
                     startActivity(intent);
                     return true;
+                }else if(itemId == R.id.nav_explore){
+                    Intent intent = new Intent(getApplicationContext(), ExplorePage.class);
+                    startActivity(intent);
+                    return true;
+                } else if (itemId == R.id.nav_search) {
+                    return true;
+                }else if (itemId == R.id.nav_scan_qr) {
+                    Intent intent = new Intent(getApplicationContext(), QRCodeScanner.class);
+                    startActivity(intent);
+                    return true;
                 }
-
                 return false;
             }
         });
