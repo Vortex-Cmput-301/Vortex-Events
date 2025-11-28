@@ -92,14 +92,7 @@ public class EventDetails extends AppCompatActivity {
 
         Button mapButton = findViewById(R.id.btn_details_open_map);
 
-        mapButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(EventDetails.this, EntrantsMap.class);
-                intent.putExtra("EventID", EventID);
-                startActivity(intent);
-            }
-        });
+
 
 
 
@@ -156,10 +149,11 @@ public class EventDetails extends AppCompatActivity {
                 }
 
 
-
+// if the event is owned by the current device id
                 if (orgID.equals(deviceID)){
                     signupButton.setText("Edit Events");
                     editEventButton.setVisibility(VISIBLE);
+                    mapButton.setVisibility(VISIBLE);
 
 //                    Listeneer for edit details intents
 
@@ -176,6 +170,15 @@ public class EventDetails extends AppCompatActivity {
                         @Override
                         public void onClick(View view) {
                             Intent intent = new Intent(EventDetails.this, OrganizerViewParticipant.class);
+                            intent.putExtra("EventID", EventID);
+                            startActivity(intent);
+                        }
+                    });
+
+                    mapButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(EventDetails.this, MapEntrants.class);
                             intent.putExtra("EventID", EventID);
                             startActivity(intent);
                         }

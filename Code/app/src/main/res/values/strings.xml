@@ -72,5 +72,8 @@
 
     <string name="empty"></string>
     <string name="no_enrolled_entrants">No enrolled entrants yet</string>
+    <string name="title_activity_map_entrants">MapEntrants</string>
+    <string name="map_of_entrants">Map of Entrants</string>
+    <string name="back">Back</string>
 
 </resources>
