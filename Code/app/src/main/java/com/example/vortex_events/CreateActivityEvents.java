@@ -323,24 +323,36 @@ public class CreateActivityEvents extends AppCompatActivity {
 
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-
-
         bottomNavigationView.setSelectedItemId(R.id.nav_create);
 
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            //Add the rest of the activities when finished
+            //made a boolean function to implement highlighting items. will implement later
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item){
+                int itemId = item.getItemId();
+                if (itemId == R.id.nav_home){
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(intent);
+                    return true;
+                }else if(itemId == R.id.nav_create) {
+                    return true;
+                }else if(itemId == R.id.nav_explore){
+                    Intent intent = new Intent(getApplicationContext(), ExplorePage.class);
+                    startActivity(intent);
+                    return true;
+                } else if (itemId == R.id.nav_search) {
+                    Intent intent = new Intent(getApplicationContext(), SearchEvents.class);
+                    startActivity(intent);
+                    return true;
+                }else if (itemId == R.id.nav_scan_qr) {
+                    Intent intent = new Intent(getApplicationContext(), QRCodeScanner.class);
+                    startActivity(intent);
+                    return true;
+                }
 
-        bottomNavigationView.setOnItemSelectedListener(item -> {
-            int itemId = item.getItemId();
-            if (itemId == R.id.nav_home){
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
-                overridePendingTransition(0, 0); // No transition animation
-                return true;
-            } else if(itemId == R.id.nav_create) {
-                return true;
+                return false;
             }
-            // Add other navigation
-
-            return false;
         });
     }
 
