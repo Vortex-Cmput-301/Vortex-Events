@@ -108,6 +108,22 @@ public class DatabaseWorker {
 
         return docuRef.set(notification);
     }
+    /**
+     * Get all documents from the Notifications collection.
+     * @return Task resolving to a QuerySnapshot of all notifications.
+     */
+    public Task<QuerySnapshot> getAllNotifications() {
+        return notificationsRef.get();
+    }
+
+    /**
+     * Delete a notification document by its ID from the Notifications collection.
+     * @param notificationID document ID of the notification to delete
+     * @return Task representing the delete operation.
+     */
+    public Task<Void> deleteNotificationById(String notificationID) {
+        return notificationsRef.document(notificationID).delete();
+    }
 
     /**
      * For adding notifications to the users 11.22 - Saleh
