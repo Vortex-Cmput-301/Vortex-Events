@@ -127,16 +127,50 @@ public class DatabaseWorker {
         return docuref.set(targetEvent);
     }
     public Task<Void> updateEvent(Event targetEvent) {
-        DocumentReference docuref = eventsRef.document(targetEvent.getName());
+        DocumentReference docuref = eventsRef.document(targetEvent.getEventID());
 
         return docuref.set(targetEvent);
     }
 
-    public Task<Void> deleteEvent(Event targetEvent) {
-        DocumentReference docuref = eventsRef.document(targetEvent.getName());
+    // modified: delete event and remove it from all users' signed_up_events
+    public Task<Void> deleteEvent(Event targetEvent) { // modified
+        if (targetEvent == null || targetEvent.getEventID() == null || targetEvent.getEventID().isEmpty()) { // added
+            Log.e("DatabaseWorker", "deleteEvent: event or eventID is null/empty"); // added
+            return null; // added
+        } // added
 
-        return docuref.delete();
+        String targetEventId = targetEvent.getEventID(); // added
+
+        // Step 1: query all users whose signed_up_events contains this eventID // added
+        return usersRef.whereArrayContains("signed_up_events", targetEventId) // added
+                .get() // added
+                .continueWithTask(task -> { // added
+                    if (!task.isSuccessful()) { // added
+                        Exception e = task.getException(); // added
+                        Log.e("DatabaseWorker", "Failed to query users for event cleanup", e); // added
+                        throw e != null ? e : new Exception("Unknown error querying users for event cleanup"); // added
+                    } // added
+
+                    QuerySnapshot querySnapshot = task.getResult(); // added
+                    if (querySnapshot != null) { // added
+                        for (DocumentSnapshot userDoc : querySnapshot.getDocuments()) { // added
+                            List<String> signedUpEvents = (List<String>) userDoc.get("signed_up_events"); // added
+                            if (signedUpEvents != null && signedUpEvents.contains(targetEventId)) { // added
+                                signedUpEvents.remove(targetEventId); // added
+                                usersRef.document(userDoc.getId()) // added
+                                        .update("signed_up_events", signedUpEvents) // added
+                                        .addOnFailureListener(e -> Log.e("DatabaseWorker", "Failed to update signed_up_events for user: " + userDoc.getId(), e)); // added
+                            } // added
+                        } // added
+                    } // added
+
+                    // Step 2: delete the event document itself // added
+                    DocumentReference docRef = eventsRef.document(targetEventId); // added
+                    return docRef.delete(); // added
+                }); // added
     }
+
+
 
     public Task<QuerySnapshot> getOrganizerEvents(String organizer) {
         return eventsRef.whereEqualTo("organizer", organizer).get();

@@ -95,6 +95,7 @@ public class RegistrationScreen extends AppCompatActivity {
                             String token = task.getResult();
                             android.util.Log.d("FCM", "Token: " + token);
                             RegisteredUser user =  new RegisteredUser( RegistrationScreen.this, phoneNumber, emailAddress, userName, token, longitude, latitude);
+                            user.setType("Registered User");
                             dbWorker.createRegisteredUser(user);
                         });
 
