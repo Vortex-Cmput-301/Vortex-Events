@@ -225,6 +225,8 @@ public class DatabaseWorker {
             if (task.isSuccessful()) {
                 DocumentSnapshot document = task.getResult();
                 if (document != null && document.exists()) {
+                    Log.d("DatabaseWorker", "Returning user document");
+
                     return convertDocumentToRegisteredUser(document);
                 } else {
                     Log.d("DatabaseWorker", "User not found with deviceID: " + deviceID);
