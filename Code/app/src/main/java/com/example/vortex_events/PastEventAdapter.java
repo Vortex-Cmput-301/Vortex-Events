@@ -60,6 +60,28 @@ public class PastEventAdapter extends RecyclerView.Adapter<PastEventAdapter.Past
 
         holder.title.setText(currentEvent.getName());
 
+        String imageString = currentEvent.getImage();
+
+
+        if (imageString != null && !imageString.isEmpty()) {
+            try {
+
+                byte[] decodedString = android.util.Base64.decode(imageString, android.util.Base64.DEFAULT);
+
+
+                com.bumptech.glide.Glide.with(holder.itemView.getContext())
+                        .load(decodedString)
+                        .centerCrop()
+                        .into(holder.thumbnail);
+
+            } catch (Exception e) {
+
+                holder.thumbnail.setImageResource(R.drawable.app_icon);
+            }
+        } else {
+            holder.thumbnail.setImageResource(R.drawable.app_icon);
+        }
+
         if (currentEvent.getLocation() != null && !currentEvent.getLocation().isEmpty()) {
             holder.eventLocation.setText(currentEvent.getLocation());
         } else {

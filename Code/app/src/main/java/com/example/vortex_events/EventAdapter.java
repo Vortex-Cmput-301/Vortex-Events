@@ -79,6 +79,27 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             holder.eventDate.setText("No date");
         }
 
+        String imageString = currentEvent.getImage();
+
+
+        if (imageString != null && !imageString.isEmpty()) {
+            try {
+
+                byte[] decodedString = android.util.Base64.decode(imageString, android.util.Base64.DEFAULT);
+
+
+                com.bumptech.glide.Glide.with(holder.itemView.getContext())
+                        .load(decodedString)
+                        .centerCrop()
+                        .into(holder.eventThumbnail);
+
+            } catch (Exception e) {
+                holder.eventThumbnail.setImageResource(R.drawable.app_icon);
+            }
+        } else {
+            holder.eventThumbnail.setImageResource(R.drawable.app_icon);
+        }
+
         // Set the click listener to call the Activity's public method directly
         holder.detailsButton.setOnClickListener(new View.OnClickListener() {
             @Override
