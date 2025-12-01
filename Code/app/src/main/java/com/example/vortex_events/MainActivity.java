@@ -17,6 +17,7 @@ import java.util.Date;
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,24 +26,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-
-
-        DatabaseWorker worker = new DatabaseWorker();
-        Date enroll_start = new Date();
-        RegisteredUser user = new RegisteredUser(MainActivity.this, "7805551234",
-                "russelwestbrook@washed.com", "Russel Westbrook", 0,0);
-
-        Event event = new Event("Washed", "Albania", "Russel Westbrook", "123456789",
-                enroll_start, enroll_start, enroll_start, enroll_start, null, null, 5 );
-
-        worker.createEvent(user, event).addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        Log.d("Event", "Success");
-                    } else {
-                        Log.d("Event","Failure");
-                    }
-                }
-        );
 
 
 

@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
-
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -47,9 +49,16 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
+
+
         <activity
             android:name=".QRCodeScanner"
             android:exported="false" />
+        <activity
+            android:name=".OrganizerNotificationsDashboard"
+            android:exported="false" />
+
         <activity
             android:name=".SignUpEvent"
             android:exported="false" />
@@ -63,7 +72,7 @@
             android:name=".OrganizerViewParticipant"
             android:exported="false" />
         <activity
-            android:name=".Account_settings"
+            android:name=".AccountSettings"
             android:exported="false" />
         <activity
             android:name=".Profile"
@@ -100,9 +109,19 @@
         <activity
             android:name=".HistoryEvents"
             android:exported="false" />
+
         <activity
             android:name=".AdminActivity"
             android:exported="false" />
+
+        <service
+            android:name=".MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
     </application>
+
 
 </manifest>

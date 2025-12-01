@@ -19,7 +19,9 @@ public class Event {
     ArrayList<String> waitlist;
     ArrayList<String> accepted;
     ArrayList<String> declined;
+    ArrayList<String> wonLottery;
     String organizer;
+    boolean lottery_done;
 
     public Event() {
 
@@ -39,12 +41,28 @@ public class Event {
         this.description = description;
         this.capacity = capacity;
 
+        this.lottery_done = false;
+
         this.waitlist = new ArrayList<String>();
         this.accepted = new ArrayList<String>();
         this.declined = new ArrayList<String>();
     }
 
+    public ArrayList<String> getWonLottery() {
+        return wonLottery;
+    }
 
+    public void setWonLottery(ArrayList<String> wonLottery) {
+        this.wonLottery = wonLottery;
+    }
+
+    public boolean isLottery_done() {
+        return lottery_done;
+    }
+
+    public void setLottery_done(boolean lottery_done) {
+        this.lottery_done = lottery_done;
+    }
 
 
 

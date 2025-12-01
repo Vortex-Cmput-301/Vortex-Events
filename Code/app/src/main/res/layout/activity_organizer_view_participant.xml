@@ -7,19 +7,6 @@
     android:layout_height="match_parent"
     tools:context=".OrganizerViewParticipant">
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_navigation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@color/white"
-        android:outlineAmbientShadowColor="@color/black"
-        app:itemIconSize="30dp"
-        app:labelVisibilityMode="labeled"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:menu="@menu/bottom_nav_menu"
-        tools:layout_editor_absoluteX="0dp" />
-
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
@@ -43,6 +30,20 @@
         app:layout_constraintStart_toEndOf="@+id/textView"
         app:layout_constraintTop_toTopOf="@+id/textView"
         app:srcCompat="@drawable/ic_download" />
+
+
+    <Button
+        android:id="@+id/notify_group_btn"
+        android:text="Notify"
+        android:textSize="15dp"
+        android:layout_width="180dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="33dp"
+        app:layout_constraintBottom_toBottomOf="@+id/participant_filter_dropdown"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/participant_filter_dropdown"
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        />
 
     <Spinner
         android:id="@+id/participant_filter_dropdown"

@@ -1,4 +1,4 @@
-package com.example.vortex_events;// In ProfileActivity.java
+package com.example.vortex_events;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -40,7 +40,7 @@ public class Profile extends AppCompatActivity {
     // Control flag for switching between event display modes
     private final boolean SHOW_SIGNED_UP_EVENTS = true;
 
-    // === ADDED: whether the current device user is admin ===
+    // whether the current device user is admin
     private boolean isCurrentUserAdmin = false;
 
 
@@ -51,7 +51,6 @@ public class Profile extends AppCompatActivity {
 
         // Initialize views
         recyclerView = findViewById(R.id.recyclerView_past_events);
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
 
         // Initialize empty list and adapter
         pastEventList = new ArrayList<>();
@@ -77,7 +76,7 @@ public class Profile extends AppCompatActivity {
         back_button.setOnClickListener(v -> finish());
 
         account_settings.setOnClickListener(v -> {
-            Intent intent = new Intent(getApplicationContext(), Account_settings.class);
+            Intent intent = new Intent(getApplicationContext(), AccountSettings.class);
             startActivity(intent);
         });
 
@@ -85,17 +84,17 @@ public class Profile extends AppCompatActivity {
         buttonDeleteProfile = findViewById(R.id.button_log_out);
         dialogHelper = new DialogHelper(this);
 
-        // === MODIFIED: decide which user to load based on targetDeviceID ===
+        // decide which user to load based on targetDeviceID
         if (targetDeviceID == null || targetDeviceID.isEmpty()) {
             // Normal user: view own profile
-            // Step 1: get current device ID
+            // get current device ID
             @SuppressLint("HardwareIds")
             String currentDeviceID = Settings.Secure.getString(
                     getContentResolver(),
                     Settings.Secure.ANDROID_ID
             );
 
-            // Step 2: load full RegisteredUser from database to know type/name/etc.
+            // load full RegisteredUser from database to know type/name/etc
             loadUserByDeviceID(currentDeviceID, new UserLoadCallback() {
                 @Override
                 public void onUserLoaded(RegisteredUser user) {
@@ -201,23 +200,37 @@ public class Profile extends AppCompatActivity {
             startActivity(intent);
         });
 
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.nav_explore);
+
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             //Add the rest of the activities when finished
+            //made a boolean function to implement highlighting items. will implement later
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            public boolean onNavigationItemSelected(@NonNull MenuItem item){
                 int itemId = item.getItemId();
-                if (itemId == R.id.nav_home) {
+                if (itemId == R.id.nav_home){
                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                     startActivity(intent);
                     return true;
-                } else if (itemId == R.id.nav_create) {
+                }else if(itemId == R.id.nav_create) {
                     Intent intent = new Intent(getApplicationContext(), CreateActivityEvents.class);
                     startActivity(intent);
                     return true;
-                } else if (itemId == R.id.button_back) {
+                }else if(itemId == R.id.nav_explore){
                     Intent intent = new Intent(getApplicationContext(), ExplorePage.class);
                     startActivity(intent);
+                    return true;
+                } else if (itemId == R.id.nav_search) {
+                    Intent intent = new Intent(getApplicationContext(), SearchEvents.class);
+                    startActivity(intent);
+                    return true;
+                }else if (itemId == R.id.nav_scan_qr) {
+                    Intent intent = new Intent(getApplicationContext(), QRCodeScanner.class);
+                    startActivity(intent);
+                    return true;
                 }
+
                 return false;
             }
         });
