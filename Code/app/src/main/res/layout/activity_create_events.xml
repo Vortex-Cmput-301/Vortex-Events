@@ -2,11 +2,9 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/main"
-    >
+    android:id="@+id/main">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -219,6 +217,15 @@
                     android:layout_gravity="center"
                     android:src="@drawable/ic_upload"
                     app:tint="#757575" />
+
+                <ImageView
+                    android:id="@+id/upload_poster_preview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitCenter"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="Event Poster" />
+
             </FrameLayout>
 
             <Button
