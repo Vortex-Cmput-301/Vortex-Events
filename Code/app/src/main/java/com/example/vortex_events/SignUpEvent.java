@@ -124,14 +124,14 @@ public class SignUpEvent extends AppCompatActivity {
 
         // Check if user is guest (original logic)
         dbWork.getUserByDeviceID(deviceID).addOnSuccessListener(user -> {
-            Log.d("SIGN UP", user.toString());
-            if (user != null || user.getType().equals("Guest")) {
-                Toast.makeText(SignUpEvent.this, "Guests can't sign up for events", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(SignUpEvent.this, EventDetails.class);
-                intent.putExtra("EventID", EventID);
-                startActivity(intent);
-                finish(); // Close activity for guest users
-            }
+//            Log.d("SIGN UP", user.toString());
+//            if (user != null || user.getType().equals("Guest")) {
+//                Toast.makeText(SignUpEvent.this, "Guests can't sign up for events", Toast.LENGTH_SHORT).show();
+//                Intent intent = new Intent(SignUpEvent.this, EventDetails.class);
+//                intent.putExtra("EventID", EventID);
+//                startActivity(intent);
+//                finish(); // Close activity for guest users
+//            }
         }).addOnFailureListener(e -> {
             Log.e("SignUpEvent", "DB error getting user type");
         });

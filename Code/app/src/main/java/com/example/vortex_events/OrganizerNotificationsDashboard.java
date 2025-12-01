@@ -23,6 +23,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class OrganizerNotificationsDashboard extends AppCompatActivity {
     String eventID;
@@ -94,10 +95,11 @@ public class OrganizerNotificationsDashboard extends AppCompatActivity {
             public void onClick(View v) {
                 String title = notificationTitleEditor.getText().toString();
                 String content = notificationContentEditor.getText().toString();
+                String notification_id = UUID.randomUUID().toString();
+                ArrayList<String> recievers = new ArrayList<>();
 
-                notification = new AppNotification(deviceID, title, content);
 
-                dbWorker.pushNotificationToDB(notification);
+
                 ArrayList<String> group = new ArrayList<>();
 
                 if (notifyMode.equals("Accepted")){
@@ -115,8 +117,9 @@ public class OrganizerNotificationsDashboard extends AppCompatActivity {
                             if (task.isSuccessful()){
                                 RegisteredUser user = task.getResult();
                                 ArrayList<String> notificartions = user.notifications;
-                                notificartions.add(notification.notificationID);
+                                notificartions.add(notification_id);
                                 dbWorker.pushNotiToUser(notificartions, user.deviceID);
+                                recievers.add(user.notificationToken);
                                 Log.d("NOTIFICATIONM SENDING", "WORKED");
                             }else {
                                 Log.d("USER FETCHING", "USER DONT EXIST");
@@ -124,8 +127,10 @@ public class OrganizerNotificationsDashboard extends AppCompatActivity {
                         }
                     });
                 }
+                notification = new AppNotification(notification_id, deviceID, title, content, recievers);
+                dbWorker.pushNotificationToDB(notification);
                 Intent intent = new Intent(OrganizerNotificationsDashboard.this, OrganizerViewParticipant.class);
-                intent.putExtra("eventID", eventID);
+                intent.putExtra("EventID", eventID);
                 startActivity(intent);
             }
 
