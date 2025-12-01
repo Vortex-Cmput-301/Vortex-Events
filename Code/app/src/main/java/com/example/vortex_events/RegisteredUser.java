@@ -172,7 +172,6 @@ public class RegisteredUser extends Users{
         // Update in-memory user state
         boolean inSignedUp = signed_up_events != null && signed_up_events.contains(targetEvent.getEventID());
         if (inSignedUp) {
-            signed_up_events.remove(targetEvent.getEventID());
             moveToHistory(targetEvent.getEventID(), STATUS_CANCELLED);
         }
 
