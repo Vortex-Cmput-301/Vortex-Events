@@ -40,28 +40,28 @@ public class MainActivity extends AppCompatActivity {
         );
         DatabaseWorker databaseWorker = new DatabaseWorker();
 
-        databaseWorker.getUserByDeviceID(currentDeviceID).addOnSuccessListener(user -> {
-            if (user != null) {
-                Log.d("MainActivity", "User found: " + user.getDeviceID());
-                this.user = user;
-            } else {
-                Log.d("MainActivity", "User not found");
-            }
-        }).addOnFailureListener(e -> {
-            Log.e("MainActivity", "Error getting user", e);
-            });
-
-        TextView title = findViewById(R.id.mainTitle);
-        title.setText(String.format("Hello, %s!", user.getName()));
-
-        ImageView profile_icon = findViewById(R.id.profile_icon);
-        ImageView notification_icon = findViewById(R.id.notifications_icon);
-
-        profile_icon.setOnClickListener(v -> {
-            Intent intent = new Intent(getApplicationContext(), Profile.class);
-            intent.putExtra("prev_activity", "main");
-            startActivity(intent);
-        });
+//        databaseWorker.getUserByDeviceID(currentDeviceID).addOnSuccessListener(user -> {
+//            if (user != null) {
+//                Log.d("MainActivity", "User found: " + user.getDeviceID());
+//                this.user = user;
+//            } else {
+//                Log.d("MainActivity", "User not found");
+//            }
+//        }).addOnFailureListener(e -> {
+//            Log.e("MainActivity", "Error getting user", e);
+//            });
+//
+//        TextView title = findViewById(R.id.mainTitle);
+//        title.setText(String.format("Hello, %s!", user.getName()));
+//
+//        ImageView profile_icon = findViewById(R.id.profile_icon);
+//        ImageView notification_icon = findViewById(R.id.notifications_icon);
+//
+//        profile_icon.setOnClickListener(v -> {
+//            Intent intent = new Intent(getApplicationContext(), Profile.class);
+//            intent.putExtra("prev_activity", "main");
+//            startActivity(intent);
+//        });
 
 //        TODO: need after notifications are implemented
 //        notification_icon.setOnClickListener(v -> {
