@@ -22,9 +22,9 @@ public class WaitlistManager {
 
     /** Save/Update the waiting list limit into EventSettings/{eventId}. 0 (or missing) = unlimited. */
     public Task<Void> setWaitlistLimit(@NonNull String eventId, int limit) {
-        DocumentReference settings = fs.collection("EventSettings").document(eventId);
+        DocumentReference settings = fs.collection("Events").document(eventId);
         Map<String, Object> data = new HashMap<>();
-        data.put("waitingListLimit", limit);
+        data.put("waitlist_limit", limit);
         return settings.set(data, SetOptions.merge());
     }
 

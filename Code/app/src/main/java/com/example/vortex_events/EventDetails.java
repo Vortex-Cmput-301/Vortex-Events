@@ -101,6 +101,7 @@ public class EventDetails extends AppCompatActivity {
             if (documentSnapshot.exists()) {
                 Log.d("OrganizerViewParticipant", "Event 'accepted' field: " + documentSnapshot.get("accepted"));
                 Event event = dbWorker.convertDocumentToEvent(documentSnapshot);//use method in DatabaseWorker instead
+                assert event != null;
                 description = event.getDescription();
                 title = event.getName();
                 capacity =  event.getCapacity();
@@ -122,10 +123,7 @@ public class EventDetails extends AppCompatActivity {
                     } catch (Exception e) {
                         Log.e("EventDetails", "Failed to load image", e);
                     }
-                } else {
-                    eventPoster.setVisibility(View.GONE);
                 }
-
 
 
 
@@ -160,9 +158,9 @@ public class EventDetails extends AppCompatActivity {
                     signupButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-//                            Intent intent = new Intent(EventDetails.this, EditEvents.class);
-//                            intent.putExtra("EventID", EventID);
-//                            startActivity(intent);
+                           Intent intent = new Intent(EventDetails.this, EditEvents.class);
+                          intent.putExtra("EventID", EventID);
+                          startActivity(intent);
                         }
                     });
 

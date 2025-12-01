@@ -132,7 +132,7 @@ public class CreateActivityEvents extends AppCompatActivity {
                     if (uri != null) {
                         imageUri = uri;
                         // Show the selected image on screen
-                        ((android.widget.ImageView) findViewById(R.id.iv_upload_icon)).setImageURI(uri);
+                        ((android.widget.ImageView) findViewById(R.id.upload_poster_preview)).setImageURI(uri);
                         // Hide the upload icon so the image is visible
                         findViewById(R.id.iv_upload_icon).setVisibility(View.GONE);
                     }
@@ -213,6 +213,7 @@ public class CreateActivityEvents extends AppCompatActivity {
             try {
                 capacity = Integer.parseInt(capacityString);
                 waitingListLimit = Integer.parseInt(waitingListString);
+
             } catch (NumberFormatException e) {
                 Log.e("FormData", "Failed to parse a number", e);
                 Toast.makeText(CreateActivityEvents.this, "Capacity must be a valid number", Toast.LENGTH_SHORT).show();
@@ -231,8 +232,8 @@ public class CreateActivityEvents extends AppCompatActivity {
             try {
                 eventStartTime = sdf.parse(eventStartString);
                 eventEndTime = sdf.parse(eventEndString);
-                enrollmentStartTime = sdf.parse(enrollStartString); // Correct variable
-                enrollmentEndTime = sdf.parse(enrollEndString); // Correct variable
+                enrollmentStartTime = sdf.parse(enrollStartString);
+                enrollmentEndTime = sdf.parse(enrollEndString);
             } catch (ParseException e) {
                 Log.e("FormData", "An impossible error occurred while parsing dates!", e);
                 Toast.makeText(CreateActivityEvents.this, "A critical error occurred. Please try again.", Toast.LENGTH_SHORT).show();
@@ -242,13 +243,21 @@ public class CreateActivityEvents extends AppCompatActivity {
             // Parse tag string into a list
             ArrayList<String> tagsList = new ArrayList<>(Arrays.asList(tagString.split(" ")));
 
-            String imageString = encodeImage(imageUri); // Call the helper function
+            String imageString; // Default is empty (No Image)
 
-            if (imageString == null) {
-                Toast.makeText(CreateActivityEvents.this, "Image is too large or invalid.", Toast.LENGTH_SHORT).show();
-                return;
+            if (imageUri != null) {
+                // User picked an image, so we process it
+                Toast.makeText(CreateActivityEvents.this, "Processing image...", Toast.LENGTH_SHORT).show();
+                imageString = encodeImage(imageUri);
+
+                // If encoding failed (too big), stop and warn
+                if (imageString == null) {
+                    Toast.makeText(CreateActivityEvents.this, "Image too large/invalid.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            } else {
+                imageString = "";
             }
-
 
 
             //check if the user exists
