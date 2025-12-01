@@ -122,7 +122,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/loading"
-                android:backgroundTint="@android:color/black"
+                android:backgroundTint="@color/project_blue"
                 android:textColor="@android:color/white"
                 android:paddingVertical="12dp"
                 android:textSize="18sp" />
@@ -132,7 +132,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Participants"
-                android:backgroundTint="@android:color/black"
+                android:backgroundTint="@color/porject_pink"
                 android:textColor="@android:color/white"
                 android:paddingVertical="12dp"
                 android:textSize="18sp"
@@ -147,7 +147,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="  @string/notifications_dashboard"
-                android:backgroundTint="@android:color/black"
+                android:backgroundTint="@color/porject_pink"
                 android:textColor="@android:color/white"
                 android:paddingVertical="12dp"
                 android:textSize="18sp"
@@ -157,7 +157,12 @@
                 android:id="@+id/btn_details_open_map"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Open Map" />
+                android:text="Open Map"
+                android:backgroundTint="@color/porject_pink"
+                android:textColor="@android:color/white"
+                android:paddingVertical="12dp"
+                android:textSize="18sp"
+                android:visibility="gone"  />
             <View
                 android:layout_width="match_parent"
                 android:layout_height="100dp" />
