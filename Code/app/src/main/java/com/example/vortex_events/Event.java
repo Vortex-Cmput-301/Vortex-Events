@@ -186,10 +186,5 @@ public class Event {
         this.waitlist = waitlist;
     }
 
-    public int getWaitlist_limit() {
-        return waitlist_limit;
-    }
-    public void setWaitlist_limit(int waitlist_limit) {
-        this.waitlist_limit = waitlist_limit;
-    }
+
 }
