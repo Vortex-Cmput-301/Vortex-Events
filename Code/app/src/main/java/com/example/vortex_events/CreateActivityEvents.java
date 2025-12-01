@@ -125,7 +125,7 @@ public class CreateActivityEvents extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        Log.d("UserID", Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID));
         selectImageLauncher = registerForActivityResult(
                 new androidx.activity.result.contract.ActivityResultContracts.GetContent(),
                 uri -> {
@@ -152,7 +152,7 @@ public class CreateActivityEvents extends AppCompatActivity {
         dbWorker = new DatabaseWorker();
         waitlistManager = new WaitlistManager();
         hashWorker = new HashWorker();
-        currentDeviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        currentDeviceID = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
 
         // --- Date/Time Picker Setup( Dont touch pls)
         View.OnClickListener dateTimePickerListener = v -> showDateTimePickerDialog((EditText) v);
@@ -278,8 +278,8 @@ public class CreateActivityEvents extends AppCompatActivity {
                     Event event = new Event(
                             eventName,
                             eventLocation,
-                            currentUser.deviceID, // Use real user ID
-                            hashWorker.generateEventID(eventName, currentUser.deviceID), // Use real event ID
+                            currentDeviceID, // Use real user ID
+                            hashWorker.generateEventID(eventName, currentDeviceID), // Use real event ID
                             enrollmentStartTime,
                             enrollmentEndTime,
                             eventStartTime,

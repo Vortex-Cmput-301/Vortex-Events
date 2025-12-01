@@ -147,13 +147,15 @@ public class AdminActivity extends AppCompatActivity implements AdminListAdapter
                     Double lng = document.getDouble("longitude");
 
                     RegisteredUser user = new RegisteredUser(
-                            document.getId(),
+                            this,
                             document.getString("phone_number"),
                             document.getString("email"),
                             document.getString("name"),
+                            document.getString("notificationToken"),
                             lat != null ? lat : 0.0,
                             lng != null ? lng : 0.0
                     );
+                    user.setDeviceID(document.getString("deviceID"));
                     users.add(user);
                 }
             } else {
