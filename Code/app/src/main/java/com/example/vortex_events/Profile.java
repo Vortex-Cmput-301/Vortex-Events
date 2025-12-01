@@ -1,23 +1,15 @@
-package com.example.vortex_events;// In ProfileActivity.java
+package com.example.vortex_events;
 
 import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView; // Make sure this is imported
@@ -25,36 +17,40 @@ import androidx.recyclerview.widget.RecyclerView; // Make sure this is imported
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.navigation.NavigationBarView;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class Profile extends AppCompatActivity{
+public class Profile extends AppCompatActivity {
+
+    public static final String EXTRA_DEVICE_ID = "extra_device_id";
 
     private List<Event> pastEventList;
+    private String targetDeviceID;   // the user whose profile will be displayed FOR ADMIN USE ONLY
+
     private MaterialButton buttonDeleteProfile;
-    // private DatabaseWorker databaseWorker;
     private DatabaseWorker databaseWorker;
     private RegisteredUser currentUser;
-    private DialogHelper dialogHelper; // Added DialogHelper
-    private PastEventAdapter pastEventAdapter; // Add Adapter reference
-    private RecyclerView recyclerView; // Add RecyclerView reference
+    private DialogHelper dialogHelper;
+    private PastEventAdapter pastEventAdapter;
+    private RecyclerView recyclerView;
 
     // Control flag for switching between event display modes
     private final boolean SHOW_SIGNED_UP_EVENTS = true;
 
+    // whether the current device user is admin
+    private boolean isCurrentUserAdmin = false;
+
 
     @Override
-    protected void onCreate(Bundle savedInstanceState){
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
         // Initialize views
         recyclerView = findViewById(R.id.recyclerView_past_events);
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
 
         // Initialize empty list and adapter
         pastEventList = new ArrayList<>();
@@ -67,79 +63,197 @@ public class Profile extends AppCompatActivity{
         // Initialize DatabaseWorker
         databaseWorker = new DatabaseWorker();
 
-        // load Data
-        setupPastEventListData();
+        // Read optional deviceID passed from AdminActivity
+        targetDeviceID = getIntent().getStringExtra(EXTRA_DEVICE_ID);
 
         View back_button = findViewById(R.id.button_back);
-
-        back_button.setOnClickListener(v -> {
-            finish();
-        });
-
+        View userInitialView = findViewById(R.id.textView_user_initial);
         View account_settings = findViewById((R.id.button_account_settings));
 
-        account_settings.setOnClickListener(v ->{
-            Intent intent = new Intent(getApplicationContext(), Account_settings.class);
+        // Back button behavior:
+        // - When opened normally, system back will return to previous screen (e.g., Explore).
+        // - When opened from AdminActivity, system back will return to AdminActivity.
+        back_button.setOnClickListener(v -> finish());
+
+        account_settings.setOnClickListener(v -> {
+            Intent intent = new Intent(getApplicationContext(), AccountSettings.class);
             startActivity(intent);
         });
 
-        // Initialize delete profile button - SINGLE initialization (removed duplicate)
+        // Initialize delete profile button
         buttonDeleteProfile = findViewById(R.id.button_log_out);
-//        databaseWorker = new DatabaseWorker();
-        currentUser = getCurrentUser(); // Use helper method to get current user
-        dialogHelper = new DialogHelper(this); // Initialize DialogHelper
-        buttonDeleteProfile.setOnClickListener(v -> {
-            showDeleteConfirmationDialog();
-        });
+        dialogHelper = new DialogHelper(this);
+
+        // decide which user to load based on targetDeviceID
+        if (targetDeviceID == null || targetDeviceID.isEmpty()) {
+            // Normal user: view own profile
+            // get current device ID
+            @SuppressLint("HardwareIds")
+            String currentDeviceID = Settings.Secure.getString(
+                    getContentResolver(),
+                    Settings.Secure.ANDROID_ID
+            );
+
+            // load full RegisteredUser from database to know type/name/etc
+            loadUserByDeviceID(currentDeviceID, new UserLoadCallback() {
+                @Override
+                public void onUserLoaded(RegisteredUser user) {
+                    if (user == null) {
+                        Toast.makeText(Profile.this, "User data not found.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    currentUser = user;
+                    // Determine if this user is admin based on type field
+                    String type = currentUser.getType();
+                    isCurrentUserAdmin = (type != null && type.equals("Admin"));
+                    Log.d("Profile", "Loaded user type: " + currentUser.getType());
+                    // Delete button is available for current user
+                    buttonDeleteProfile.setVisibility(View.VISIBLE);
+                    buttonDeleteProfile.setOnClickListener(v -> showDeleteConfirmationDialog());
+
+                    // Bind header with user info
+                    bindUserHeader(currentUser);
+
+                    // Only allow long-press to open Admin when:
+                    // - this is the current device user's own profile (targetDeviceID == null)
+                    // - the current user is admin
+                    if (isCurrentUserAdmin && userInitialView != null) {
+                        userInitialView.setOnLongClickListener(v -> {
+                            Intent intent = new Intent(Profile.this, AdminActivity.class);
+                            startActivity(intent);
+                            return true;
+                        });
+                    }
+
+                    // Load data for this user
+                    setupPastEventListData();
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    Toast.makeText(Profile.this, "Error loading current user profile.", Toast.LENGTH_SHORT).show();
+                    Log.e("Profile", "Error loading current user by deviceID", e);
+                }
+            });
+
+        } else {
+            // Admin viewing another user's profile
+            buttonDeleteProfile.setVisibility(View.VISIBLE);
+            buttonDeleteProfile.setOnClickListener(v -> {
+                // Admin should be able to delete any user.
+                if (currentUser != null) {
+                    // Normal path: we have a full RegisteredUser object
+                    dialogHelper.showDeleteConfirmationDialog(currentUser, () -> {
+                        Toast.makeText(Profile.this, "User profile deleted.", Toast.LENGTH_SHORT).show();
+                        finish(); // return to AdminActivity
+                    });
+                } else if (targetDeviceID != null && !targetDeviceID.isEmpty()) {
+                    // Fallback: cannot convert document to RegisteredUser,
+                    // but we still know the deviceID. Create a minimal user object
+                    // that only carries deviceID so deleteUser() can work.
+                    RegisteredUser tempUser = new RegisteredUser(
+                            targetDeviceID,
+                            "unknown",            // phone_number placeholder
+                            "unknown@example.com",// email placeholder
+                            "Unknown User",       // name placeholder
+                            0.0,                  // latitude placeholder
+                            0.0,                  // longitude placeholder
+                            "Guest"               // type placeholder
+                    );
+
+                    dialogHelper.showDeleteConfirmationDialog(tempUser, () -> {
+                        Toast.makeText(Profile.this, "User profile deleted.", Toast.LENGTH_SHORT).show();
+                        finish();
+                    });
+                } else {
+                    Toast.makeText(Profile.this, "User data not available", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            loadUserByDeviceID(targetDeviceID, new UserLoadCallback() {
+                @Override
+                public void onUserLoaded(RegisteredUser user) {
+                    currentUser = user;
+                    if (currentUser != null) {
+                        bindUserHeader(currentUser);
+                        setupPastEventListData();
+                    } else {
+                        // Document exists but cannot be fully converted.
+                        // We keep header generic; delete will use fallback tempUser.
+                        Toast.makeText(Profile.this, "User data cannot be fully loaded.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    Toast.makeText(Profile.this, "Error loading user profile.", Toast.LENGTH_SHORT).show();
+                    Log.e("Profile", "Error loading user by deviceID", e);
+                }
+            });
+        }
 
         // Find the Past Events button
         MaterialButton pastEventsButton = findViewById(R.id.button_my_events);
-
         pastEventsButton.setOnClickListener(v -> {
             Intent intent = new Intent(getApplicationContext(), HistoryEvents.class);
             startActivity(intent);
         });
 
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.nav_explore);
 
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             //Add the rest of the activities when finished
             //made a boolean function to implement highlighting items. will implement later
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            public boolean onNavigationItemSelected(@NonNull MenuItem item){
                 int itemId = item.getItemId();
-                if (itemId == R.id.nav_home) {
+                if (itemId == R.id.nav_home){
                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                     startActivity(intent);
                     return true;
-                } else if (itemId == R.id.nav_create) {
+                }else if(itemId == R.id.nav_create) {
                     Intent intent = new Intent(getApplicationContext(), CreateActivityEvents.class);
                     startActivity(intent);
                     return true;
-                } else if (itemId == R.id.button_back) {
+                }else if(itemId == R.id.nav_explore){
                     Intent intent = new Intent(getApplicationContext(), ExplorePage.class);
                     startActivity(intent);
+                    return true;
+                } else if (itemId == R.id.nav_search) {
+                    Intent intent = new Intent(getApplicationContext(), SearchEvents.class);
+                    startActivity(intent);
+                    return true;
+                }else if (itemId == R.id.nav_scan_qr) {
+                    Intent intent = new Intent(getApplicationContext(), QRCodeScanner.class);
+                    startActivity(intent);
+                    return true;
                 }
+
                 return false;
             }
         });
     }
 
-    /**
-     * Get current user from device ID
-     * This creates a RegisteredUser instance using the device ID
-     */
-    private RegisteredUser getCurrentUser() {
-        try {
-            // Get device ID from Android system
-            @SuppressLint("HardwareIds") String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+    private interface UserLoadCallback {
+        void onUserLoaded(RegisteredUser user);
+        void onError(Exception e);
+    }
 
-            // Create a RegisteredUser with the device ID
-            // TODO: Replace with actual user data retrieval
-            return new RegisteredUser(deviceID, "unknown", "unknown@example.com", "User", 0.0, 0.0);
-        } catch (Exception e) {
-            Toast.makeText(this, "Error getting user data", Toast.LENGTH_SHORT).show();
-            return null;
-        }
+    private void loadUserByDeviceID(String deviceID, UserLoadCallback callback) {
+        databaseWorker.getUserByDeviceID(deviceID).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                RegisteredUser user = task.getResult();
+                if (callback != null) {
+                    callback.onUserLoaded(user);
+                }
+            } else {
+                if (callback != null) {
+                    callback.onError(task.getException());
+                }
+            }
+        });
     }
 
     /**
@@ -163,42 +277,39 @@ public class Profile extends AppCompatActivity{
      */
     private void loadSignedUpEvents() {
         if (currentUser == null) {
-            currentUser = getCurrentUser();
+            Toast.makeText(this, "User data not available", Toast.LENGTH_SHORT).show();
+            return;
         }
 
         // Add loading message
         Toast.makeText(this, "Loading events...", Toast.LENGTH_SHORT).show();
 
-        if (currentUser != null) {
-            // find User data from database to get signed_up_events
-            databaseWorker.getUserByDeviceID(currentUser.getDeviceID()).addOnSuccessListener(user -> {
-                if (user != null && user.getSigned_up_events() != null) {
-                    List<String> signedUpEventIDs = user.getSigned_up_events();
+        // find User data from database to get signed_up_events
+        databaseWorker.getUserByDeviceID(currentUser.getDeviceID()).addOnSuccessListener(user -> {
+            if (user != null && user.getSigned_up_events() != null) {
+                List<String> signedUpEventIDs = user.getSigned_up_events();
 
-                    if (signedUpEventIDs.isEmpty()) {
-                        // No signed up events found
-                        pastEventList.clear();
-                        Toast.makeText(this, "No signed up events found", Toast.LENGTH_SHORT).show();
-                        updateRecyclerView();
-                        return;
-                    }
-
-                    // load all events find
-                    loadEventsFromIDs(signedUpEventIDs);
-                } else {
+                if (signedUpEventIDs.isEmpty()) {
+                    // No signed up events found
                     pastEventList.clear();
-                    Toast.makeText(this, "No signed up events available", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "No signed up events found", Toast.LENGTH_SHORT).show();
                     updateRecyclerView();
+                    return;
                 }
-            }).addOnFailureListener(e -> {
-                Log.e("Profile", "Error loading user data: " + e.getMessage());
-                Toast.makeText(this, "Error loading events, showing historical events", Toast.LENGTH_SHORT).show();
-                // goback to historical(sample) events
-                loadHistoricalEvents();
-            });
-        } else {
-            Toast.makeText(this, "User data not available", Toast.LENGTH_SHORT).show();
-        }
+
+                // load all events find
+                loadEventsFromIDs(signedUpEventIDs);
+            } else {
+                pastEventList.clear();
+                Toast.makeText(this, "No signed up events available", Toast.LENGTH_SHORT).show();
+                updateRecyclerView();
+            }
+        }).addOnFailureListener(e -> {
+            Log.e("Profile", "Error loading user data: " + e.getMessage());
+            Toast.makeText(this, "Error loading events, showing historical events", Toast.LENGTH_SHORT).show();
+            // fallback to historical(sample) events
+            loadHistoricalEvents();
+        });
     }
 
     /**
@@ -259,49 +370,52 @@ public class Profile extends AppCompatActivity{
     /**
      * Load historical events (original hardcoded implementation)
      */
-    //Todo this will also get the events from the DATABASE, however right now it is only a TEST
     private void loadHistoricalEvents() {
         pastEventList = new ArrayList<>();
-        ArrayList<String> arraylist = new ArrayList<String>();
+        ArrayList<String> arraylist = new ArrayList<>();
         arraylist.add("trending");
         arraylist.add("local");
-
 
         Calendar calendar = Calendar.getInstance();
 
         // Create the enrollment start date: October 1, 2025
-        calendar.set(2025, Calendar.OCTOBER, 1); // Month is 0-indexed, OCTOBER is 9
+        calendar.set(2025, Calendar.OCTOBER, 1);
         Date enrollmentStart = calendar.getTime();
 
         // Create the enrollment end date: November 15, 2025
-        calendar.set(2025, Calendar.NOVEMBER, 15); // NOVEMBER is 10
+        calendar.set(2025, Calendar.NOVEMBER, 15);
         Date enrollmentEnd = calendar.getTime();
 
         // Create the event start/end date: November 20, 2025
         calendar.set(2025, Calendar.NOVEMBER, 20);
         Date eventDate = calendar.getTime();
 
-
-        Event first_event = new Event("Scream", "UofA", "Bonnie", "123456", enrollmentStart, enrollmentEnd, eventDate, eventDate, arraylist, "description", 20);
+        Event first_event = new Event(
+                "Scream",
+                "UofA",
+                "Bonnie",
+                "123456",
+                enrollmentStart,
+                enrollmentEnd,
+                eventDate,
+                eventDate,
+                arraylist,
+                "description",
+                20
+        );
         pastEventList.add(first_event);
     }
-
 
     /**
      * This method is called by the PastEventAdapter when a details button is clicked.
      * @param position The position of the item that was clicked.
      */
-    //TODO will switch to events details
     public void onPastEventDetailsClick(int position) {
-        // Safety check
         if (position < 0 || position >= pastEventList.size()) {
             return;
         }
         Event clickedEvent = pastEventList.get(position);
-
-        // Intent intent = new Intent(this, EventDetailsActivity.class);
-        // intent.putExtra("EVENT_ID", clickedEvent.getEventID());
-        // startActivity(intent);
+        // TODO: open event details if needed
     }
 
     /**
@@ -321,15 +435,44 @@ public class Profile extends AppCompatActivity{
      * Handle successful delete operation
      */
     private void onDeleteSuccess() {
-        // Show 5-second countdown (reduced from 10 seconds for better UX)
         dialogHelper.showExitCountdown(5, this::exitApplication);
     }
 
-    /**
-     * Exit the application
-     */
     private void exitApplication() {
-        finishAffinity(); // Close all activities and exit app
+        finishAffinity();
     }
 
+    /**
+     * Bind currentUser to profile header views.
+     * This sets the name text and initial letter.
+     */
+    private void bindUserHeader(RegisteredUser user) {
+        if (user == null) {
+            return;
+        }
+
+        View initialView = findViewById(R.id.textView_user_initial);
+        View nameView = findViewById(R.id.textView_user_name);
+
+        if (initialView instanceof android.widget.TextView) {
+            android.widget.TextView tvInitial = (android.widget.TextView) initialView;
+            String name = user.getName();
+            if (name != null && !name.isEmpty()) {
+                char firstChar = Character.toUpperCase(name.charAt(0));
+                tvInitial.setText(String.valueOf(firstChar));
+            } else {
+                tvInitial.setText("U");
+            }
+        }
+
+        if (nameView instanceof android.widget.TextView) {
+            android.widget.TextView tvName = (android.widget.TextView) nameView;
+            String name = user.getName();
+            if (name != null && !name.isEmpty()) {
+                tvName.setText(name);
+            } else {
+                tvName.setText("Unknown User");
+            }
+        }
+    }
 }

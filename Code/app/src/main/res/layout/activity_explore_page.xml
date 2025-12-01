@@ -13,7 +13,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
         android:text="Explore Events"
         android:textColor="@android:color/black"
         android:textSize="28sp"
@@ -28,10 +28,13 @@
         android:layout_height="32dp"
         android:layout_marginEnd="16dp"
         android:src="@drawable/ic_person"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:scaleType="centerInside"
         app:layout_constraintBottom_toBottomOf="@+id/textView_explore_title"
         app:layout_constraintEnd_toStartOf="@+id/imageView_notifications"
         app:layout_constraintTop_toTopOf="@+id/textView_explore_title"
-        android:contentDescription="Profile" />
+        android:contentDescription="Profile"
+        app:tint="@android:color/darker_gray" />
 
     <ImageButton
         android:id="@+id/imageView_notifications"
@@ -39,10 +42,14 @@
         android:layout_height="32dp"
         android:layout_marginEnd="16dp"
         android:src="@drawable/ic_notification"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:scaleType="centerInside"
         app:layout_constraintBottom_toBottomOf="@+id/textView_explore_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/textView_explore_title"
-        android:contentDescription="Notifications" />
+        android:contentDescription="Notifications"
+        app:tint="@android:color/darker_gray" />
+
 
     <!-- Scrollable Events List -->
 

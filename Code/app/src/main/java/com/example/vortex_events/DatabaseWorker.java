@@ -4,12 +4,14 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.auth.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +23,8 @@ public class DatabaseWorker {
     FirebaseFirestore db;
     CollectionReference eventsRef;
     CollectionReference usersRef; // 11.6 by Kehan - add users collection
+
+    CollectionReference notificationsRef; // 11.22 by Saleh - For notifications collection
 
 
 
@@ -35,6 +39,7 @@ public class DatabaseWorker {
         this.db = db_arg;
         this.eventsRef = db.collection("Events");
         this.usersRef = db.collection("Users");
+        this.notificationsRef = db.collection("Notifications");
 
         eventsRef.addSnapshotListener(((value, error) -> {
             if (error != null){
@@ -47,6 +52,8 @@ public class DatabaseWorker {
         this.db = FirebaseFirestore.getInstance();
         this.eventsRef = db.collection("Events");
         this.usersRef = db.collection("Users");
+        this.notificationsRef = db.collection("Notifications");
+
     }
 
     public boolean isUserExists() {
@@ -93,6 +100,38 @@ public class DatabaseWorker {
         return  docuRef.set(user);
     }
 
+    /**
+     * For adding notifications to the database 11.22 - Saleh
+     * **/
+    public Task<Void> pushNotificationToDB(AppNotification notification){
+        DocumentReference docuRef = notificationsRef.document(notification.notificationID);
+
+        return docuRef.set(notification);
+    }
+    /**
+     * Get all documents from the Notifications collection.
+     * @return Task resolving to a QuerySnapshot of all notifications.
+     */
+    public Task<QuerySnapshot> getAllNotifications() {
+        return notificationsRef.get();
+    }
+
+    /**
+     * Delete a notification document by its ID from the Notifications collection.
+     * @param notificationID document ID of the notification to delete
+     * @return Task representing the delete operation.
+     */
+    public Task<Void> deleteNotificationById(String notificationID) {
+        return notificationsRef.document(notificationID).delete();
+    }
+
+    /**
+     * For adding notifications to the users 11.22 - Saleh
+     * **/
+    public Task<Void> pushNotiToUser(List<String> newNotifications, String userID){
+        return usersRef.document(userID).update("notifications", newNotifications);
+    }
+
 
 
     public Task<Void> createEvent(Users maker, Event targetEvent){
@@ -104,16 +143,50 @@ public class DatabaseWorker {
         return docuref.set(targetEvent);
     }
     public Task<Void> updateEvent(Event targetEvent) {
-        DocumentReference docuref = eventsRef.document(targetEvent.getName());
+        DocumentReference docuref = eventsRef.document(targetEvent.getEventID());
 
         return docuref.set(targetEvent);
     }
 
-    public Task<Void> deleteEvent(Event targetEvent) {
-        DocumentReference docuref = eventsRef.document(targetEvent.getName());
+    // modified: delete event and remove it from all users' signed_up_events
+    public Task<Void> deleteEvent(Event targetEvent) { // modified
+        if (targetEvent == null || targetEvent.getEventID() == null || targetEvent.getEventID().isEmpty()) { // added
+            Log.e("DatabaseWorker", "deleteEvent: event or eventID is null/empty"); // added
+            return null; // added
+        } // added
 
-        return docuref.delete();
+        String targetEventId = targetEvent.getEventID(); // added
+
+        // Step 1: query all users whose signed_up_events contains this eventID // added
+        return usersRef.whereArrayContains("signed_up_events", targetEventId) // added
+                .get() // added
+                .continueWithTask(task -> { // added
+                    if (!task.isSuccessful()) { // added
+                        Exception e = task.getException(); // added
+                        Log.e("DatabaseWorker", "Failed to query users for event cleanup", e); // added
+                        throw e != null ? e : new Exception("Unknown error querying users for event cleanup"); // added
+                    } // added
+
+                    QuerySnapshot querySnapshot = task.getResult(); // added
+                    if (querySnapshot != null) { // added
+                        for (DocumentSnapshot userDoc : querySnapshot.getDocuments()) { // added
+                            List<String> signedUpEvents = (List<String>) userDoc.get("signed_up_events"); // added
+                            if (signedUpEvents != null && signedUpEvents.contains(targetEventId)) { // added
+                                signedUpEvents.remove(targetEventId); // added
+                                usersRef.document(userDoc.getId()) // added
+                                        .update("signed_up_events", signedUpEvents) // added
+                                        .addOnFailureListener(e -> Log.e("DatabaseWorker", "Failed to update signed_up_events for user: " + userDoc.getId(), e)); // added
+                            } // added
+                        } // added
+                    } // added
+
+                    // Step 2: delete the event document itself // added
+                    DocumentReference docRef = eventsRef.document(targetEventId); // added
+                    return docRef.delete(); // added
+                }); // added
     }
+
+
 
     public Task<QuerySnapshot> getOrganizerEvents(String organizer) {
         return eventsRef.whereEqualTo("organizer", organizer).get();
@@ -175,13 +248,19 @@ public class DatabaseWorker {
     }
 
     /**
-     * Delete user's profile
+     * Delete user's profile by deviceID from RegisteredUser object
      * @param user object need to remove
      * @return Task<Void>
      */
     public Task<Void> deleteUser(RegisteredUser user) {
-        Log.d("DatabaseWorker", "Deleting user with deviceID: " + user.deviceID);
-        DocumentReference docRef = usersRef.document(user.deviceID);
+        if (user == null || user.getDeviceID() == null) {
+            Log.e("DatabaseWorker", "deleteUser: user or deviceID is null");
+            return null;
+        }
+
+        String deviceID = user.getDeviceID();
+        Log.d("DatabaseWorker", "Deleting user with deviceID: " + deviceID);
+        DocumentReference docRef = usersRef.document(deviceID);
         return docRef.delete();
     }
 
@@ -246,6 +325,7 @@ public class DatabaseWorker {
             String name = document.getString("name");
             double latitude = document.getDouble("latitude");
             double longitude = document.getDouble("longitude");
+            String type = document.getString("type");
 
 
             // Handle lists - get them from document or create empty lists
@@ -255,7 +335,7 @@ public class DatabaseWorker {
             List<AppNotification> notifications = (List<AppNotification>) document.get("notifications");
 
             // Create RegisteredUser object
-            RegisteredUser user = new RegisteredUser(deviceID, phoneNumber, email, name, latitude, longitude);
+            RegisteredUser user = new RegisteredUser(deviceID, phoneNumber, email, name, latitude, longitude, type);
 
             // Set the lists
             if (signedUpEvents != null) {
@@ -268,7 +348,7 @@ public class DatabaseWorker {
                 user.created_events = new ArrayList<>(createdEvents);
             }
             if (notifications != null) {
-                user.notifications = new ArrayList<>(notifications);
+                user.notifications = new ArrayList<>();
             }
 
             Log.d("DatabaseWorker", "Successfully converted document to RegisteredUser: " + deviceID);
@@ -345,5 +425,26 @@ public class DatabaseWorker {
             return null;
         }
     }
+
+    /**
+     * Clear image field of an event by eventID. For admin use only
+     *
+     * @param eventID id of event to update
+     * @return Task<Void>
+     */
+    public Task<Void> clearEventImage(String eventID) {
+        return eventsRef.document(eventID).update("image", null);
+    }
+    /**
+     * Replace notifications array for a specific user. For admin use only
+     *
+     * @param deviceID      user id
+     * @param notifications new list of notifications
+     * @return Task<Void>
+     */
+    public Task<Void> updateUserNotifications(String deviceID, List<AppNotification> notifications) {
+        return usersRef.document(deviceID).update("notifications", notifications);
+    }
+
 
 }

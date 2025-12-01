@@ -1,5 +1,6 @@
 package com.example.vortex_events;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,14 +18,14 @@ import java.util.Locale;
 public class PastEventAdapter extends RecyclerView.Adapter<PastEventAdapter.PastEventViewHolder> {
 
     private final List<Event> pastEventList;
-    private final Profile activity; // A reference to the activity that created it.
+    private final androidx.appcompat.app.AppCompatActivity activity; // can be Profile or MainActivity
 
     /**
      * Constructor that takes the data list and a reference to the calling Activity.
      * @param pastEventList The list of events to display.
-     * @param activity The ProfileActivity instance, used for handling clicks.
+     * @param activity The Activity instance, used for handling clicks.
      */
-    public PastEventAdapter(List<Event> pastEventList, Profile activity) {
+    public PastEventAdapter(List<Event> pastEventList, androidx.appcompat.app.AppCompatActivity activity) {
         this.pastEventList = pastEventList;
         this.activity = activity;
     }
@@ -39,29 +40,32 @@ public class PastEventAdapter extends RecyclerView.Adapter<PastEventAdapter.Past
     }
 
     public static class PastEventViewHolder extends RecyclerView.ViewHolder {
-        // Declare the views from your item_past_event.xml
         ImageView thumbnail;
         TextView title, date;
         Button detailsButton;
+        TextView eventLocation;
 
         public PastEventViewHolder(@NonNull View itemView) {
             super(itemView);
-            // Initialize the views using findViewById
             thumbnail = itemView.findViewById(R.id.past_event_thumbnail);
             title = itemView.findViewById(R.id.past_event_title);
             date = itemView.findViewById(R.id.past_event_date);
             detailsButton = itemView.findViewById(R.id.past_event_details_button);
+            eventLocation = itemView.findViewById(R.id.textView_event_location);
         }
     }
     @Override
     public void onBindViewHolder(@NonNull PastEventViewHolder holder, int position) {
-        // Get the data model for this position
         Event currentEvent = pastEventList.get(position);
 
-        // Bind the data to the views in the ViewHolder
         holder.title.setText(currentEvent.getName());
 
-        // Format and set the date
+        if (currentEvent.getLocation() != null && !currentEvent.getLocation().isEmpty()) {
+            holder.eventLocation.setText(currentEvent.getLocation());
+        } else {
+            holder.eventLocation.setText("Unknown location");
+        }
+
         Date eventStartTime = currentEvent.getStart_time();
         if (eventStartTime != null) {
             SimpleDateFormat formatter = new SimpleDateFormat("MMM dd, yyyy h:mm a", Locale.getDefault());
@@ -70,14 +74,14 @@ public class PastEventAdapter extends RecyclerView.Adapter<PastEventAdapter.Past
             holder.date.setText("No date");
         }
 
-        // Set the click listener to call the Activity's public method directly
         holder.detailsButton.setOnClickListener(v -> {
             int currentPosition = holder.getAdapterPosition();
-            // Check for a valid position, as it can be NO_POSITION during layout changes
-            if (currentPosition != RecyclerView.NO_POSITION) {
-                // Directly call the public method on the ProfileActivity instance
-                //TODO This will switch the view to event details, however this is not implemented yet. this function will be in PROFILE
-//                activity.onPastEventDetailsClick(currentPosition);
+            if (currentPosition != RecyclerView.NO_POSITION && activity != null) {
+                Event clickedEvent = pastEventList.get(currentPosition);
+                Intent intent = new Intent(activity, EventDetails.class);
+                intent.putExtra("EventID", clickedEvent.getEventID());
+                intent.putExtra("prev_activity", "home"); // can be overridden by caller if needed
+                activity.startActivity(intent);
             }
         });
     }

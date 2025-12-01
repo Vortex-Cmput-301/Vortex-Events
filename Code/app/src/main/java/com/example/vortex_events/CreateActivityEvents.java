@@ -5,9 +5,13 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,6 +35,7 @@ import com.google.android.material.switchmaterial.SwitchMaterial;
 import org.checkerframework.checker.units.qual.Time;
 import org.checkerframework.common.returnsreceiver.qual.This;
 
+import java.io.ByteArrayOutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -127,7 +132,7 @@ public class CreateActivityEvents extends AppCompatActivity {
                     if (uri != null) {
                         imageUri = uri;
                         // Show the selected image on screen
-                        ((android.widget.ImageView) findViewById(R.id.iv_upload_icon)).setImageURI(uri);
+                        ((android.widget.ImageView) findViewById(R.id.upload_poster_preview)).setImageURI(uri);
                         // Hide the upload icon so the image is visible
                         findViewById(R.id.iv_upload_icon).setVisibility(View.GONE);
                     }
@@ -208,6 +213,7 @@ public class CreateActivityEvents extends AppCompatActivity {
             try {
                 capacity = Integer.parseInt(capacityString);
                 waitingListLimit = Integer.parseInt(waitingListString);
+
             } catch (NumberFormatException e) {
                 Log.e("FormData", "Failed to parse a number", e);
                 Toast.makeText(CreateActivityEvents.this, "Capacity must be a valid number", Toast.LENGTH_SHORT).show();
@@ -226,8 +232,8 @@ public class CreateActivityEvents extends AppCompatActivity {
             try {
                 eventStartTime = sdf.parse(eventStartString);
                 eventEndTime = sdf.parse(eventEndString);
-                enrollmentStartTime = sdf.parse(enrollStartString); // Correct variable
-                enrollmentEndTime = sdf.parse(enrollEndString); // Correct variable
+                enrollmentStartTime = sdf.parse(enrollStartString);
+                enrollmentEndTime = sdf.parse(enrollEndString);
             } catch (ParseException e) {
                 Log.e("FormData", "An impossible error occurred while parsing dates!", e);
                 Toast.makeText(CreateActivityEvents.this, "A critical error occurred. Please try again.", Toast.LENGTH_SHORT).show();
@@ -237,13 +243,21 @@ public class CreateActivityEvents extends AppCompatActivity {
             // Parse tag string into a list
             ArrayList<String> tagsList = new ArrayList<>(Arrays.asList(tagString.split(" ")));
 
-            String imageString = encodeImage(imageUri); // Call the helper function
+            String imageString; // Default is empty (No Image)
 
-            if (imageString == null) {
-                Toast.makeText(CreateActivityEvents.this, "Image is too large or invalid.", Toast.LENGTH_SHORT).show();
-                return;
+            if (imageUri != null) {
+                // User picked an image, so we process it
+                Toast.makeText(CreateActivityEvents.this, "Processing image...", Toast.LENGTH_SHORT).show();
+                imageString = encodeImage(imageUri);
+
+                // If encoding failed (too big), stop and warn
+                if (imageString == null) {
+                    Toast.makeText(CreateActivityEvents.this, "Image too large/invalid.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            } else {
+                imageString = "";
             }
-
 
 
             //check if the user exists
@@ -318,40 +332,80 @@ public class CreateActivityEvents extends AppCompatActivity {
 
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-
-
         bottomNavigationView.setSelectedItemId(R.id.nav_create);
 
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            //Add the rest of the activities when finished
+            //made a boolean function to implement highlighting items. will implement later
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item){
+                int itemId = item.getItemId();
+                if (itemId == R.id.nav_home){
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(intent);
+                    return true;
+                }else if(itemId == R.id.nav_create) {
+                    return true;
+                }else if(itemId == R.id.nav_explore){
+                    Intent intent = new Intent(getApplicationContext(), ExplorePage.class);
+                    startActivity(intent);
+                    return true;
+                } else if (itemId == R.id.nav_search) {
+                    Intent intent = new Intent(getApplicationContext(), SearchEvents.class);
+                    startActivity(intent);
+                    return true;
+                }else if (itemId == R.id.nav_scan_qr) {
+                    Intent intent = new Intent(getApplicationContext(), QRCodeScanner.class);
+                    startActivity(intent);
+                    return true;
+                }
 
-        bottomNavigationView.setOnItemSelectedListener(item -> {
-            int itemId = item.getItemId();
-            if (itemId == R.id.nav_home){
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
-                overridePendingTransition(0, 0); // No transition animation
-                return true;
-            } else if(itemId == R.id.nav_create) {
-                return true;
+                return false;
             }
-            // Add other navigation
-
-            return false;
         });
     }
 
-    private String encodeImage(android.net.Uri imageUri) {
+    private String encodeImage(Uri imageUri) {
         try {
-            //Get the image from gallery
-            android.graphics.Bitmap bitmap = android.provider.MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
 
+            Bitmap originalBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
 
-            java.io.ByteArrayOutputStream stream = new java.io.ByteArrayOutputStream();
-            // JPEG format
-            bitmap.compress(android.graphics.Bitmap.CompressFormat.JPEG, 50, stream);
+            //Calculate new size
+            int maxWidth = 800;
+            int width = originalBitmap.getWidth();
+            int height = originalBitmap.getHeight();
+
+            //resize if the image is actually bigger than 800px
+            if (width > maxWidth) {
+                float ratio = (float) width / maxWidth;
+                width = maxWidth;
+                height = (int) (height / ratio);
+            }
+
+            //resized bitmap
+            Bitmap resizedBitmap = Bitmap.createScaledBitmap(originalBitmap, width, height, true);
+
+            //Compress the resized image
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+
+            resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 60, stream);
             byte[] bytes = stream.toByteArray();
 
+            //Check if its bigger, compress again
+            if (bytes.length > 800000) {
+                stream.reset(); // Clear stream
+                resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 30, stream); // Drop to 30%
+                bytes = stream.toByteArray();
+            }
 
-            return android.util.Base64.encodeToString(bytes, android.util.Base64.DEFAULT);
+            //Check if its bigger, compress again just incase
+            if (bytes.length > 1000000) {
+                Toast.makeText(this, "Image is still too large. Please pick another.", Toast.LENGTH_SHORT).show();
+                return null;
+            }
+
+            return Base64.encodeToString(bytes, Base64.DEFAULT);
+
         } catch (Exception e) {
             e.printStackTrace();
             return null;

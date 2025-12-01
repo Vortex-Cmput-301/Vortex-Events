@@ -10,21 +10,20 @@ public class RegisteredUser extends Users{
     String phone_number;
     String email;
     String name;
+    String notificationToken;
     double latitude;
     double longitude;
     ArrayList<String> signed_up_events;
     Map<String, String> event_history;
     ArrayList<String> created_events;
-    ArrayList<AppNotification> notifications;
+    ArrayList<String> notifications;
     // Event status constants
     public static final String STATUS_ACCEPTED = "ACCEPTED";
     public static final String STATUS_DECLINED = "DECLINED";
     public static final String STATUS_CANCELLED = "CANCELLED";
     public static final String STATUS_NOT_CHOSEN = "NOT_CHOSEN";
 
-    public RegisteredUser(){
-
-    };
+    public RegisteredUser(){}
 
     public ArrayList<String> getCreated_events() {
         return created_events;
@@ -50,14 +49,6 @@ public class RegisteredUser extends Users{
         this.event_history = event_history;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public double getLatitude() {
         return latitude;
     }
@@ -74,12 +65,28 @@ public class RegisteredUser extends Users{
         this.longitude = longitude;
     }
 
-    public ArrayList<AppNotification> getNotifications() {
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public ArrayList<String> getNotifications() {
         return notifications;
     }
 
-    public void setNotifications(ArrayList<AppNotification> notifications) {
+    public void setNotifications(ArrayList<String> notifications) {
         this.notifications = notifications;
+    }
+
+    public String getNotificationToken() {
+        return notificationToken;
+    }
+
+    public void setNotificationToken(String notificationToken) {
+        this.notificationToken = notificationToken;
     }
 
     public String getPhone_number() {
@@ -98,11 +105,32 @@ public class RegisteredUser extends Users{
         this.signed_up_events = signed_up_events;
     }
 
-    public RegisteredUser(Context context, String number, String email, String name, double latitude, double longitude){
+    public RegisteredUser(Context context, String number, String email, String name, String notificationToken, double latitude, double longitude){
         super(context);
         this.phone_number = number;
         this.email = email;
         this.name = name;
+        this.notificationToken = notificationToken;
+
+        this.latitude = latitude;
+        this.longitude = longitude;
+
+        this.signed_up_events = new ArrayList<>();
+        this.created_events = new ArrayList<>();
+        this.event_history = new HashMap<>();
+        this.notifications = new ArrayList<>();
+    }
+
+    public RegisteredUser(String Id, String number, String email, String name, double latitude, double longitude){
+        this(Id, number, email, name, latitude, longitude, "Registered User");
+    }
+    public RegisteredUser(String Id, String number, String email, String name, double latitude, double longitude, String type){
+        super();
+        this.deviceID = Id;
+        this.phone_number = number;
+        this.email = email;
+        this.name = name;
+        this.type = type;  // add type
         this.latitude = latitude;
         this.longitude = longitude;
         this.signed_up_events = new ArrayList<>();
@@ -111,20 +139,6 @@ public class RegisteredUser extends Users{
         this.notifications = new ArrayList<>();
     }
 
-    public RegisteredUser(String Id, String number, String email, String name, double latitude, double longitude){
-        super(); // Call parent's no-argument constructor
-        this.deviceID = Id;
-        this.phone_number = number;
-        this.email = email;
-        this.name = name;
-        this.type = "Registered User";
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.signed_up_events = new ArrayList<>();
-        this.created_events = new ArrayList<>();
-        this.event_history = new HashMap<>();
-        this.notifications = new ArrayList<>();
-    }
 
     public boolean moveToHistory(String eventID, String status) {
         if (signed_up_events.contains(eventID)) {
