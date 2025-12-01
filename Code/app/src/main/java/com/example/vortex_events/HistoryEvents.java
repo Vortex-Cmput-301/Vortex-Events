@@ -142,6 +142,7 @@ public class HistoryEvents extends AppCompatActivity {
                             // Get event status from user's history
                             String status = currentUser.getEventStatus(eventID);
 
+
                             // Format date from start_time and end_time
                             String formattedDate = formatEventDate(event.getStart_time(), event.getEnd_time());
 
@@ -151,7 +152,8 @@ public class HistoryEvents extends AppCompatActivity {
                                     event.getName(),
                                     event.getLocation(),
                                     formattedDate,
-                                    status
+                                    status,
+                                    event.getImage()
                             );
 
                             // Add to list and update adapter
@@ -165,7 +167,8 @@ public class HistoryEvents extends AppCompatActivity {
                                 "Event Not Found",
                                 "Unknown Location",
                                 "Unknown Date",
-                                currentUser.getEventStatus(eventID)
+                                currentUser.getEventStatus(eventID),
+                                null
                         );
                         historyEvents.add(historyEvent);
                         adapter.notifyDataSetChanged();
@@ -238,6 +241,23 @@ public class HistoryEvents extends AppCompatActivity {
             title.setText(event.getEventName());
             location.setText(event.getEventLocation());
             date.setText(event.getEventDate());
+
+            String imageString = event.getImageBase64(); // *** NEW
+            if (imageString != null && !imageString.isEmpty()) { // *** NEW
+                try {
+                    byte[] decodedString = android.util.Base64.decode(imageString, android.util.Base64.DEFAULT);
+
+                    com.bumptech.glide.Glide.with(convertView.getContext())
+                            .load(decodedString)
+                            .centerCrop()
+                            .into(thumbnail);
+
+                } catch (Exception e) {
+                    thumbnail.setImageResource(R.drawable.app_icon);
+                }
+            } else {
+                thumbnail.setImageResource(R.drawable.app_icon);
+            }
 
             // Set button text based on status
             String statusText = getStatusText(event.getEventStatus());
@@ -321,14 +341,16 @@ public class HistoryEvents extends AppCompatActivity {
         private String eventLocation;
         private String eventDate;
         private String eventStatus;
+        private String imageBase64;
 
         public HistoryEventItem(String eventID, String eventName, String eventLocation,
-                                String eventDate, String eventStatus) {
+                                String eventDate, String eventStatus, String imageBase64) {
             this.eventID = eventID;
             this.eventName = eventName;
             this.eventLocation = eventLocation;
             this.eventDate = eventDate;
             this.eventStatus = eventStatus;
+            this.imageBase64 = imageBase64;
         }
 
         // Getters
@@ -337,5 +359,6 @@ public class HistoryEvents extends AppCompatActivity {
         public String getEventLocation() { return eventLocation; }
         public String getEventDate() { return eventDate; }
         public String getEventStatus() { return eventStatus; }
+        public String getImageBase64() { return imageBase64; }
     }
 }

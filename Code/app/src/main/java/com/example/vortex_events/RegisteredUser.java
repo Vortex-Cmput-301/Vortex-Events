@@ -22,6 +22,7 @@ public class RegisteredUser extends Users{
     public static final String STATUS_DECLINED = "DECLINED";
     public static final String STATUS_CANCELLED = "CANCELLED";
     public static final String STATUS_NOT_CHOSEN = "NOT_CHOSEN";
+    public static final String STATUS_REGISTERED = "REGISTERED";
 
     public RegisteredUser(String deviceID, String phoneNumber, String email, String name, String token, double latitude, double longitude, String type){}
 
@@ -149,14 +150,52 @@ public class RegisteredUser extends Users{
         return false;
     }
 
-    public boolean leaveEvent(Event targetEvent){
-        if (signed_up_events.contains(targetEvent.getEventID())) {
-            if (targetEvent.getWaitlist() != null) {
-                targetEvent.getWaitlist().remove(deviceID); // remove from waitlist
+    public interface LeaveEventCallback { // *** NEW
+        void onSuccess();
+        void onFailure(Exception e);
+    }
+
+    // *** CHANGED: leaveEvent now also syncs with database
+    public void leaveEvent(Event targetEvent, DatabaseWorker dbWorker, LeaveEventCallback callback) { // *** CHANGED
+        if (targetEvent == null || dbWorker == null) {
+            if (callback != null) {
+                callback.onFailure(new IllegalArgumentException("targetEvent or dbWorker is null"));
             }
-            return moveToHistory(targetEvent.getEventID(), STATUS_CANCELLED);
+            return;
         }
-        return false;
+
+        // Ensure waitlist is not null
+        if (targetEvent.getWaitlist() == null) {
+            targetEvent.setWaitlist(new ArrayList<String>());
+        }
+
+        // Update in-memory user state
+        boolean inSignedUp = signed_up_events != null && signed_up_events.contains(targetEvent.getEventID());
+        if (inSignedUp) {
+            moveToHistory(targetEvent.getEventID(), STATUS_CANCELLED);
+        }
+
+        // Remove from event waitlist in memory
+        targetEvent.getWaitlist().remove(deviceID);
+
+        // Persist user and event waitlist
+        dbWorker.updateUser(this).addOnSuccessListener(aVoid -> {
+            dbWorker.updateWaitlist(targetEvent.getWaitlist(), targetEvent.getEventID())
+                    .addOnSuccessListener(aVoid2 -> {
+                        if (callback != null) {
+                            callback.onSuccess();
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        if (callback != null) {
+                            callback.onFailure(e);
+                        }
+                    });
+        }).addOnFailureListener(e -> {
+            if (callback != null) {
+                callback.onFailure(e);
+            }
+        });
     }
 
     public String getEventStatus(String eventID) {
