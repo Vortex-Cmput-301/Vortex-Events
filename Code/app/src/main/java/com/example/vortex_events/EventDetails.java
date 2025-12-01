@@ -108,7 +108,7 @@ public class EventDetails extends AppCompatActivity {
         mapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(EventDetails.this, EntrantsMap.class);
+                Intent intent = new Intent(EventDetails.this, MapEntrants.class);
                 intent.putExtra("EventID", EventID);
                 startActivity(intent);
             }
