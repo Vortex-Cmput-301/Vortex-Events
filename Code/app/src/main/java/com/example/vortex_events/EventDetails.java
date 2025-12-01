@@ -100,19 +100,10 @@ public class EventDetails extends AppCompatActivity {
         signupButton = findViewById(R.id.btn_details_sign_up);
         editEventButton = findViewById(R.id.edit_event_button);
         notifcationsDashBoardButton = findViewById(R.id.organizer_notifications_button);
+        Button mapButton = findViewById(R.id.btn_details_open_map);
+        mapButton.setVisibility(View.GONE);
 
         qrImage = findViewById(R.id.event_details_qr);
-
-        Button mapButton = findViewById(R.id.btn_details_open_map);
-
-        mapButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(EventDetails.this, EntrantsMap.class);
-                intent.putExtra("EventID", EventID);
-                startActivity(intent);
-            }
-        });
 
 
 
@@ -126,6 +117,7 @@ public class EventDetails extends AppCompatActivity {
             if (documentSnapshot.exists()) {
                 Log.d("OrganizerViewParticipant", "Event 'accepted' field: " + documentSnapshot.get("accepted"));
                 Event event = dbWorker.convertDocumentToEvent(documentSnapshot);//use method in DatabaseWorker instead
+                assert event != null;
                 description = event.getDescription();
                 title = event.getName();
                 capacity =  event.getCapacity();
@@ -147,10 +139,7 @@ public class EventDetails extends AppCompatActivity {
                     } catch (Exception e) {
                         Log.e("EventDetails", "Failed to load image", e);
                     }
-                } else {
-                    eventPoster.setVisibility(View.GONE);
                 }
-
 
 
 
@@ -196,14 +185,14 @@ public class EventDetails extends AppCompatActivity {
                     mapButton.setVisibility(VISIBLE);
                     notifcationsDashBoardButton.setVisibility(VISIBLE);
 
-//                    Listeneer for edit details intents
+//                    Listener for edit details intents
 
                     signupButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-//                            Intent intent = new Intent(EventDetails.this, EditEvents.class);
-//                            intent.putExtra("EventID", EventID);
-//                            startActivity(intent);
+                           Intent intent = new Intent(EventDetails.this, EditEvents.class);
+                          intent.putExtra("EventID", EventID);
+                          startActivity(intent);
                         }
                     });
 
@@ -220,6 +209,15 @@ public class EventDetails extends AppCompatActivity {
                         @Override
                         public void onClick(View view) {
                             Intent intent = new Intent(EventDetails.this, OrganizerNotificationsDashboard.class);
+                            intent.putExtra("EventID", EventID);
+                            startActivity(intent);
+                        }
+                    });
+
+                    mapButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(EventDetails.this, MapEntrants.class);
                             intent.putExtra("EventID", EventID);
                             startActivity(intent);
                         }
