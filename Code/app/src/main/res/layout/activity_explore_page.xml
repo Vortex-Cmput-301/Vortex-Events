@@ -30,11 +30,11 @@
         android:src="@drawable/ic_person"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:scaleType="centerInside"
-        android:tint="@android:color/darker_gray"
         app:layout_constraintBottom_toBottomOf="@+id/textView_explore_title"
         app:layout_constraintEnd_toStartOf="@+id/imageView_notifications"
         app:layout_constraintTop_toTopOf="@+id/textView_explore_title"
-        android:contentDescription="Profile" />
+        android:contentDescription="Profile"
+        app:tint="@android:color/darker_gray" />
 
     <ImageButton
         android:id="@+id/imageView_notifications"
@@ -44,11 +44,11 @@
         android:src="@drawable/ic_notification"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:scaleType="centerInside"
-        android:tint="@android:color/darker_gray"
         app:layout_constraintBottom_toBottomOf="@+id/textView_explore_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/textView_explore_title"
-        android:contentDescription="Notifications" />
+        android:contentDescription="Notifications"
+        app:tint="@android:color/darker_gray" />
 
 
     <!-- Scrollable Events List -->
