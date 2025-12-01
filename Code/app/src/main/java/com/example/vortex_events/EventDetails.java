@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -35,6 +36,9 @@ import android.widget.ImageView;
 import com.google.zxing.WriterException;
 
 import com.bumptech.glide.Glide;
+import android.app.AlertDialog;
+import android.widget.ImageButton;
+
 
 public class EventDetails extends AppCompatActivity {
     String EventID;
@@ -64,6 +68,9 @@ public class EventDetails extends AppCompatActivity {
     Button signupButton;
     Button editEventButton;
     Button notifcationsDashBoardButton;
+    ImageButton moreButton;
+    RegisteredUser currentUser;
+
     ImageView posterPreview;
 
     ImageView qrImage;
@@ -87,7 +94,7 @@ public class EventDetails extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         dbWorker = new DatabaseWorker(db);
 
-//      Set the ui elemts
+//      Set the ui elements
         eventPoster = findViewById(R.id.iv_upload_icon);
         posterPreview = findViewById(R.id.iv_poster_preview);
         eventTitle = findViewById(R.id.event_details_title);
@@ -100,19 +107,25 @@ public class EventDetails extends AppCompatActivity {
         signupButton = findViewById(R.id.btn_details_sign_up);
         editEventButton = findViewById(R.id.edit_event_button);
         notifcationsDashBoardButton = findViewById(R.id.organizer_notifications_button);
+        Button mapButton = findViewById(R.id.btn_details_open_map);
+        mapButton.setVisibility(View.GONE);
+
+        moreButton = findViewById(R.id.btn_more);
+        if (moreButton != null) { //hide by default
+            moreButton.setVisibility(View.GONE);
+            moreButton.setEnabled(false);
+        }
+        dbWorker.getUserByDeviceID(deviceID).addOnSuccessListener(user -> {
+            currentUser = user;
+            if (moreButton != null && currentUser != null && "Admin".equals(currentUser.type)) {
+                moreButton.setVisibility(View.VISIBLE);
+                moreButton.setEnabled(true);
+            }
+        }).addOnFailureListener(e -> {
+            Log.e("EventDetails", "Failed to load current user", e);
+        });
 
         qrImage = findViewById(R.id.event_details_qr);
-
-        Button mapButton = findViewById(R.id.btn_details_open_map);
-
-        mapButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(EventDetails.this, EntrantsMap.class);
-                intent.putExtra("EventID", EventID);
-                startActivity(intent);
-            }
-        });
 
 
 
@@ -194,7 +207,7 @@ public class EventDetails extends AppCompatActivity {
                     mapButton.setVisibility(VISIBLE);
                     notifcationsDashBoardButton.setVisibility(VISIBLE);
 
-//                    Listeneer for edit details intents
+//                    Listener for edit details intents
 
                     signupButton.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -218,6 +231,15 @@ public class EventDetails extends AppCompatActivity {
                         @Override
                         public void onClick(View view) {
                             Intent intent = new Intent(EventDetails.this, OrganizerNotificationsDashboard.class);
+                            intent.putExtra("EventID", EventID);
+                            startActivity(intent);
+                        }
+                    });
+
+                    mapButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(EventDetails.this, MapEntrants.class);
                             intent.putExtra("EventID", EventID);
                             startActivity(intent);
                         }
@@ -251,7 +273,38 @@ public class EventDetails extends AppCompatActivity {
                         });
                     }
                 }
+                if (moreButton != null) {
+                    moreButton.setOnClickListener(view -> {
+                        // Safety check: allow only Admin to perform delete
+                        if (currentUser == null || !"Admin".equals(currentUser.type)) {
+                            Log.w("EventDetails", "Delete action blocked: current user is not admin");
+                            return;
+                        }
 
+                        AlertDialog.Builder builder = new AlertDialog.Builder(EventDetails.this);
+                        builder.setTitle("Delete event")
+                                .setMessage("Are you sure you want to delete this event?")
+                                .setNegativeButton("Cancel", (dialog, which) -> {
+                                    dialog.dismiss();
+                                })
+                                .setPositiveButton("Delete", (dialog, which) -> {
+                                    if (event == null) {
+                                        Log.e("EventDetails", "Event is null, cannot delete");
+                                        return;
+                                    }
+                                    dbWorker.deleteEvent(event)
+                                            .addOnSuccessListener(aVoid -> {
+                                                Log.d("EventDetails", "Event deleted successfully");
+                                                finish();
+                                            })
+                                            .addOnFailureListener(e -> {
+                                                Log.e("EventDetails", "Failed to delete event", e);
+                                            });
+                                });
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
+                    });
+                }
 
             } else {
                 Log.e("OrganizerViewParticipant", "No such document found with that ID.");

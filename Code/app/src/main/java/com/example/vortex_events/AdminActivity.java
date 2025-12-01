@@ -191,55 +191,38 @@ public class AdminActivity extends AppCompatActivity implements AdminListAdapter
     }
 
     /**
-     * Load all notifications from all users for the Notifications tab.
-     * Aggregates notifications from every user document.
+     * Load all notifications from Notifications collection for the Notifications tab.
+     * Each document corresponds to one AppNotification.
      */
-    private void loadNotifications() {
-        Task<QuerySnapshot> task = databaseWorker.getAllUsers();
-        task.addOnCompleteListener(t -> {
+    private void loadNotifications() { // modified
+        databaseWorker.getAllNotifications().addOnCompleteListener(t -> { // modified
             notifications.clear();
             if (t.isSuccessful() && t.getResult() != null) {
                 for (QueryDocumentSnapshot document : t.getResult()) {
-                    Object raw = document.get("notifications");
-                    if (raw instanceof ArrayList) {
-                        ArrayList<?> list = (ArrayList<?>) raw;
-                        for (Object item : list) {
-                            if (item instanceof Map) {
-                                Map<?, ?> map = (Map<?, ?>) item;
-                                String authorID = map.get("authorID") != null
-                                        ? map.get("authorID").toString()
-                                        : "";
-                                String title = map.get("title") != null
-                                        ? map.get("title").toString()
-                                        : "";
-                                String description = map.get("description") != null
-                                        ? map.get("description").toString()
-                                        : "";
-                                Date timeCreated = null;
-                                Object timeObj = map.get("time_created");
-                                if (timeObj instanceof com.google.firebase.Timestamp) {
-                                    com.google.firebase.Timestamp ts =
-                                            (com.google.firebase.Timestamp) timeObj;
-                                    timeCreated = ts.toDate();
-                                } else if (timeObj instanceof Date) {
-                                    timeCreated = (Date) timeObj;
-                                }
-                                String notificationID = map.get("notificationID") != null
-                                        ? map.get("notificationID").toString()
-                                        : "";
+                    AppNotification notification = new AppNotification(); // added
+                    // Map Firestore fields to AppNotification // added
+                    String authorID = document.getString("authorID"); // added
+                    String title = document.getString("title"); // added
+                    String description = document.getString("description"); // added
+                    Boolean read = document.getBoolean("read"); // added
+                    Object timeObj = document.get("time_created"); // added
 
-                                AppNotification notification = new AppNotification();
-                                notification.setAuthorID(authorID);
-                                notification.setTitle(title);
-                                notification.setDescription(description);
-                                notification.setTime_created(timeCreated);
-                                notification.setNotificationID(notificationID);
-                                notifications.add(notification);
-                            } else if (item instanceof AppNotification) {
-                                notifications.add((AppNotification) item);
-                            }
-                        }
-                    }
+                    notification.setNotificationID(document.getId()); // added
+                    notification.setAuthorID(authorID != null ? authorID : ""); // added
+                    notification.setTitle(title != null ? title : ""); // added
+                    notification.setDescription(description != null ? description : ""); // added
+                    notification.setRead(read != null ? read : false); // added
+
+                    if (timeObj instanceof com.google.firebase.Timestamp) { // added
+                        com.google.firebase.Timestamp ts = (com.google.firebase.Timestamp) timeObj; // added
+                        notification.setTime_created(ts.toDate()); // added
+                    } else if (timeObj instanceof Date) { // added
+                        notification.setTime_created((Date) timeObj); // added
+                    } else { // added
+                        notification.setTime_created(null); // added
+                    } // added
+
+                    notifications.add(notification); // added
                 }
             } else {
                 Toast.makeText(this, "Failed to load notifications.", Toast.LENGTH_SHORT).show();
@@ -314,89 +297,23 @@ public class AdminActivity extends AppCompatActivity implements AdminListAdapter
     }
 
     /**
-     * Delete a notification identified by notificationID from all users.
+     * Delete a notification document from Notifications collection.
      */
-    private void performDeleteNotification(@NonNull AppNotification notification) {
-        String targetNotificationID = notification.getNotificationID();
-        if (targetNotificationID == null || targetNotificationID.isEmpty()) {
-            Toast.makeText(this, "Notification ID is missing.", Toast.LENGTH_SHORT).show();
-            return;
-        }
+    private void performDeleteNotification(@NonNull AppNotification notification) { // modified
+        String targetNotificationID = notification.getNotificationID(); // modified
+        if (targetNotificationID == null || targetNotificationID.isEmpty()) { // modified
+            Toast.makeText(this, "Notification ID is missing.", Toast.LENGTH_SHORT).show(); // modified
+            return; // modified
+        } // modified
 
-        // Load all users again, remove this notification from each user's notifications list
-        databaseWorker.getAllUsers().addOnCompleteListener(task -> {
-            if (!task.isSuccessful() || task.getResult() == null) {
-                Toast.makeText(this, "Failed to delete notification.", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            QuerySnapshot snapshot = task.getResult();
-            // For each user, filter out the notification with matching ID
-            for (QueryDocumentSnapshot document : snapshot) {
-                Object raw = document.get("notifications");
-                if (!(raw instanceof ArrayList)) {
-                    continue;
-                }
-
-                ArrayList<?> list = (ArrayList<?>) raw;
-                List<AppNotification> newList = new ArrayList<>();
-                boolean changed = false;
-
-                for (Object item : list) {
-                    AppNotification n = null;
-                    if (item instanceof Map) {
-                        Map<?, ?> map = (Map<?, ?>) item;
-                        String nid = map.get("notificationID") != null
-                                ? map.get("notificationID").toString()
-                                : "";
-                        String authorID = map.get("authorID") != null
-                                ? map.get("authorID").toString()
-                                : "";
-                        String title = map.get("title") != null
-                                ? map.get("title").toString()
-                                : "";
-                        String description = map.get("description") != null
-                                ? map.get("description").toString()
-                                : "";
-                        Date timeCreated = null;
-                        Object timeObj = map.get("time_created");
-                        if (timeObj instanceof com.google.firebase.Timestamp) {
-                            com.google.firebase.Timestamp ts =
-                                    (com.google.firebase.Timestamp) timeObj;
-                            timeCreated = ts.toDate();
-                        } else if (timeObj instanceof Date) {
-                            timeCreated = (Date) timeObj;
-                        }
-
-                        n = new AppNotification();
-                        n.setNotificationID(nid);
-                        n.setAuthorID(authorID);
-                        n.setTitle(title);
-                        n.setDescription(description);
-                        n.setTime_created(timeCreated);
-                    } else if (item instanceof AppNotification) {
-                        n = (AppNotification) item;
-                    }
-
-                    if (n != null) {
-                        if (targetNotificationID.equals(n.getNotificationID())) {
-                            changed = true;
-                            // skip this one (delete)
-                        } else {
-                            newList.add(n);
-                        }
-                    }
-                }
-
-                if (changed) {
-                    String deviceID = document.getId();
-                    databaseWorker.updateUserNotifications(deviceID, newList);
-                }
-            }
-
-            Toast.makeText(this, "Notification deleted.", Toast.LENGTH_SHORT).show();
-            // Refresh aggregated notifications list
-            loadNotifications();
-        });
+        databaseWorker.deleteNotificationById(targetNotificationID) // added
+                .addOnSuccessListener(aVoid -> { // added
+                    Toast.makeText(this, "Notification deleted.", Toast.LENGTH_SHORT).show(); // added
+                    // Refresh list after deletion // added
+                    loadNotifications(); // added
+                }) // added
+                .addOnFailureListener(e -> { // added
+                    Toast.makeText(this, "Failed to delete notification.", Toast.LENGTH_SHORT).show(); // added
+                }); // added
     }
 }
