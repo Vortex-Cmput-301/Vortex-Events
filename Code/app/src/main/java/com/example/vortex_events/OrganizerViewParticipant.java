@@ -18,6 +18,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -84,6 +85,7 @@ public class OrganizerViewParticipant extends AppCompatActivity {
         ArrayList<RegisteredUser> acceptedList = new ArrayList<>();
         ArrayList<RegisteredUser> waitlistList = new ArrayList<>();
         ArrayList<RegisteredUser> deletedList = new ArrayList<>();
+        ArrayList<RegisteredUser> wonLotteryList = new ArrayList<>();
 
         FirebaseFirestore fs = FirebaseFirestore.getInstance();
         DatabaseWorker dbwork = new DatabaseWorker(fs);
@@ -95,19 +97,23 @@ public class OrganizerViewParticipant extends AppCompatActivity {
                 ArrayList<String> waitlistIds = (ArrayList<String>) documentSnapshot.get("waitlist");
                 ArrayList<String> declinedIds = (ArrayList<String>) documentSnapshot.get("declined");
 
+                ArrayList<String> wonLotteryIds = (ArrayList<String>) documentSnapshot.get("wonLottery");
+
                 Log.d(TAG, "Accepted IDs: " + acceptedIds);
                 Log.d(TAG, "Waitlist IDs: " + waitlistIds);
                 Log.d(TAG, "Declined IDs: " + declinedIds);
 
+                Log.d(TAG, "WonLottery IDs: " + wonLotteryIds);
+
                 int totalUsers = (acceptedIds != null ? acceptedIds.size() : 0) +
                                  (waitlistIds != null ? waitlistIds.size() : 0) +
-                                 (declinedIds != null ? declinedIds.size() : 0);
+                                 (declinedIds != null ? declinedIds.size() : 0) + (wonLotteryIds != null ? wonLotteryIds.size() : 0);
 
                 Log.d(TAG, "Total users to load: " + totalUsers);
 
                 if (totalUsers == 0) {
                     Log.d(TAG, "No users to load, setting up spinner immediately.");
-                    setupSpinnerListener(spinner, listAdapter, acceptedList, waitlistList, deletedList);
+                    setupSpinnerListener(spinner, listAdapter, acceptedList, waitlistList, deletedList,wonLotteryList);
                     return;
                 }
 
@@ -125,7 +131,7 @@ public class OrganizerViewParticipant extends AppCompatActivity {
                             }
                             if (usersLoaded.incrementAndGet() == totalUsers) {
                                 Log.d(TAG, "All users loaded. Setting up spinner.");
-                                setupSpinnerListener(spinner, listAdapter, acceptedList, waitlistList, deletedList);
+                                setupSpinnerListener(spinner, listAdapter, acceptedList, waitlistList, deletedList, wonLotteryList);
                             }
                         });
                     }
@@ -142,7 +148,7 @@ public class OrganizerViewParticipant extends AppCompatActivity {
                             }
                             if (usersLoaded.incrementAndGet() == totalUsers) {
                                 Log.d(TAG, "All users loaded. Setting up spinner.");
-                                setupSpinnerListener(spinner, listAdapter, acceptedList, waitlistList, deletedList);
+                                setupSpinnerListener(spinner, listAdapter, acceptedList, waitlistList, deletedList, wonLotteryList);
                             }
                         });
                     }
@@ -159,7 +165,24 @@ public class OrganizerViewParticipant extends AppCompatActivity {
                             }
                             if (usersLoaded.incrementAndGet() == totalUsers) {
                                 Log.d(TAG, "All users loaded. Setting up spinner.");
-                                setupSpinnerListener(spinner, listAdapter, acceptedList, waitlistList, deletedList);
+                                setupSpinnerListener(spinner, listAdapter, acceptedList, waitlistList, deletedList, wonLotteryList);
+                            }
+                        });
+                    }
+                }
+                if (wonLotteryIds != null) {
+                    for (String userId : wonLotteryIds) {
+                        Log.d(TAG, "Fetching user: " + userId);
+                        dbwork.getUserByDeviceID(userId).addOnSuccessListener(user -> {
+                            if (user != null) {
+                                Log.d(TAG, "User found: " + user.getName());
+                                wonLotteryList.add(user);
+                            } else {
+                                Log.d(TAG, "User not found for ID: " + userId);
+                            }
+                            if (usersLoaded.incrementAndGet() == totalUsers) {
+                                Log.d(TAG, "All users loaded. Setting up spinner.");
+                                setupSpinnerListener(spinner, listAdapter, acceptedList, waitlistList, deletedList, wonLotteryList);
                             }
                         });
                     }
@@ -176,11 +199,13 @@ public class OrganizerViewParticipant extends AppCompatActivity {
     private void setupSpinnerListener(Spinner spinner, UserAdapter listAdapter,
                                       ArrayList<RegisteredUser> acceptedList,
                                       ArrayList<RegisteredUser> waitlistList,
-                                      ArrayList<RegisteredUser> deletedList) {
+                                      ArrayList<RegisteredUser> deletedList,
+                                      ArrayList<RegisteredUser> wonLotteryList) {
         Log.d(TAG, "setupSpinnerListener called.");
         Log.d(TAG, "Final Accepted list size: " + acceptedList.size());
         Log.d(TAG, "Final Waitlist list size: " + waitlistList.size());
         Log.d(TAG, "Final Declined list size: " + deletedList.size());
+        Log.d(TAG, "Final WonLottery list size: " + wonLotteryList.size());
 
         spinner.setOnItemSelectedListener(
                 new AdapterView.OnItemSelectedListener() {
@@ -198,6 +223,9 @@ public class OrganizerViewParticipant extends AppCompatActivity {
                         } else if (selectedItem.equals("Declined")) {
                             Log.d(TAG, "Adding deletedList to adapter. Size: " + deletedList.size());
                             listAdapter.addAll(deletedList);
+                        } else if (selectedItem.equals("WonLottery")) {
+                            Log.d(TAG, "Adding wonLotteryList to adapter. Size: " + wonLotteryList.size());
+                            listAdapter.addAll(wonLotteryList);
                         }
                         Log.d(TAG, "Adapter count after addAll: " + listAdapter.getCount());
                         listAdapter.notifyDataSetChanged();
