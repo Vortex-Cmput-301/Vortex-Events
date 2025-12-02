@@ -90,7 +90,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
                 com.bumptech.glide.Glide.with(holder.itemView.getContext())
                         .load(decodedString)
-                        .fitCenter()
+                        .centerCrop()
                         .into(holder.eventThumbnail);
 
             } catch (Exception e) {
