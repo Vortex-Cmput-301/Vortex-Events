@@ -133,7 +133,7 @@ public class DatabaseWorker {
     public Task<Void> pushNotificationToDB(AppNotification notification){
         DocumentReference docuRef = notificationsRef.document(notification.notificationID);
 
-        return docRef.set(notification);
+        return docuRef.set(notification);
     }
 
     /**
