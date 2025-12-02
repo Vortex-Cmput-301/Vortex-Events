@@ -28,13 +28,13 @@ public class DatabaseWorker {
 
 
 
-    /**
-     * @Test for dependency injection
-     * DO NOT USE FOR NON TESTING PURPOSES
-     * */
+
     boolean userExists;
 
-
+    /**
+     * dependency injected constructer used for testing
+     * @param db_arg
+     * */
     public DatabaseWorker(FirebaseFirestore db_arg) {
         this.db = db_arg;
         this.eventsRef = db.collection("Events");
@@ -48,6 +48,9 @@ public class DatabaseWorker {
         }));
     }
 
+    /**
+     * default constructor
+     */
     public DatabaseWorker() {
         this.db = FirebaseFirestore.getInstance();
         this.eventsRef = db.collection("Events");
@@ -56,10 +59,19 @@ public class DatabaseWorker {
 
     }
 
+    /**
+     * check if user exists
+     * @return true if user exists, false if not
+     */
     public boolean isUserExists() {
         return userExists;
     }
 
+    /**
+     * create guest user
+     * @param guest
+     * @return
+     */
     public Task<Void> createGuest(GuestUser guest){
         DocumentReference docuRef = usersRef.document(guest.deviceID);
 
@@ -67,6 +79,11 @@ public class DatabaseWorker {
 
     }
 
+    /**
+     * check if user exists in database
+     * @param deviceID
+     * @param callBack
+     */
     public void checkIfIn(String deviceID, final UserCheckCallBack callBack){
 
 
@@ -93,7 +110,11 @@ public class DatabaseWorker {
         });
     }
 
-
+    /**
+     * create registered user
+     * @param user
+     * @return
+     */
     public Task<Void> createRegisteredUser(RegisteredUser user){
         DocumentReference docuRef = usersRef.document(user.deviceID);
 
@@ -101,8 +122,10 @@ public class DatabaseWorker {
     }
 
     /**
-     * For adding notifications to the database 11.22 - Saleh
-     * **/
+     * push notification to database
+     * @param notification notification object
+     * @return Task<Void>
+     */
     public Task<Void> pushNotificationToDB(AppNotification notification){
         DocumentReference docuRef = notificationsRef.document(notification.notificationID);
 
@@ -126,14 +149,22 @@ public class DatabaseWorker {
     }
 
     /**
-     * For adding notifications to the users 11.22 - Saleh
+     * For adding notifications to the users
+     * @param newNotifications the list of notifications to add
+     * @param userID the user to add the notifications to
+     * @return Task<Void> the task to add the notifications to the user
      * **/
     public Task<Void> pushNotiToUser(List<String> newNotifications, String userID){
         return usersRef.document(userID).update("notifications", newNotifications);
     }
 
 
-
+    /**
+     * create event
+     * @param maker the organizer of the event
+     * @param targetEvent the event to create
+     * @return Task<Void> task of creating the event
+     */
     public Task<Void> createEvent(Users maker, Event targetEvent){
         HashWorker hw = new HashWorker();
         targetEvent.setOrganizer(maker.deviceID);
@@ -142,73 +173,111 @@ public class DatabaseWorker {
 
         return docuref.set(targetEvent);
     }
+    /**
+     * update event
+     * @param targetEvent the event to update
+     * @return Task<Void> task of updating the event
+     */
     public Task<Void> updateEvent(Event targetEvent) {
         DocumentReference docuref = eventsRef.document(targetEvent.getEventID());
 
         return docuref.set(targetEvent);
     }
 
-    // modified: delete event and remove it from all users' signed_up_events
+    /**
+     * delete event
+     * @param targetEvent the event to delete
+     * @return the task associated with the delete
+     */
     public Task<Void> deleteEvent(Event targetEvent) { // modified
-        if (targetEvent == null || targetEvent.getEventID() == null || targetEvent.getEventID().isEmpty()) { // added
-            Log.e("DatabaseWorker", "deleteEvent: event or eventID is null/empty"); // added
-            return null; // added
-        } // added
+        if (targetEvent == null || targetEvent.getEventID() == null || targetEvent.getEventID().isEmpty()) { 
+            Log.e("DatabaseWorker", "deleteEvent: event or eventID is null/empty"); 
+            return null; 
+        } 
 
-        String targetEventId = targetEvent.getEventID(); // added
+        String targetEventId = targetEvent.getEventID(); 
 
-        // Step 1: query all users whose signed_up_events contains this eventID // added
-        return usersRef.whereArrayContains("signed_up_events", targetEventId) // added
-                .get() // added
-                .continueWithTask(task -> { // added
-                    if (!task.isSuccessful()) { // added
-                        Exception e = task.getException(); // added
-                        Log.e("DatabaseWorker", "Failed to query users for event cleanup", e); // added
-                        throw e != null ? e : new Exception("Unknown error querying users for event cleanup"); // added
-                    } // added
+        // Step 1: query all users whose signed_up_events contains this eventID 
+        return usersRef.whereArrayContains("signed_up_events", targetEventId) 
+                .get() 
+                .continueWithTask(task -> { 
+                    if (!task.isSuccessful()) { 
+                        Exception e = task.getException(); 
+                        Log.e("DatabaseWorker", "Failed to query users for event cleanup", e); 
+                        throw e != null ? e : new Exception("Unknown error querying users for event cleanup"); 
+                    } 
 
-                    QuerySnapshot querySnapshot = task.getResult(); // added
-                    if (querySnapshot != null) { // added
-                        for (DocumentSnapshot userDoc : querySnapshot.getDocuments()) { // added
-                            List<String> signedUpEvents = (List<String>) userDoc.get("signed_up_events"); // added
-                            if (signedUpEvents != null && signedUpEvents.contains(targetEventId)) { // added
-                                signedUpEvents.remove(targetEventId); // added
-                                usersRef.document(userDoc.getId()) // added
-                                        .update("signed_up_events", signedUpEvents) // added
-                                        .addOnFailureListener(e -> Log.e("DatabaseWorker", "Failed to update signed_up_events for user: " + userDoc.getId(), e)); // added
-                            } // added
-                        } // added
-                    } // added
+                    QuerySnapshot querySnapshot = task.getResult(); 
+                    if (querySnapshot != null) { 
+                        for (DocumentSnapshot userDoc : querySnapshot.getDocuments()) { 
+                            List<String> signedUpEvents = (List<String>) userDoc.get("signed_up_events"); 
+                            if (signedUpEvents != null && signedUpEvents.contains(targetEventId)) { 
+                                signedUpEvents.remove(targetEventId); 
+                                usersRef.document(userDoc.getId()) 
+                                        .update("signed_up_events", signedUpEvents) 
+                                        .addOnFailureListener(e -> Log.e("DatabaseWorker", "Failed to update signed_up_events for user: " + userDoc.getId(), e)); 
+                            } 
+                        } 
+                    } 
 
-                    // Step 2: delete the event document itself // added
-                    DocumentReference docRef = eventsRef.document(targetEventId); // added
-                    return docRef.delete(); // added
-                }); // added
+                    // Step 2: delete the event document itself 
+                    DocumentReference docRef = eventsRef.document(targetEventId); 
+                    return docRef.delete(); 
+                }); 
     }
 
 
-
+    /**
+     * get all events by organizer
+     * @param organizer organizer of the event
+     * @return Task<QuerySnapshot> task of getting all events by organizer
+     */
     public Task<QuerySnapshot> getOrganizerEvents(String organizer) {
         return eventsRef.whereEqualTo("organizer", organizer).get();
     }
 
+    /**
+     * get all events by eventID
+     * @param eventID eventID of the event
+     * @return Task<QuerySnapshot> task of getting all events by eventID
+     * */
     public Task<QuerySnapshot> getEventWaitlist(String eventID) {
         return eventsRef.document(eventID).collection("waitlist").get();
     }
-
+    
+    /**
+     * get all accepted users for an event
+     * @param eventID eventID of the event
+     * @return Task<QuerySnapshot> task of getting all accepted users for an event
+     */
     public Task<QuerySnapshot> getEventAccepted(String eventID) {
         return eventsRef.document(eventID).collection("accepted").get();
     }
 
+    /**
+     * get all declined users for an event
+     * @param eventID eventID of the event
+     * @return Task<QuerySnapshot> task of getting all declined users for an event
+     */
     public Task<QuerySnapshot> getEventDeclined(String eventID) {
         return eventsRef.document(eventID).collection("declined").get();
     }
 
+    /**
+     * update waitlist for an event
+     * @param newList new waitlist
+     * @param eventID eventID of the event
+     * @return Task<Void> task of updating waitlist for an event
+     */
     public Task<Void> updateWaitlist(List<String> newList, String eventID){
        return eventsRef.document(eventID).update("waitlist", newList);
     }
 
-
+    /**
+     * get event by ID
+     * @param id event ID
+     * @return Task<DocumentSnapshot>
+     */
     public Task<DocumentSnapshot> getEventByID(String id) {
         return eventsRef.document(id).get();
     }

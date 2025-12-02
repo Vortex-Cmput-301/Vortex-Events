@@ -54,6 +54,10 @@ public class AdminListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     // ========= Public setters =========
 
+    /**
+     * Sets the data for the given tab.
+     * @param newUsers The new list of users.
+     * */
     public void setUsers(List<RegisteredUser> newUsers) {
         currentTab = AdminTabType.USERS;
         users.clear();
@@ -63,6 +67,10 @@ public class AdminListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         notifyDataSetChanged();
     }
 
+    /**
+     * Sets the data for the given tab.
+     * @param newImages The new list of images.
+     * */
     public void setImages(List<String> newImages) {
         currentTab = AdminTabType.IMAGES;
         images.clear();
@@ -72,6 +80,10 @@ public class AdminListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         notifyDataSetChanged();
     }
 
+    /**
+     * Sets the data for the given tab.
+     * @param newNotifications The new list of notifications.
+     * */
     public void setNotifications(List<AppNotification> newNotifications) {
         currentTab = AdminTabType.NOTIFICATIONS;
         notifications.clear();
@@ -81,12 +93,19 @@ public class AdminListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         notifyDataSetChanged();
     }
 
+    /**
+     * Returns the current tab.
+     * @return The current tab.
+     * */
     public AdminTabType getCurrentTab() {
         return currentTab;
     }
 
-    // ========= RecyclerView.Adapter =========
-
+    /**
+     * Get the view type for the given position.
+     * @param position The position of the tab.
+     * @return The current tab.
+     **/
     @Override
     public int getItemViewType(int position) {
         switch (currentTab) {
@@ -101,12 +120,20 @@ public class AdminListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
     }
 
+
+    /**
+     * Create a new ViewHolder for the given view type.
+     * @param parent The parent ViewGroup.
+     * @param viewType The type of view to create.
+     * @return The created ViewHolder.
+     */
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(
             @NonNull ViewGroup parent,
             int viewType
-    ) {
+    )
+    {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 
         if (viewType == VIEW_TYPE_USER) {
@@ -121,6 +148,11 @@ public class AdminListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
     }
 
+    /**
+     * Bind the data for the given position to the ViewHolder.
+     * @param holder The ViewHolder to bind data to.
+     * @param position The position of the data.
+     */
     @Override
     public void onBindViewHolder(
             @NonNull RecyclerView.ViewHolder holder,
@@ -135,6 +167,10 @@ public class AdminListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
     }
 
+    /**
+     * Get the number of items for the current tab.
+     * @return The number of items.
+     */
     @Override
     public int getItemCount() {
         switch (currentTab) {
@@ -151,6 +187,11 @@ public class AdminListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     // ========= Bind methods =========
 
+    /**
+     * Bind user data to the given ViewHolder.
+     * @param holder The ViewHolder to bind data to.
+     * @param position The position of the data.
+     */
     private void bindUser(@NonNull UserViewHolder holder, int position) {
         RegisteredUser user = users.get(position);
         String name = user.getName() != null ? user.getName() : "Unknown user";
@@ -166,6 +207,11 @@ public class AdminListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         });
     }
 
+    /**
+     * Bind image data to the given ViewHolder.
+     * @param holder The ViewHolder to bind data to.
+     * @param position The position of the data.
+     */
     private void bindImage(@NonNull ImageViewHolder holder, int position) {
         String base64 = images.get(position);
 
@@ -190,6 +236,11 @@ public class AdminListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         });
     }
 
+    /**
+     * Bind notification data to the given ViewHolder.
+     * @param holder The ViewHolder to bind data to.
+     * @param position The position of the data.
+     */
     private void bindNotification(@NonNull NotificationViewHolder holder, int position) {
         AppNotification notification = notifications.get(position);
 
@@ -218,11 +269,18 @@ public class AdminListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     // ========= ViewHolders =========
 
+    /**
+     * ViewHolder for users.
+     */
     static class UserViewHolder extends RecyclerView.ViewHolder {
         ImageView avatarImageView;
         TextView nameTextView;
         TextView timeTextView;
 
+        /**
+         * Constructor for UserViewHolder.
+         * @param itemView The view for this ViewHolder.
+         */
         UserViewHolder(@NonNull View itemView) {
             super(itemView);
             avatarImageView = itemView.findViewById(R.id.imgAvatar);
@@ -231,20 +289,34 @@ public class AdminListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
     }
 
+    /**
+     * ViewHolder for images.
+     */
     static class ImageViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
 
+        /**
+         * Constructor for ImageViewHolder.
+         * @param itemView The view for this ViewHolder.
+         */
         ImageViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.image_admin_event);
         }
     }
 
+    /**
+     * ViewHolder for notifications.
+     */
     static class NotificationViewHolder extends RecyclerView.ViewHolder {
         TextView titleTextView;
         TextView messageTextView;
         TextView timeTextView;
 
+        /**
+         * Constructor for NotificationViewHolder.
+         * @param itemView The view for this ViewHolder.
+         */
         NotificationViewHolder(@NonNull View itemView) {
             super(itemView);
             titleTextView = itemView.findViewById(R.id.text_notification_title);

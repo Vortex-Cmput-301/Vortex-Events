@@ -88,7 +88,9 @@ public class AccountSettings extends AppCompatActivity {
     }
 
 
-
+    /**
+    * Sets up the click listeners for the buttons.
+    * */
     private void setupClickListeners() {
         buttonBack.setOnClickListener(v -> finish()); // Simply close the activity
 

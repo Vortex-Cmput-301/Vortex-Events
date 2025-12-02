@@ -186,7 +186,10 @@ public class EditEvents extends AppCompatActivity {
         });
 
     }
-
+    
+    /**
+     * Initialize UI elements
+     */
     private void initViews() {
         etEventName = findViewById(R.id.et_event_name);
         etLocation = findViewById(R.id.et_location);
@@ -205,8 +208,10 @@ public class EditEvents extends AppCompatActivity {
         findViewById(R.id.iv_upload_icon).setVisibility(View.GONE);
     }
 
+    /**
+     * Load existing event data from the database
+     */
     private void loadEventData() {
-
 
         dbWorker.getEventByID(eventID).addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
@@ -225,7 +230,10 @@ public class EditEvents extends AppCompatActivity {
         });
     }
 
-
+    /**
+     * Populate UI fields with event data
+     * @param event Event object containing data
+     */
     private void populateFields(Event event) {
 
         etEventName.setText(event.getName());
@@ -271,6 +279,11 @@ public class EditEvents extends AppCompatActivity {
         }
     }
 
+    /**
+     * Encode image from URI to Base64 string after resizing and compressing
+     * @param imageUri URI of the image
+     * @return Base64 encoded string of the image
+     */
     private String encodeImage(Uri imageUri) {
         try {
             //Get Bitmap
