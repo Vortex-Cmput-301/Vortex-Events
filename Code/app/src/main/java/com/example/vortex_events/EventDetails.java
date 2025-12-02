@@ -494,10 +494,5 @@ public class EventDetails extends AppCompatActivity {
         });
 
     }
-    public void switchToDeclined(String userID){
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("Events")
-                .document(EventID)
-                .update("waitlist", FieldValue.arrayRemove(userID), "declined", FieldValue.arrayUnion(userID));
-    }
+
 }
