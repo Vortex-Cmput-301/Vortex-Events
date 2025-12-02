@@ -20,7 +20,7 @@
         android:textSize="28sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@+id/imageView_profile"
-        app:layout_constraintStart_toEndOf="@+id/imageButton"
+        app:layout_constraintStart_toEndOf="@+id/backButton"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton

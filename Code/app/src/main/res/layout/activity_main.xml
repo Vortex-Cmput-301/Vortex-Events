@@ -117,8 +117,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@color/white"
-        app:itemIconSize="30dp"
+        android:outlineAmbientShadowColor="@color/black"
         style="@style/Widget.App.BottomNavigationView"
+        android:layout_gravity="bottom"
+        app:itemIconSize="30dp"
         app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/bottom_nav_menu" />

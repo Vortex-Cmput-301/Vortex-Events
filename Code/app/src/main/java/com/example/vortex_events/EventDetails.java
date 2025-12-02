@@ -124,6 +124,17 @@ public class EventDetails extends AppCompatActivity {
         Button accept = findViewById(R.id.accept);
         mapButton.setVisibility(View.GONE);
 
+        ImageButton backButton = findViewById(R.id.backButton);
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+
+
         moreButton = findViewById(R.id.btn_more);
         if (moreButton != null) { //hide by default
             moreButton.setVisibility(View.GONE);
