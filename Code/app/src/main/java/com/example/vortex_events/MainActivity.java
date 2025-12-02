@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -13,6 +15,7 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -30,10 +33,12 @@ import com.google.firebase.messaging.FirebaseMessaging;
 
 public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerViewPastEvents;
+    private ConstraintLayout layoutEmptyState;
     private PastEventAdapter pastEventAdapter;
     private List<Event> pastEventList = new ArrayList<>();
     private DatabaseWorker databaseWorker;
     private TextView homeTitleTextView;
+    private Button exploreButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,13 +49,16 @@ public class MainActivity extends AppCompatActivity {
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
             return insets;
         });
 
         databaseWorker = new DatabaseWorker();
 
         recyclerViewPastEvents = findViewById(R.id.recyclerView_past_events);
+        layoutEmptyState = findViewById(R.id.layoutEmptyState);
+        exploreButton = findViewById(R.id.btnExplore);
+
         pastEventAdapter = new PastEventAdapter(pastEventList, this);
         recyclerViewPastEvents.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewPastEvents.setAdapter(pastEventAdapter);
@@ -62,6 +70,13 @@ public class MainActivity extends AppCompatActivity {
             profileButton.setOnClickListener(v -> {
                 Intent intent = new Intent(getApplicationContext(), Profile.class);
                 intent.putExtra("prev_activity", "home");
+                startActivity(intent);
+            });
+        }
+
+        if (exploreButton != null) {
+            exploreButton.setOnClickListener(v -> {
+                Intent intent = new Intent(getApplicationContext(), ExplorePage.class);
                 startActivity(intent);
             });
         }
@@ -139,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
                         String baseText = "Welcome";
                         String userName = user.getName();
                         if (userName != null && !userName.trim().isEmpty()) {
-                            homeTitleTextView.setText(baseText + " " + userName.trim());
+                            homeTitleTextView.setText(baseText + ",\n" + userName.trim());
                         } else {
                             homeTitleTextView.setText(baseText);
                         }
@@ -175,6 +190,9 @@ public class MainActivity extends AppCompatActivity {
                         }
                         loadedCount[0]++;
                         if (loadedCount[0] == eventIDs.size()) {
+
+                            recyclerViewPastEvents.setVisibility(View.VISIBLE);
+                            layoutEmptyState.setVisibility(View.GONE);
                             pastEventAdapter.notifyDataSetChanged();
                         }
                     })

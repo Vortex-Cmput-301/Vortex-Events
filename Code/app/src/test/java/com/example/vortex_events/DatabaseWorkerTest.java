@@ -85,8 +85,7 @@ public class DatabaseWorkerTest {
     }
 
     private Users createMockRegisteredUser() {
-        RegisteredUser user = new RegisteredUser(deviceID, phoneNumber, email, name, token, latitude, longitude, type);
-        user.setDeviceID("fake ID");
+        RegisteredUser user = new RegisteredUser("fakeID", "780-THE-GOAT", "elbron@gamil.com", "Lebron","token", 0.0, 0.0, "Registered User", true);
         return user;
     }
 
