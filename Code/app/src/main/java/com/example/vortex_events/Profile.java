@@ -160,7 +160,8 @@ public class Profile extends AppCompatActivity {
                             "randomw tokenb",
                             0.0,                  // latitude placeholder
                             0.0,                  // longitude placeholder
-                            "Guest"               // type placeholder
+                            "Guest" ,
+                            false// type placeholder
                     );
 
 //                    GuestUser tempUser = new GuestUser(this);

@@ -10,6 +10,7 @@ public class RegisteredUser extends Users{
     String phone_number;
     String email;
     String name;
+    boolean notifications_opted;
     String notificationToken;
     double latitude;
     double longitude;
@@ -24,7 +25,7 @@ public class RegisteredUser extends Users{
     public static final String STATUS_NOT_CHOSEN = "NOT_CHOSEN";
     public static final String STATUS_REGISTERED = "REGISTERED";
 
-    public RegisteredUser(String deviceID, String phoneNumber, String email, String name, String token, double latitude, double longitude, String type){}
+    public RegisteredUser(String deviceID, String phoneNumber, String email, String name, String token, double latitude, double longitude, String type, boolean opted){}
 
     public ArrayList<String> getCreated_events() {
         return created_events;
@@ -106,7 +107,15 @@ public class RegisteredUser extends Users{
         this.signed_up_events = signed_up_events;
     }
 
-    public RegisteredUser(Context context, String number, String email, String name, String notificationToken, double latitude, double longitude){
+    public boolean isNotifications_opted() {
+        return notifications_opted;
+    }
+
+    public void setNotifications_opted(boolean notifications_opted) {
+        this.notifications_opted = notifications_opted;
+    }
+
+    public RegisteredUser(Context context, String number, String email, String name, String notificationToken, double latitude, double longitude, boolean opted){
         super(context);
         this.phone_number = number;
         this.email = email;
@@ -120,9 +129,10 @@ public class RegisteredUser extends Users{
         this.created_events = new ArrayList<>();
         this.event_history = new HashMap<>();
         this.notifications = new ArrayList<>();
+        this.notifications_opted = opted;
     }
 
-    public RegisteredUser(String deviceID, String number, String email, String name, String notificationToken, double latitude, double longitude){
+    public RegisteredUser(String deviceID, String number, String email, String name, String notificationToken, double latitude, double longitude, boolean opted){
         this.deviceID = deviceID;
         this.phone_number = number;
         this.email = email;
@@ -137,6 +147,8 @@ public class RegisteredUser extends Users{
         this.event_history = new HashMap<>();
         this.notifications = new ArrayList<>();
         this.type = "Registered User";
+        this.notifications_opted = opted;
+
     }
 
 //    public RegisteredUser(String Id, String number, String email, String name, double latitude, double longitude){

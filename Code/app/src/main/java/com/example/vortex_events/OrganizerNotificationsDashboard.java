@@ -115,23 +115,7 @@ public class OrganizerNotificationsDashboard extends AppCompatActivity {
                 List<Task<?>> tasks = new ArrayList<>();
 
                 for (String user: group){
-//                    dbWorker.getUserByDeviceID(user).addOnCompleteListener(new OnCompleteListener<RegisteredUser>() {
-//                        @Override
-//                        public void onComplete(@NonNull Task<RegisteredUser> task) {
-//
-//                            if (task.isSuccessful()){
-//                                countdown = countdown - 1;
-//                                RegisteredUser user = task.getResult();
-//                                ArrayList<String> notificartions = user.notifications;
-//                                notificartions.add(notification_id);
-//                                dbWorker.pushNotiToUser(notificartions, user.deviceID);
-//                                recievers.add(user.notificationToken);
-//                                Log.d("NOTIFICATIONM SENDING", "WORKED");
-//                            }else {
-//                                Log.d("USER FETCHING", "USER DONT EXIST");
-//                            }
-//                        }
-//                    });
+
 
                     Task<RegisteredUser> t = dbWorker.getUserByDeviceID(user);
                     tasks.add(t);
@@ -139,11 +123,16 @@ public class OrganizerNotificationsDashboard extends AppCompatActivity {
                     t.addOnCompleteListener(task -> {
                                 if (task.isSuccessful()){
                                 RegisteredUser notifee = task.getResult();
-                                ArrayList<String> notificartions = notifee.notifications;
-                                notificartions.add(notification_id);
-                                dbWorker.pushNotiToUser(notificartions, notifee.deviceID);
-                                recievers.add(notifee.notificationToken);
-                                Log.d("NOTIFICATIONM SENDING", "WORKED");
+
+
+                                if (notifee.notifications_opted){
+                                    ArrayList<String> notificartions = notifee.notifications;
+                                    notificartions.add(notification_id);
+                                    dbWorker.pushNotiToUser(notificartions, notifee.deviceID);
+                                    recievers.add(notifee.notificationToken);
+                                    Log.d("NOTIFICATIONM SENDING", "WORKED");
+                                }
+
                             }else {
                                 Log.d("USER FETCHING", "USER DONT EXIST");
                             }

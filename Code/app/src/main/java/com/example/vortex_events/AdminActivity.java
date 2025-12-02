@@ -153,7 +153,8 @@ public class AdminActivity extends AppCompatActivity implements AdminListAdapter
                             document.getString("name"),
                             document.getString("notificationToken"),
                             lat != null ? lat : 0.0,
-                            lng != null ? lng : 0.0
+                            lng != null ? lng : 0.0,
+                            document.getBoolean("notifications_opted")
                     );
                     user.setDeviceID(document.getString("deviceID"));
                     users.add(user);

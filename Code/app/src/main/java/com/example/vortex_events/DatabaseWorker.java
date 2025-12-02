@@ -329,6 +329,7 @@ public class DatabaseWorker {
             double longitude = document.getDouble("longitude");
             String type = document.getString("type");
             String token = document.getString("notificationToken");
+            Boolean opted = document.getBoolean("notifications_opted");
 
 
             // Handle lists - get them from document or create empty lists
@@ -338,7 +339,7 @@ public class DatabaseWorker {
             List<AppNotification> notifications = (List<AppNotification>) document.get("notifications");
 
             // Create RegisteredUser object
-            RegisteredUser user = new RegisteredUser(deviceID, phoneNumber, email, name, token, latitude, longitude);
+            RegisteredUser user = new RegisteredUser(deviceID, phoneNumber, email, name, token, latitude, longitude, opted);
 
             // Set the lists
             if (signedUpEvents != null) {
