@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -16,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -29,6 +31,7 @@ public class AccountSettings extends AppCompatActivity {
     private EditText editTextName, editTextEmail, editTextPhone;
     private Button buttonSaveChanges;
     private ImageView buttonBack;
+    private SwitchMaterial optOut;
 
     // Firebase Components
     private FirebaseAuth mAuth;
@@ -47,10 +50,12 @@ public class AccountSettings extends AppCompatActivity {
         editTextPhone = findViewById(R.id.edit_text_phone);
         buttonSaveChanges = findViewById(R.id.button_save_changes);
         buttonBack = findViewById(R.id.button_back);
+        optOut = findViewById(R.id.switch_notifications);
 
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         dbWorker = new DatabaseWorker();
+
 
         @SuppressLint("HardwareIds") String userID = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
         dbWorker.getUserByDeviceID(userID).addOnCompleteListener(new OnCompleteListener<RegisteredUser>() {
@@ -82,6 +87,8 @@ public class AccountSettings extends AppCompatActivity {
         loadUserData();
     }
 
+
+
     private void setupClickListeners() {
         buttonBack.setOnClickListener(v -> finish()); // Simply close the activity
 
@@ -105,10 +112,12 @@ public class AccountSettings extends AppCompatActivity {
                     String name = document.getString("name");
                     String email = document.getString("email");
                     String phone = document.getString("phone_number"); // Make sure this field name matches your Firestore document
+                    Boolean opt = document.getBoolean("notifications_opted");
 
                     editTextName.setText(name);
                     editTextEmail.setText(email);
                     editTextPhone.setText(phone);
+                    optOut.setChecked(opt);
 
                 } else {
                     Log.d(TAG, "No such document for user: " + currentUser);
@@ -131,6 +140,8 @@ public class AccountSettings extends AppCompatActivity {
         String newName = editTextName.getText().toString().trim();
         String newEmail = editTextEmail.getText().toString().trim();
         String newPhone = editTextPhone.getText().toString().trim();
+        Boolean newopt = optOut.isChecked();
+
 
         // Basic validation: ensure the name is not empty
         if (newName.isEmpty()) {
@@ -146,7 +157,8 @@ public class AccountSettings extends AppCompatActivity {
         Map<String, Object> userData = new HashMap<>();
         userData.put("name", newName);
         userData.put("email", newEmail);
-        userData.put("phone_number", newPhone); // Ensure this key matches your Firestore field name
+        userData.put("phone_number", newPhone);
+        userData.put("notifications_opted", newopt);// Ensure this key matches your Firestore field name
 
         // Update the document in Firestore
         userDocRef.update(userData)

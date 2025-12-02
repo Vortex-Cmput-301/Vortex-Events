@@ -275,6 +275,8 @@ public class DatabaseWorker {
             if (task.isSuccessful()) {
                 DocumentSnapshot document = task.getResult();
                 if (document != null && document.exists()) {
+                    Log.d("DatabaseWorker", "Returning user document");
+
                     return convertDocumentToRegisteredUser(document);
                 } else {
                     Log.d("DatabaseWorker", "User not found with deviceID: " + deviceID);
@@ -319,13 +321,15 @@ public class DatabaseWorker {
      */
     private RegisteredUser convertDocumentToRegisteredUser(DocumentSnapshot document) {
         try {
-            String deviceID = document.getId();
+            String deviceID = document.getString("deviceID");
             String phoneNumber = document.getString("phone_number");
             String email = document.getString("email");
             String name = document.getString("name");
             double latitude = document.getDouble("latitude");
             double longitude = document.getDouble("longitude");
             String type = document.getString("type");
+            String token = document.getString("notificationToken");
+            Boolean opted = document.getBoolean("notifications_opted");
 
 
             // Handle lists - get them from document or create empty lists
@@ -335,7 +339,7 @@ public class DatabaseWorker {
             List<AppNotification> notifications = (List<AppNotification>) document.get("notifications");
 
             // Create RegisteredUser object
-            RegisteredUser user = new RegisteredUser(deviceID, phoneNumber, email, name, latitude, longitude, type);
+            RegisteredUser user = new RegisteredUser(deviceID, phoneNumber, email, name, token, latitude, longitude, opted);
 
             // Set the lists
             if (signedUpEvents != null) {
