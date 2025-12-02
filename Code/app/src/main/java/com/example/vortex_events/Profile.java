@@ -70,11 +70,13 @@ public class Profile extends AppCompatActivity {
         View userInitialView = findViewById(R.id.textView_user_initial);
         View account_settings = findViewById((R.id.button_account_settings));
 
-        // Back button behavior:
-        // - When opened normally, system back will return to previous screen (e.g., Explore).
-        // - When opened from AdminActivity, system back will return to AdminActivity.
-        back_button.setOnClickListener(v -> finish());
 
+        back_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
         account_settings.setOnClickListener(v -> {
             Intent intent = new Intent(getApplicationContext(), AccountSettings.class);
             startActivity(intent);
