@@ -43,7 +43,6 @@ android {
 
 dependencies {
     implementation("com.github.bumptech.glide:glide:4.16.0")
-    implementation("com.google.android.material:material:1.10.0")
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
@@ -51,12 +50,8 @@ dependencies {
     implementation(libs.firebase.database)
     implementation(libs.monitor)
     implementation(libs.core)
-    implementation(libs.firebase.firestore)
-    implementation(libs.firebase.auth)
     implementation(libs.play.services.location)
     implementation(libs.play.services.maps)
-    implementation(libs.play.services.location)
-    implementation(libs.firebase.messaging)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -78,9 +73,9 @@ dependencies {
 
 
     // Add the dependencies for any other desired Firebase products
-    implementation(platform("com.google.firebase:firebase-bom:34.3.0"))
     implementation("com.google.firebase:firebase-firestore")
     implementation ("com.google.firebase:firebase-messaging")
+    implementation("com.google.firebase:firebase-auth")
     // https://firebase.google.com/docs/android/setup#available-libraries
 
 
