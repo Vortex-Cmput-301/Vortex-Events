@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
     tools:context=".SearchEvents">
 
 
@@ -34,22 +35,24 @@
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
+        style="@style/Widget.App.BottomNavigationView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
         android:background="@color/white"
         android:outlineAmbientShadowColor="@color/black"
         app:itemIconSize="30dp"
         app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:menu="@menu/bottom_nav_menu"/>
+        app:menu="@menu/bottom_nav_menu" />
 
     <TextView
         android:id="@+id/searchHeader"
         android:layout_width="325dp"
         android:layout_height="61dp"
         android:layout_marginTop="24dp"
-        android:fontFamily="@font/league_gothic"
+        android:fontFamily="sans-serif-black"
         android:text="Search Results"
         android:textSize="44sp"
         app:layout_constraintEnd_toEndOf="parent"

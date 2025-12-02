@@ -422,6 +422,13 @@ public class DatabaseWorker {
                 event.setWaitlist(new ArrayList<>());
             }
 
+            List<String> wonUserIDs = (List<String>) document.get("wonLottery");
+            if (waitlistUserIDs != null) {
+                event.setWonLottery(new ArrayList<>(wonUserIDs));
+            } else {
+                event.setWonLottery(new ArrayList<>());
+            }
+
             return event;
 
         } catch (Exception e) {

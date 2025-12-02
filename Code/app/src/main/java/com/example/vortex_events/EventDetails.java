@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,6 +40,7 @@ import com.google.zxing.WriterException;
 import com.bumptech.glide.Glide;
 import android.app.AlertDialog;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 
 public class EventDetails extends AppCompatActivity {
@@ -76,6 +78,16 @@ public class EventDetails extends AppCompatActivity {
 
     ImageView qrImage;
 
+    ArrayList<String> wonLottery;
+
+    ArrayList<String> waitList;
+
+    ArrayList<String> accepted;
+
+    ArrayList<String> declined;
+
+
+
 
     @SuppressLint("HardwareIds")
     @Override
@@ -109,7 +121,20 @@ public class EventDetails extends AppCompatActivity {
         editEventButton = findViewById(R.id.edit_event_button);
         notifcationsDashBoardButton = findViewById(R.id.organizer_notifications_button);
         Button mapButton = findViewById(R.id.btn_details_open_map);
+        Button decline = findViewById(R.id.decline);
+        Button accept = findViewById(R.id.accept);
         mapButton.setVisibility(View.GONE);
+
+        ImageButton backButton = findViewById(R.id.backButton);
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+
 
         moreButton = findViewById(R.id.btn_more);
         if (moreButton != null) { //hide by default
@@ -149,11 +174,20 @@ public class EventDetails extends AppCompatActivity {
                 time = event.getStart_time();
                 orgID = event.getOrganizer();
                 image = event.getImage();
+                wonLottery =  new ArrayList<>();
+                if (event.getWonLottery()!= null){
+                    wonLottery = event.getWonLottery();
+                }
+
+                waitList = event.getWaitlist();
+                declined = event.getDeclined();
+                accepted = event.getAccepted();
+
 
                 if (image != null && !image.isEmpty()) {
                     try {
 
-                        byte[] imageBytes = android.util.Base64.decode(image, android.util.Base64.DEFAULT);
+                        byte[] imageBytes = Base64.decode(image, Base64.DEFAULT);
 
 
                         Glide.with(this).load(imageBytes).into(posterPreview);
@@ -199,6 +233,18 @@ public class EventDetails extends AppCompatActivity {
                 } catch (WriterException e) {
                     Log.e("EventDetails", "Failed to generate QR", e);
                 }
+
+                Log.d("LotteryDebug", "--------------------------------------------------");
+                Log.d("LotteryDebug", "My Device ID: " + deviceID);
+                Log.d("LotteryDebug", "Waitlist: " + waitList.toString());
+                Log.d("LotteryDebug", "Won Lottery List: " + wonLottery.toString());
+
+                boolean isInWaitlist = waitList.contains(deviceID);
+                boolean isInWonList = wonLottery.contains(deviceID);
+
+                Log.d("LotteryDebug", "In Waitlist: " + isInWaitlist);
+                Log.d("LotteryDebug", "In wonlist: " + isInWonList);
+                Log.d("LotteryDebug", "--------------------------------------------------");
 
 
 
@@ -249,8 +295,9 @@ public class EventDetails extends AppCompatActivity {
 
 
 
+
                 }else{
-                    if (event.getWaitlist().contains(deviceID)) {
+                    if (waitList.contains(deviceID)) {
                         signupButton.setText("Registered, leave or edit");
 //                    Listener for sign up for event
                         signupButton.setOnClickListener(new View.OnClickListener() {
@@ -263,7 +310,74 @@ public class EventDetails extends AppCompatActivity {
                                 startActivity(intent);
                             }
                         });
-                    }else{
+
+                    }else if (wonLottery.contains(deviceID)){
+                        signupButton.setVisibility(View.GONE);
+                        accept.setVisibility(VISIBLE);
+                        decline.setVisibility(VISIBLE);
+
+                        accept.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+                                accepted.add(deviceID);
+                                wonLottery.remove(deviceID);
+
+
+                                db.collection("Events").document(EventID)
+                                        .update("accepted", accepted, "wonLottery", wonLottery)
+                                        .addOnSuccessListener(aVoid -> {
+                                            Toast.makeText(EventDetails.this, "Invitation Accepted!", Toast.LENGTH_SHORT).show();
+
+                                            // Update UI
+                                            accept.setVisibility(View.GONE);
+                                            decline.setVisibility(View.GONE);
+                                            signupButton.setText("Registered (Accepted)");
+                                            signupButton.setVisibility(View.VISIBLE);
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            Toast.makeText(EventDetails.this, "Error: Could not save.", Toast.LENGTH_SHORT).show();
+                                            Log.e("EventDetails", "Accept failed", e);
+                                        });
+                            }
+                        });
+
+
+                        decline.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+                                declined.add(deviceID);
+                                wonLottery.remove(deviceID);
+
+
+                                db.collection("Events").document(EventID)
+                                        .update("declined", declined, "wonLottery", wonLottery ).addOnSuccessListener(aVoid -> {
+                                            Toast.makeText(EventDetails.this, "Invitation Declined", Toast.LENGTH_SHORT).show();
+
+                                            accept.setVisibility(View.GONE);
+                                            decline.setVisibility(View.GONE);
+                                            signupButton.setText("Declined");
+                                            signupButton.setVisibility(View.VISIBLE);
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            Toast.makeText(EventDetails.this, "Error: Could not save.", Toast.LENGTH_SHORT).show();
+                                            Log.e("EventDetails", "Decline failed", e);
+                                        });
+                            }
+                        });
+
+
+                    } else if (declined.contains(deviceID) || accepted.contains(deviceID)) {
+                        //Print Has accepted or has declined
+                        if(declined.contains(deviceID)){
+                            signupButton.setText("Invitation Declined");
+                        }else {
+                            signupButton.setText("Invitation Accepted");
+                        }
+
+
+                    } else{
                         signupButton.setText("Sign up for this event");
 //                    Listener for sign up for event
                         signupButton.setOnClickListener(new View.OnClickListener() {

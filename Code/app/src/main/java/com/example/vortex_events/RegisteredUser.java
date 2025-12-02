@@ -25,7 +25,26 @@ public class RegisteredUser extends Users{
     public static final String STATUS_NOT_CHOSEN = "NOT_CHOSEN";
     public static final String STATUS_REGISTERED = "REGISTERED";
 
-    public RegisteredUser(String deviceID, String phoneNumber, String email, String name, String token, double latitude, double longitude, String type, boolean opted){}
+    public RegisteredUser(String deviceID, String phoneNumber, String email, String name, String token, double latitude, double longitude, String type, boolean opted){
+        this.deviceID = deviceID;
+        this.phone_number = phoneNumber;
+        this.email = email;
+        this.name = name;
+        this.notificationToken = token;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.type = type;
+        this.notifications_opted = opted;
+        this.signed_up_events = new ArrayList<>();
+        this.created_events = new ArrayList<>();
+        this.event_history = new HashMap<>();
+        this.notifications = new ArrayList<>();
+    }
+
+    public RegisteredUser(){
+        // required by firebase
+    }
+
 
     public ArrayList<String> getCreated_events() {
         return created_events;

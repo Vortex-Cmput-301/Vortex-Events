@@ -28,10 +28,10 @@ public class EventDatabaseTest {
         DatabaseWorker dbWorker = new DatabaseWorker();
 
         // Create a user with a specific location
-        @SuppressLint("HardwareIds") String deviceID = Settings.Secure.getString(appContext.getContentResolver(), Settings.Secure.ANDROID_ID);
+        String deviceID = "TEST_DEVICE_ID_" + System.currentTimeMillis();
         double latitude = 53.5232;
         double longitude = -113.5263;
-        RegisteredUser user = new RegisteredUser(deviceID, "1234567890", "test@test.com", "Test User", latitude, longitude);
+        RegisteredUser user = new RegisteredUser(deviceID, "1234567890", "test@test.com", "Test User", "token", latitude, longitude, "Registered User", true);
 
         // Save the user to the database
         Tasks.await(dbWorker.createRegisteredUser(user));

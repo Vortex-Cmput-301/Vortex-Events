@@ -17,6 +17,7 @@
         android:layout_alignParentBottom="true"
         android:background="@color/white"
         android:outlineAmbientShadowColor="@color/black"
+        style="@style/Widget.App.BottomNavigationView"
         android:layout_gravity="bottom"
         app:itemIconSize="30dp"
         app:labelVisibilityMode="labeled"

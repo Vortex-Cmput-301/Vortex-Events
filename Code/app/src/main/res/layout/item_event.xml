@@ -78,7 +78,7 @@
             android:layout_marginTop="4dp"
             android:text="@string/details"
             android:textAllCaps="false"
-            app:backgroundTint="@color/porject_pink"
+            app:backgroundTint="@color/project_pink"
             app:cornerRadius="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
