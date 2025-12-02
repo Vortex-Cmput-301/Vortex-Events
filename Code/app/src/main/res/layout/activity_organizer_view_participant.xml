@@ -37,7 +37,7 @@
         android:layout_width="180dp"
         android:layout_height="26dp"
         android:background="@drawable/less_rounded_button"
-        app:backgroundTint="@color/porject_pink"
+        app:backgroundTint="@color/project_pink"
         android:padding="0dp"
         android:paddingLeft="8dp"
         android:paddingTop="2dp"
