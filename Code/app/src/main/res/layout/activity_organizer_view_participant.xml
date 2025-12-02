@@ -7,19 +7,6 @@
     android:layout_height="match_parent"
     tools:context=".OrganizerViewParticipant">
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_navigation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@color/white"
-        android:outlineAmbientShadowColor="@color/black"
-        app:itemIconSize="30dp"
-        app:labelVisibilityMode="labeled"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:menu="@menu/bottom_nav_menu"
-        tools:layout_editor_absoluteX="0dp" />
-
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
@@ -44,12 +31,31 @@
         app:layout_constraintTop_toTopOf="@+id/textView"
         app:srcCompat="@drawable/ic_download" />
 
+
+    <Button
+        android:id="@+id/notify_group_btn"
+        android:layout_width="180dp"
+        android:layout_height="26dp"
+        android:background="@drawable/less_rounded_button"
+        app:backgroundTint="@color/porject_pink"
+        android:padding="0dp"
+        android:paddingLeft="8dp"
+        android:paddingTop="2dp"
+        android:paddingRight="8dp"
+        android:paddingBottom="2dp"
+        android:text="Notify"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@+id/participant_filter_dropdown"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/participant_filter_dropdown"
+        app:layout_constraintTop_toTopOf="@+id/participant_filter_dropdown" />
     <Spinner
         android:id="@+id/participant_filter_dropdown"
         android:layout_width="166dp"
         android:layout_height="26dp"
         android:layout_marginTop="40dp"
         android:background="@drawable/event_image_placeholder"
+        android:backgroundTint="@color/project_light_blue"
         android:spinnerMode="dropdown"
         app:layout_constraintStart_toStartOf="@+id/textView"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
@@ -58,7 +64,7 @@
         android:layout_width="394dp"
         android:layout_height="417dp"
         android:id="@+id/participantList"
-        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/participant_filter_dropdown" />

@@ -32,7 +32,7 @@
             android:background="@drawable/welcome_buttom"
             android:text="Sign In"
             android:textSize="30dp"
-            app:backgroundTint="@null">
+            app:backgroundTint="@color/project_blue">
 
         </Button>
         <View

@@ -132,7 +132,7 @@ public class CreateActivityEvents extends AppCompatActivity {
                     if (uri != null) {
                         imageUri = uri;
                         // Show the selected image on screen
-                        ((android.widget.ImageView) findViewById(R.id.iv_upload_icon)).setImageURI(uri);
+                        ((android.widget.ImageView) findViewById(R.id.upload_poster_preview)).setImageURI(uri);
                         // Hide the upload icon so the image is visible
                         findViewById(R.id.iv_upload_icon).setVisibility(View.GONE);
                     }
@@ -152,7 +152,7 @@ public class CreateActivityEvents extends AppCompatActivity {
         dbWorker = new DatabaseWorker();
         waitlistManager = new WaitlistManager();
         hashWorker = new HashWorker();
-        currentDeviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        currentDeviceID = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
 
         // --- Date/Time Picker Setup( Dont touch pls)
         View.OnClickListener dateTimePickerListener = v -> showDateTimePickerDialog((EditText) v);
@@ -213,6 +213,7 @@ public class CreateActivityEvents extends AppCompatActivity {
             try {
                 capacity = Integer.parseInt(capacityString);
                 waitingListLimit = Integer.parseInt(waitingListString);
+
             } catch (NumberFormatException e) {
                 Log.e("FormData", "Failed to parse a number", e);
                 Toast.makeText(CreateActivityEvents.this, "Capacity must be a valid number", Toast.LENGTH_SHORT).show();
@@ -231,8 +232,8 @@ public class CreateActivityEvents extends AppCompatActivity {
             try {
                 eventStartTime = sdf.parse(eventStartString);
                 eventEndTime = sdf.parse(eventEndString);
-                enrollmentStartTime = sdf.parse(enrollStartString); // Correct variable
-                enrollmentEndTime = sdf.parse(enrollEndString); // Correct variable
+                enrollmentStartTime = sdf.parse(enrollStartString);
+                enrollmentEndTime = sdf.parse(enrollEndString);
             } catch (ParseException e) {
                 Log.e("FormData", "An impossible error occurred while parsing dates!", e);
                 Toast.makeText(CreateActivityEvents.this, "A critical error occurred. Please try again.", Toast.LENGTH_SHORT).show();
@@ -242,13 +243,21 @@ public class CreateActivityEvents extends AppCompatActivity {
             // Parse tag string into a list
             ArrayList<String> tagsList = new ArrayList<>(Arrays.asList(tagString.split(" ")));
 
-            String imageString = encodeImage(imageUri); // Call the helper function
+            String imageString; // Default is empty (No Image)
 
-            if (imageString == null) {
-                Toast.makeText(CreateActivityEvents.this, "Image is too large or invalid.", Toast.LENGTH_SHORT).show();
-                return;
+            if (imageUri != null) {
+                // User picked an image, so we process it
+                Toast.makeText(CreateActivityEvents.this, "Processing image...", Toast.LENGTH_SHORT).show();
+                imageString = encodeImage(imageUri);
+
+                // If encoding failed (too big), stop and warn
+                if (imageString == null) {
+                    Toast.makeText(CreateActivityEvents.this, "Image too large/invalid.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            } else {
+                imageString = "";
             }
-
 
 
             //check if the user exists
@@ -323,24 +332,36 @@ public class CreateActivityEvents extends AppCompatActivity {
 
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-
-
         bottomNavigationView.setSelectedItemId(R.id.nav_create);
 
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            //Add the rest of the activities when finished
+            //made a boolean function to implement highlighting items. will implement later
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item){
+                int itemId = item.getItemId();
+                if (itemId == R.id.nav_home){
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(intent);
+                    return true;
+                }else if(itemId == R.id.nav_create) {
+                    return true;
+                }else if(itemId == R.id.nav_explore){
+                    Intent intent = new Intent(getApplicationContext(), ExplorePage.class);
+                    startActivity(intent);
+                    return true;
+                } else if (itemId == R.id.nav_search) {
+                    Intent intent = new Intent(getApplicationContext(), SearchEvents.class);
+                    startActivity(intent);
+                    return true;
+                }else if (itemId == R.id.nav_scan_qr) {
+                    Intent intent = new Intent(getApplicationContext(), QRCodeScanner.class);
+                    startActivity(intent);
+                    return true;
+                }
 
-        bottomNavigationView.setOnItemSelectedListener(item -> {
-            int itemId = item.getItemId();
-            if (itemId == R.id.nav_home){
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
-                overridePendingTransition(0, 0); // No transition animation
-                return true;
-            } else if(itemId == R.id.nav_create) {
-                return true;
+                return false;
             }
-            // Add other navigation
-
-            return false;
         });
     }
 

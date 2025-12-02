@@ -51,24 +51,34 @@ public class QRCodeScanner extends AppCompatActivity {
         checkPermission();
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.nav_scan_qr);
+
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             //Add the rest of the activities when finished
             //made a boolean function to implement highlighting items. will implement later
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            public boolean onNavigationItemSelected(@NonNull MenuItem item){
                 int itemId = item.getItemId();
-                if (itemId == R.id.nav_home) {
+                if (itemId == R.id.nav_scan_qr) {
+                    return true;
+                } else if (itemId == R.id.nav_home){
                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                     startActivity(intent);
                     return true;
-                } else if (itemId == R.id.nav_create) {
+                }else if(itemId == R.id.nav_create) {
                     Intent intent = new Intent(getApplicationContext(), CreateActivityEvents.class);
                     startActivity(intent);
                     return true;
-                } else if (itemId == R.id.button_back) {
+                }else if(itemId == R.id.nav_explore){
                     Intent intent = new Intent(getApplicationContext(), ExplorePage.class);
                     startActivity(intent);
+                    return true;
+                } else if (itemId == R.id.nav_search) {
+                    Intent intent = new Intent(getApplicationContext(), SearchEvents.class);
+                    startActivity(intent);
+                    return true;
                 }
+
                 return false;
             }
         });
@@ -147,6 +157,7 @@ public class QRCodeScanner extends AppCompatActivity {
 
                             Intent i = new Intent(this, EventDetails.class);
                             i.putExtra("EventID", eventId);
+                            i.putExtra("prev_activity", "scan");
                             startActivity(i);
                             finish();
                             break;

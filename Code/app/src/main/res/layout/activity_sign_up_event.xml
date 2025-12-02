@@ -97,22 +97,21 @@
             android:id="@+id/sign_up_sign_up"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/loading"
-            android:backgroundTint="@android:color/black"
-            android:textColor="@android:color/white"
+            android:backgroundTint="@color/porject_pink"
             android:paddingVertical="12dp"
-            android:textSize="18sp"/>
+            android:text="@string/loading"
+            android:textColor="@android:color/white"
+            android:textSize="18sp" />
 
         <Button
             android:id="@+id/sign_up_cancel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/loading"
-            android:backgroundTint="@android:color/black"
-            android:textColor="@android:color/white"
+            android:backgroundTint="@color/porject_pink"
             android:paddingVertical="12dp"
-            android:textSize="18sp"
-            />
+            android:text="@string/loading"
+            android:textColor="@android:color/white"
+            android:textSize="18sp" />
     </LinearLayout>
 
 

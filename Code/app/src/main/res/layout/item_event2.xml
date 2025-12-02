@@ -15,40 +15,45 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="298dp"
         android:padding="16dp">
 
         <!-- Event Image/Thumbnail -->
+
+        <!-- Event Title -->
+
+        <!-- Event Location -->
+
         <ImageView
             android:id="@+id/imageView_event_thumbnail"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="318dp"
+            android:layout_height="182dp"
             android:background="@drawable/event_image_placeholder"
             android:contentDescription="@string/event_image"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.533"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- Event Title -->
         <TextView
             android:id="@+id/textView_event_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginTop="208dp"
             android:textColor="@android:color/black"
             android:textSize="16sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@+id/imageView_event_thumbnail"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/imageView_event_thumbnail"
             tools:text="Example Event Title" />
 
-        <!-- Event Location -->
         <TextView
             android:id="@+id/textView_event_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_location_pin"
             android:layout_marginTop="4dp"
+            android:drawableLeft="@drawable/ic_location_pin"
             android:drawablePadding="4dp"
             android:gravity="center_vertical"
             android:textSize="12sp"
@@ -68,21 +73,22 @@
             tools:text="Oct 26, 2025 4:00 PM" />
 
 
-
         <!-- Details Button -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button_details"
             style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="99dp"
+            android:layout_height="58dp"
             android:layout_marginTop="4dp"
+            android:layout_marginEnd="12dp"
+            android:backgroundTint="@color/black"
             android:text="@string/details"
             android:textAllCaps="false"
-            app:backgroundTint="@color/porject_pink"
             app:cornerRadius="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

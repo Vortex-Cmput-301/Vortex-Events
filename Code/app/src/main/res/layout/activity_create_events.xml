@@ -2,11 +2,9 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/main"
-    >
+    android:id="@+id/main">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -18,6 +16,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:foregroundTint="@color/project_blue"
             android:orientation="vertical"
             android:padding="24dp">
 
@@ -54,61 +53,65 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/location"
-                android:textSize="16sp"/>
+                android:textSize="16sp" />
+
             <EditText
 
                 android:id="@+id/et_location"
                 android:layout_width="341dp"
                 android:layout_height="40dp"
-                android:hint="@string/a_place"
+                android:layout_marginBottom="16dp"
                 android:background="@drawable/edit_text_border"
-                android:inputType="textCapWords"
-                android:layout_marginBottom="16dp"/>
+                android:hint="@string/a_place"
+                android:inputType="textCapWords" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/time_of_event"
-                android:textSize="16sp"/>
+                android:textSize="16sp" />
+
             <EditText
 
                 android:id="@+id/et_event_start_time"
                 android:layout_width="341dp"
                 android:layout_height="40dp"
-                android:hint="@string/yyyy_mm_dd_hh_mm"
+                android:layout_marginBottom="16dp"
                 android:background="@drawable/edit_text_border"
-                android:inputType="text"
                 android:focusable="false"
-                android:layout_marginBottom="16dp"/>
+                android:hint="@string/yyyy_mm_dd_hh_mm"
+                android:inputType="text" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/end_of_event"
-                android:textSize="16sp"/>
+                android:textSize="16sp" />
+
             <EditText
                 android:id="@+id/et_event_end_time"
                 android:layout_width="341dp"
                 android:layout_height="40dp"
-                android:hint="@string/yyyy_mm_dd_hh_mm"
+                android:layout_marginBottom="16dp"
                 android:background="@drawable/edit_text_border"
-                android:inputType="text"
                 android:focusable="false"
-                android:layout_marginBottom="16dp"/>
+                android:hint="@string/yyyy_mm_dd_hh_mm"
+                android:inputType="text" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/tag"
-                android:textSize="16sp"/>
+                android:textSize="16sp" />
+
             <EditText
                 android:id="@+id/et_tag"
                 android:layout_width="341dp"
                 android:layout_height="40dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/edit_text_border"
                 android:hint="@string/start_with"
                 android:inputType="text"
-                android:background="@drawable/edit_text_border"
-                android:layout_marginBottom="16dp"
 
 
                 />
@@ -117,92 +120,98 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/capacity"
-                android:textSize="16sp"/>
+                android:textSize="16sp" />
+
             <EditText
                 android:id="@+id/et_capacity"
                 android:layout_width="341dp"
                 android:layout_height="40dp"
-                android:hint="@string/number_of_capacity"
-                android:inputType="number"
+                android:layout_marginBottom="16dp"
                 android:background="@drawable/edit_text_border"
-                android:layout_marginBottom="16dp"/>
-
+                android:hint="@string/number_of_capacity"
+                android:inputType="number" />
 
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Start of Enrollment Period"
-                android:textSize="16sp"/>
+                android:textSize="16sp" />
+
             <EditText
                 android:id="@+id/et_registration_period_start"
                 android:layout_width="341dp"
                 android:layout_height="40dp"
-                android:hint="@string/start_at_yyyy_mm_dd_hh_mm"
+                android:layout_marginBottom="16dp"
                 android:background="@drawable/edit_text_border"
-                android:inputType="text"
                 android:focusable="false"
-                android:layout_marginBottom="16dp"/>
+                android:hint="@string/start_at_yyyy_mm_dd_hh_mm"
+                android:inputType="text" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/registration_period"
-                android:textSize="16sp"/>
+                android:textSize="16sp" />
+
             <EditText
                 android:id="@+id/et_registration_period_end"
                 android:layout_width="341dp"
                 android:layout_height="40dp"
-                android:hint="@string/end_at_yyyy_mm_dd_hh_mm"
+                android:layout_marginBottom="16dp"
                 android:background="@drawable/edit_text_border"
-                android:inputType="text"
                 android:focusable="false"
-                android:layout_marginBottom="16dp"/>
+                android:hint="@string/end_at_yyyy_mm_dd_hh_mm"
+                android:inputType="text" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/description"
-                android:textSize="16sp"/>
+                android:textSize="16sp" />
+
             <EditText
                 android:id="@+id/et_description"
                 android:layout_width="341dp"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/edit_text_border"
+                android:gravity="top|start"
                 android:hint="@string/value"
                 android:inputType="textMultiLine"
                 android:minLines="4"
-                android:gravity="top|start"
-                android:background="@drawable/edit_text_border"
-                android:padding="8dp"
-                android:layout_marginBottom="16dp"/>
+                android:padding="8dp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/waiting_list_limit"
-                android:textSize="16sp"/>
+                android:textSize="16sp" />
+
             <EditText
                 android:id="@+id/et_waiting_list_limit"
                 android:layout_width="341dp"
                 android:layout_height="40dp"
-                android:hint="@string/number_of_capacity"
-                android:inputType="number"
+                android:layout_marginBottom="16dp"
                 android:background="@drawable/edit_text_border"
-                android:layout_marginBottom="16dp"/>
+                android:hint="@string/number_of_capacity"
+                android:inputType="number" />
 
             <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/switch_geolocation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:backgroundTint="@color/project_blue"
+                android:hapticFeedbackEnabled="true"
                 android:text="@string/geolocation_requirement"
-                android:textSize="16sp"
-                android:layout_marginBottom="16dp"/>
+                android:textSize="16sp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/poster_upload"
-                android:textSize="16sp"/>
+                android:textSize="16sp" />
 
             <FrameLayout
                 android:id="@+id/fl_poster_upload"
@@ -219,17 +228,26 @@
                     android:layout_gravity="center"
                     android:src="@drawable/ic_upload"
                     app:tint="#757575" />
+
+                <ImageView
+                    android:id="@+id/upload_poster_preview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="Event Poster"
+                    android:scaleType="fitCenter" />
+
             </FrameLayout>
 
             <Button
                 android:id="@+id/submit_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/submit"
-                android:backgroundTint="@android:color/black"
-                android:textColor="@android:color/white"
+                android:backgroundTint="@color/porject_pink"
                 android:paddingVertical="12dp"
-                android:textSize="18sp"/>
+                android:text="@string/submit"
+                android:textColor="@android:color/white"
+                android:textSize="18sp" />
 
         </LinearLayout>
     </ScrollView>

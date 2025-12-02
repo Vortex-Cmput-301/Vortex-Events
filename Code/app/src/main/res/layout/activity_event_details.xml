@@ -25,23 +25,40 @@
                 android:id="@+id/tv_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
                 android:layout_marginBottom="24dp"
                 android:text="@string/event_details"
                 android:textColor="@android:color/black"
                 android:textSize="28sp"
-
-
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/event_details_title"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/name_of_event"
-                android:textSize="23sp"
-                android:textColor="@color/black"
-                android:textStyle="bold"/>
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="0dp">
+
+                <TextView
+                    android:id="@+id/event_details_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/name_of_event"
+                    android:textSize="23sp"
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
+
+                <!-- ==== added: “more” button on the right side of event title ==== -->
+                <ImageButton
+                    android:id="@+id/btn_more"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="More options"
+                    android:padding="4dp"
+                    android:src="@drawable/more" />
+            </LinearLayout>
 
             <FrameLayout
                 android:id="@+id/fl_poster_upload"
@@ -70,47 +87,41 @@
 
             </FrameLayout>
 
+
             <TextView
                 android:id="@+id/event_details_location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/location"
-                android:textSize="16sp"/>
-
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/event_details_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Time"
-                android:textSize="16sp"/>
-
-
-
-
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/event_details_capacity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/capacity1"
-                android:textSize="16sp"/>
-
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/event_details_reg_period"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Registration period ends"
-                android:textSize="16sp"/>
-
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/event_details_desc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Despcription"
-                android:textSize="16sp"/>
+                android:textSize="16sp" />
 
             <ImageView
                 android:id="@+id/event_details_qr"
@@ -120,17 +131,13 @@
                 android:paddingTop="16dp"
                 android:contentDescription="QR code for this event" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="15" />
 
             <Button
                 android:id="@+id/btn_details_sign_up"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/loading"
-                android:backgroundTint="@android:color/black"
+                android:backgroundTint="@color/project_blue"
                 android:textColor="@android:color/white"
                 android:paddingVertical="12dp"
                 android:textSize="18sp" />
@@ -140,7 +147,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Participants"
-                android:backgroundTint="@android:color/black"
+                android:backgroundTint="@color/porject_pink"
+                android:textColor="@android:color/white"
+                android:paddingVertical="12dp"
+                android:textSize="18sp"
+                android:visibility="gone" />
+
+
+            <Button
+                android:id="@+id/organizer_notifications_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="  @string/notifications_dashboard"
+                android:backgroundTint="@color/porject_pink"
                 android:textColor="@android:color/white"
                 android:paddingVertical="12dp"
                 android:textSize="18sp"
@@ -150,8 +169,15 @@
                 android:id="@+id/btn_details_open_map"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Open Map" />
-
+                android:text="Open Map"
+                android:backgroundTint="@color/porject_pink"
+                android:textColor="@android:color/white"
+                android:paddingVertical="12dp"
+                android:textSize="18sp"
+                android:visibility="gone"  />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="100dp" />
         </LinearLayout>
     </ScrollView>
 
