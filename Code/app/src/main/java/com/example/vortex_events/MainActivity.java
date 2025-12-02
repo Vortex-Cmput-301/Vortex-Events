@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -30,6 +32,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 
 public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerViewPastEvents;
+    private ConstraintLayout layoutEmptyState;
     private PastEventAdapter pastEventAdapter;
     private List<Event> pastEventList = new ArrayList<>();
     private DatabaseWorker databaseWorker;
@@ -51,6 +54,8 @@ public class MainActivity extends AppCompatActivity {
         databaseWorker = new DatabaseWorker();
 
         recyclerViewPastEvents = findViewById(R.id.recyclerView_past_events);
+        layoutEmptyState = findViewById(R.id.layoutEmptyState);
+
         pastEventAdapter = new PastEventAdapter(pastEventList, this);
         recyclerViewPastEvents.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewPastEvents.setAdapter(pastEventAdapter);
@@ -175,6 +180,9 @@ public class MainActivity extends AppCompatActivity {
                         }
                         loadedCount[0]++;
                         if (loadedCount[0] == eventIDs.size()) {
+
+                            recyclerViewPastEvents.setVisibility(View.VISIBLE);
+                            layoutEmptyState.setVisibility(View.GONE);
                             pastEventAdapter.notifyDataSetChanged();
                         }
                     })
