@@ -125,7 +125,7 @@ public class CreateActivityEvents extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("UserID", Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID));
+
         selectImageLauncher = registerForActivityResult(
                 new androidx.activity.result.contract.ActivityResultContracts.GetContent(),
                 uri -> {
@@ -278,8 +278,8 @@ public class CreateActivityEvents extends AppCompatActivity {
                     Event event = new Event(
                             eventName,
                             eventLocation,
-                            currentDeviceID, // Use real user ID
-                            hashWorker.generateEventID(eventName, currentDeviceID), // Use real event ID
+                            currentUser.deviceID, // Use real user ID
+                            hashWorker.generateEventID(eventName, currentUser.deviceID), // Use real event ID
                             enrollmentStartTime,
                             enrollmentEndTime,
                             eventStartTime,

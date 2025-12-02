@@ -20,9 +20,11 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class OrganizerNotificationsDashboard extends AppCompatActivity {
@@ -110,25 +112,49 @@ public class OrganizerNotificationsDashboard extends AppCompatActivity {
                     group = currentEvent.waitlist;
                 }
 
+                List<Task<?>> tasks = new ArrayList<>();
+
                 for (String user: group){
-                    dbWorker.getUserByDeviceID(user).addOnCompleteListener(new OnCompleteListener<RegisteredUser>() {
-                        @Override
-                        public void onComplete(@NonNull Task<RegisteredUser> task) {
-                            if (task.isSuccessful()){
-                                RegisteredUser user = task.getResult();
-                                ArrayList<String> notificartions = user.notifications;
+//                    dbWorker.getUserByDeviceID(user).addOnCompleteListener(new OnCompleteListener<RegisteredUser>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<RegisteredUser> task) {
+//
+//                            if (task.isSuccessful()){
+//                                countdown = countdown - 1;
+//                                RegisteredUser user = task.getResult();
+//                                ArrayList<String> notificartions = user.notifications;
+//                                notificartions.add(notification_id);
+//                                dbWorker.pushNotiToUser(notificartions, user.deviceID);
+//                                recievers.add(user.notificationToken);
+//                                Log.d("NOTIFICATIONM SENDING", "WORKED");
+//                            }else {
+//                                Log.d("USER FETCHING", "USER DONT EXIST");
+//                            }
+//                        }
+//                    });
+
+                    Task<RegisteredUser> t = dbWorker.getUserByDeviceID(user);
+                    tasks.add(t);
+
+                    t.addOnCompleteListener(task -> {
+                                if (task.isSuccessful()){
+                                RegisteredUser notifee = task.getResult();
+                                ArrayList<String> notificartions = notifee.notifications;
                                 notificartions.add(notification_id);
-                                dbWorker.pushNotiToUser(notificartions, user.deviceID);
-                                recievers.add(user.notificationToken);
+                                dbWorker.pushNotiToUser(notificartions, notifee.deviceID);
+                                recievers.add(notifee.notificationToken);
                                 Log.d("NOTIFICATIONM SENDING", "WORKED");
                             }else {
                                 Log.d("USER FETCHING", "USER DONT EXIST");
                             }
-                        }
                     });
                 }
-                notification = new AppNotification(notification_id, deviceID, title, content, recievers);
-                dbWorker.pushNotificationToDB(notification);
+
+                Tasks.whenAllComplete(tasks).addOnCompleteListener(done -> {
+                    AppNotification notification = new AppNotification(notification_id, deviceID, title, content, recievers);
+                    dbWorker.pushNotificationToDB(notification);
+                });
+
                 Intent intent = new Intent(OrganizerNotificationsDashboard.this, OrganizerViewParticipant.class);
                 intent.putExtra("EventID", eventID);
                 startActivity(intent);

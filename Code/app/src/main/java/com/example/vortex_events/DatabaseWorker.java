@@ -321,7 +321,7 @@ public class DatabaseWorker {
      */
     private RegisteredUser convertDocumentToRegisteredUser(DocumentSnapshot document) {
         try {
-            String deviceID = document.getId();
+            String deviceID = document.getString("deviceID");
             String phoneNumber = document.getString("phone_number");
             String email = document.getString("email");
             String name = document.getString("name");
@@ -338,7 +338,7 @@ public class DatabaseWorker {
             List<AppNotification> notifications = (List<AppNotification>) document.get("notifications");
 
             // Create RegisteredUser object
-            RegisteredUser user = new RegisteredUser(deviceID, phoneNumber, email, name, token, latitude, longitude, type);
+            RegisteredUser user = new RegisteredUser(deviceID, phoneNumber, email, name, token, latitude, longitude);
 
             // Set the lists
             if (signedUpEvents != null) {

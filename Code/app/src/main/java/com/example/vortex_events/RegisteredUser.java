@@ -122,6 +122,23 @@ public class RegisteredUser extends Users{
         this.notifications = new ArrayList<>();
     }
 
+    public RegisteredUser(String deviceID, String number, String email, String name, String notificationToken, double latitude, double longitude){
+        this.deviceID = deviceID;
+        this.phone_number = number;
+        this.email = email;
+        this.name = name;
+        this.notificationToken = notificationToken;
+
+        this.latitude = latitude;
+        this.longitude = longitude;
+
+        this.signed_up_events = new ArrayList<>();
+        this.created_events = new ArrayList<>();
+        this.event_history = new HashMap<>();
+        this.notifications = new ArrayList<>();
+        this.type = "Registered User";
+    }
+
 //    public RegisteredUser(String Id, String number, String email, String name, double latitude, double longitude){
 //        this(Id, number, email, name, latitude, longitude, "Registered User");
 //    }
