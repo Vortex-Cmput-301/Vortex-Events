@@ -74,8 +74,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@color/white"
-        android:outlineAmbientShadowColor="@color/black"
         app:itemIconSize="30dp"
+        style="@style/Widget.App.BottomNavigationView"
         app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/bottom_nav_menu" />

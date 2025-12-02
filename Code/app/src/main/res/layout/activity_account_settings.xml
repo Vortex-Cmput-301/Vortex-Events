@@ -53,7 +53,7 @@
         android:padding="14dp"
         android:text="Save Changes"
         android:textSize="16sp"
-        app:backgroundTint="@color/porject_pink"
+        app:backgroundTint="@color/project_pink"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

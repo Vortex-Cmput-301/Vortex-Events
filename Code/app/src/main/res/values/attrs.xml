@@ -1,0 +1,4 @@
+<resources>
+    <attr name="bottomNavigationViewStyle" format="reference" />
+    <attr name="itemActiveIndicatorColor" format="color" />
+</resources>
