@@ -7,16 +7,44 @@
     android:background="#FFFFFF"
     tools:context=".Profile">
 
+    <LinearLayout
+        android:id="@+id/profileHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:id="@+id/button_back"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:contentDescription="Back"
+            android:src="@drawable/ic_back_icon" />
+
+        <TextView
+            android:id="@+id/textView_profile_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="Profile"
+            android:textColor="#000000"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
     <!-- Scrollable area for all content -->
     <ScrollView
-        android:layout_width="0dp"
+        android:id="@+id/scrollView2"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:clipToPadding="false"
         android:paddingBottom="16dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/profileHeader"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -25,39 +53,16 @@
             android:paddingStart="16dp"
             android:paddingEnd="16dp">
 
-            <!-- ... (Top Bar and User Info sections remain the same) ... -->
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="16dp"
-                android:gravity="center_vertical">
-                <ImageView
-                    android:id="@+id/button_back"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:src="@drawable/ic_arrow_back"
-                    android:contentDescription="Back"/>
-                <TextView
-                    android:id="@+id/textView_profile_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:text="Profile"
-                    android:textColor="#000000"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:layout_marginTop="24dp"
-                android:gravity="center_vertical"
                 android:background="@drawable/outline_button_background"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
                 android:padding="16dp">
+
                 <TextView
                     android:id="@+id/textView_user_initial"
                     android:layout_width="48dp"
@@ -68,6 +73,7 @@
                     android:textColor="#FFFFFF"
                     android:textSize="20sp"
                     android:textStyle="bold" />
+
                 <TextView
                     android:id="@+id/textView_user_name"
                     android:layout_width="wrap_content"
@@ -94,9 +100,9 @@
                 android:textColorLink="?attr/actionMenuTextColor"
                 android:textSize="16sp"
                 android:textStyle="bold"
+                app:backgroundTint="@color/transparent"
                 app:strokeColor="#000000"
-                app:strokeWidth="2dp"
-                app:backgroundTint="@color/transparent" />
+                app:strokeWidth="2dp" />
 
             <!-- 4. RecyclerView for the list of past events -->
 
@@ -115,33 +121,33 @@
                 android:id="@+id/button_account_settings"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                android:text="Account Settings"
-                android:gravity="center"
-                android:padding="14dp"
-                android:textColor="#000000"
-                android:textSize="16sp"
                 android:layout_gravity="bottom"
+                android:layout_marginTop="32dp"
                 android:clickable="true"
                 android:focusable="true"
+                android:gravity="center"
+                android:padding="14dp"
+                android:text="Account Settings"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                app:backgroundTint="@color/transparent"
                 app:strokeColor="#000000"
-                app:strokeWidth="2dp"
-                app:backgroundTint="@color/transparent" />
+                app:strokeWidth="2dp" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/button_log_out"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
                 android:layout_marginTop="8dp"
-                android:text="Delete Profile"
                 android:gravity="center"
                 android:padding="14dp"
+                android:text="Delete Profile"
                 android:textColor="#FFFFFF"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:layout_gravity="bottom"
-                app:cornerRadius="12dp"
-                app:backgroundTint="#FF0000" />
+                app:backgroundTint="#FF0000"
+                app:cornerRadius="12dp" />
 
         </LinearLayout>
     </ScrollView>
