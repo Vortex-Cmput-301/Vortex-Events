@@ -32,7 +32,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // Inflate the item layout (item_event.xml)
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_event, parent, false);
+                .inflate(R.layout.item_event2, parent, false);
         return new EventViewHolder(itemView);
     }
 
@@ -77,6 +77,27 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             holder.eventDate.setText(formatter.format(eventStartTime));
         } else {
             holder.eventDate.setText("No date");
+        }
+
+        String imageString = currentEvent.getImage();
+
+
+        if (imageString != null && !imageString.isEmpty()) {
+            try {
+
+                byte[] decodedString = android.util.Base64.decode(imageString, android.util.Base64.DEFAULT);
+
+
+                com.bumptech.glide.Glide.with(holder.itemView.getContext())
+                        .load(decodedString)
+                        .centerCrop()
+                        .into(holder.eventThumbnail);
+
+            } catch (Exception e) {
+                holder.eventThumbnail.setImageResource(R.drawable.app_icon);
+            }
+        } else {
+            holder.eventThumbnail.setImageResource(R.drawable.app_icon);
         }
 
         // Set the click listener to call the Activity's public method directly

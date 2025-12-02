@@ -49,6 +49,7 @@ public class SignUpEvent extends AppCompatActivity {
 
         Intent returnedID = getIntent();
         EventID = returnedID.getStringExtra("EventID").toString();
+        boolean alreadyRegistered = returnedID.getBooleanExtra("alreadyRegistered", false);
 
         dbWork = new DatabaseWorker();
 
@@ -78,42 +79,69 @@ public class SignUpEvent extends AppCompatActivity {
                 SignUpTime.setText(time.toString());
                 SignUpLocation.setText(location);
                 lotteryWarning.setText("You will be randomly added to a lottery where the winners will be given a spot to the event on " + regLimit.toString());
-
-                sign_up.setText("Confirm Sign Up");
-                sign_up.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        // Waitlist logic
-                        dbWork.getEventByID(EventID).addOnSuccessListener(documentSnapshot -> {
-                            if (documentSnapshot.exists()) {
-                                List<String> waitlist = (ArrayList<String>) documentSnapshot.get("waitlist");
-                                waitlist.add(deviceID);
+                // *** CHANGED: behavior depends on whether user is already registered
+                if (!alreadyRegistered) { // new registration
+                    sign_up.setText("Confirm Sign Up"); // *** CHANGED
+                    sign_up.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            dbWork.getEventByID(EventID).addOnSuccessListener(snapshot -> {
+                                if (!snapshot.exists()) {
+                                    Log.e("SignUpEvent", "Event not found: " + EventID);
+                                    return;
+                                }
+                                List<String> waitlist = (ArrayList<String>) snapshot.get("waitlist");
+                                if (waitlist == null) {
+                                    waitlist = new ArrayList<>();
+                                }
+                                if (!waitlist.contains(deviceID)) {
+                                    waitlist.add(deviceID);
+                                }
 
                                 dbWork.updateWaitlist(waitlist, EventID).addOnSuccessListener(aVoid -> {
-                                    // After updating waitlist, update user's signed_up_events
                                     updateUserEvents(EventID);
                                 }).addOnFailureListener(e -> {
-                                    Log.e("SignUpEvent", "DB error updating waitlist");
+                                    Log.e("SignUpEvent", "Error updating waitlist", e);
                                 });
-                            } else {
-                                Log.e("SignUpEvent", "Device ID " + deviceID + "NOWHERE TO BE FOUND");
-                            }
-                        }).addOnFailureListener(e -> {
-                            Log.e("SignUpEvent", "DB error getting event");
-                        });
-                    }
-                });
+                            }).addOnFailureListener(e -> {
+                                Log.e("SignUpEvent", "Error loading event for signup", e);
+                            });
+                        }
+                    });
+
+                    cancel.setText("Cancel Sign Up"); // *** CHANGED
+                    cancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(SignUpEvent.this, EventDetails.class);
+                            intent.putExtra("EventID", EventID);
+                            startActivity(intent);
+                        }
+                    });
+
+                } else { // already registered: keep or leave
+                    sign_up.setText("Keep current registration"); // *** NEW
+                    sign_up.setOnClickListener(new View.OnClickListener() { // *** NEW
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(SignUpEvent.this, EventDetails.class);
+                            intent.putExtra("EventID", EventID);
+                            startActivity(intent);
+                        }
+                    });
+
+                    cancel.setText("Leave event"); // *** NEW
+                    cancel.setOnClickListener(new View.OnClickListener() { // *** NEW
+                        @Override
+                        public void onClick(View view) {
+                            leaveEvent(EventID);
+                        }
+                    });
+                }
 
 
-                cancel.setText("Cancel Sign Up");
-                cancel.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent(SignUpEvent.this, EventDetails.class);
-                        intent.putExtra("EventID", EventID);
-                        startActivity(intent);
-                    }
-                });
+
+
 
             } else {
                 Log.e("SignUpEvent", "No such document found with that ID.");
@@ -123,7 +151,7 @@ public class SignUpEvent extends AppCompatActivity {
         });
 
         // Check if user is guest (original logic)
-        dbWork.getUserByDeviceID(deviceID).addOnSuccessListener(user -> {
+//        dbWork.getUserByDeviceID(deviceID).addOnSuccessListener(user -> {
 //            if (user != null && user.getType().equals("Guest")) {
 //                Toast.makeText(SignUpEvent.this, "Guests can't sign up for events", Toast.LENGTH_SHORT).show();
 //                Intent intent = new Intent(SignUpEvent.this, EventDetails.class);
@@ -131,9 +159,9 @@ public class SignUpEvent extends AppCompatActivity {
 //                startActivity(intent);
 //                finish(); // Close activity for guest users
 //            }
-        }).addOnFailureListener(e -> {
-            Log.e("SignUpEvent", "DB error getting user type");
-        });
+//        }).addOnFailureListener(e -> {
+//            Log.e("SignUpEvent", "DB error getting user type");
+//        });
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -171,6 +199,65 @@ public class SignUpEvent extends AppCompatActivity {
             Intent intent = new Intent(SignUpEvent.this, MainActivity.class);
             startActivity(intent);
         });
+    }
+    private void leaveEvent(String eventID) {
+        dbWork.getUserByDeviceID(deviceID).addOnSuccessListener(user -> {
+            if (user == null) {
+                Log.e("SignUpEvent", "User not found when leaving event");
+                goBackToEventDetails(eventID);
+                return;
+            }
+
+            dbWork.getEventByID(eventID).addOnSuccessListener(snapshot -> {
+                if (!snapshot.exists()) {
+                    Log.e("SignUpEvent", "Event not found when leaving: " + eventID);
+                    goBackToEventDetails(eventID);
+                    return;
+                }
+
+                Event event = dbWork.convertDocumentToEvent(snapshot);
+                if (event == null) {
+                    Log.e("SignUpEvent", "Failed to convert event document when leaving");
+                    goBackToEventDetails(eventID);
+                    return;
+                }
+
+                if (event.getWaitlist() == null) {
+                    event.setWaitlist(new ArrayList<String>());
+                }
+
+                RegisteredUser registeredUser = user;
+                registeredUser.leaveEvent(event, dbWork, new RegisteredUser.LeaveEventCallback() {
+                    @Override
+                    public void onSuccess() {
+                        Toast.makeText(SignUpEvent.this, "You have left this event.", Toast.LENGTH_SHORT).show();
+                        goBackToEventDetails(eventID);
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        Log.e("SignUpEvent", "Error leaving event", e);
+                        Toast.makeText(SignUpEvent.this, "Failed to leave event.", Toast.LENGTH_SHORT).show();
+                        goBackToEventDetails(eventID);
+                    }
+                });
+
+            }).addOnFailureListener(e -> {
+                Log.e("SignUpEvent", "Error loading event when leaving", e);
+                goBackToEventDetails(eventID);
+            });
+
+        }).addOnFailureListener(e -> {
+            Log.e("SignUpEvent", "Error loading user when leaving", e);
+            goBackToEventDetails(eventID);
+        });
+    }
+
+    // *** NEW: simple helper to navigate back to details
+    private void goBackToEventDetails(String eventID) {
+        Intent intent = new Intent(SignUpEvent.this, EventDetails.class);
+        intent.putExtra("EventID", eventID);
+        startActivity(intent);
     }
 
 }

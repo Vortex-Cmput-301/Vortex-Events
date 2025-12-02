@@ -62,6 +62,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:backgroundTint="@color/porject_pink"
-            android:text="state" />
+            android:text="Registered"/>
     </LinearLayout>
 </LinearLayout>

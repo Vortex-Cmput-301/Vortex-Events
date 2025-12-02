@@ -31,14 +31,34 @@
                 android:textSize="28sp"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/event_details_title"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/name_of_event"
-                android:textSize="23sp"
-                android:textColor="@color/black"
-                android:textStyle="bold" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="0dp">
+
+                <TextView
+                    android:id="@+id/event_details_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/name_of_event"
+                    android:textSize="23sp"
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
+
+                <!-- ==== added: “more” button on the right side of event title ==== -->
+                <ImageButton
+                    android:id="@+id/btn_more"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="More options"
+                    android:padding="4dp"
+                    android:src="@drawable/more" />
+            </LinearLayout>
 
             <FrameLayout
                 android:id="@+id/fl_poster_upload"
