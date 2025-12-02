@@ -26,7 +26,10 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
+/**
+ * Activity that allows an organizer to compose and send notifications
+ * to participants of a specific event (accepted, declined, or waitlist).
+ */
 public class OrganizerNotificationsDashboard extends AppCompatActivity {
     String eventID;
     String deviceID;
