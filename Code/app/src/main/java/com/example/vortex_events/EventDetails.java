@@ -25,6 +25,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.zxing.WriterException;
 
@@ -394,7 +395,6 @@ public class EventDetails extends AppCompatActivity {
                 bottomNavigationView.setSelectedItemId(R.id.nav_scan_qr);
                 break;
         }
-
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             //Add the rest of the activities when finished
             //made a boolean function to implement highlighting items. will implement later
@@ -427,5 +427,11 @@ public class EventDetails extends AppCompatActivity {
             }
         });
 
+    }
+    public void switchToDeclined(String userID){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("Events")
+                .document(EventID)
+                .update("waitlist", FieldValue.arrayRemove(userID), "declined", FieldValue.arrayUnion(userID));
     }
 }

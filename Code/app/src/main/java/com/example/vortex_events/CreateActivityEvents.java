@@ -152,7 +152,7 @@ public class CreateActivityEvents extends AppCompatActivity {
         dbWorker = new DatabaseWorker();
         waitlistManager = new WaitlistManager();
         hashWorker = new HashWorker();
-        currentDeviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        currentDeviceID = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
 
         // --- Date/Time Picker Setup( Dont touch pls)
         View.OnClickListener dateTimePickerListener = v -> showDateTimePickerDialog((EditText) v);

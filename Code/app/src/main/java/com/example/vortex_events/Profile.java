@@ -157,10 +157,14 @@ public class Profile extends AppCompatActivity {
                             "unknown",            // phone_number placeholder
                             "unknown@example.com",// email placeholder
                             "Unknown User",       // name placeholder
+                            "randomw tokenb",
                             0.0,                  // latitude placeholder
                             0.0,                  // longitude placeholder
-                            "Guest"               // type placeholder
+                            "Guest" ,
+                            false// type placeholder
                     );
+
+//                    GuestUser tempUser = new GuestUser(this);
 
                     dialogHelper.showDeleteConfirmationDialog(tempUser, () -> {
                         Toast.makeText(Profile.this, "User profile deleted.", Toast.LENGTH_SHORT).show();
