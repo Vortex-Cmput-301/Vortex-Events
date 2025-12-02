@@ -3,31 +3,22 @@ package com.example.vortex_events;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Displays and filters participants: accept / waiting list / cancelled
@@ -36,6 +27,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class OrganizerViewParticipant extends AppCompatActivity {
     Button notifyGroup;
     String eventID;
+    private static final String TAG = "OrganizerViewParticipant";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +37,7 @@ public class OrganizerViewParticipant extends AppCompatActivity {
 
         Intent returnedID = getIntent();
         eventID = returnedID.getStringExtra("EventID");
+        Log.d(TAG, "onCreate: EventID: " + eventID);
 
         notifyGroup = findViewById(R.id.notify_group_btn);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
@@ -54,103 +47,150 @@ public class OrganizerViewParticipant extends AppCompatActivity {
         );
 
         ListView participantList = findViewById(R.id.participantList);
-        ArrayList<String> loading = new ArrayList<>();
-        loading.add("Loading...");
-
-        ArrayAdapter<String> listAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_1,
-                loading);
+        UserAdapter listAdapter = new UserAdapter(this, new ArrayList<>());
         participantList.setAdapter(listAdapter);
-        listAdapter.notifyDataSetChanged();
-        listAdapter.notifyDataSetChanged();
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
-
-
-//        TODO: get event id from intent || DONE
         setupParticipantLists(spinner, listAdapter, eventID);
 
-        notifyGroup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String mode = spinner.getSelectedItem().toString();
-                Intent intent = new Intent(OrganizerViewParticipant.this, OrganizerNotificationsDashboard.class);
-                intent.putExtra("notifyMode", mode);
-                intent.putExtra("eventID", eventID);
-                startActivity(intent);
-            }
+        notifyGroup.setOnClickListener(view -> {
+            String mode = spinner.getSelectedItem().toString();
+            Intent intent = new Intent(OrganizerViewParticipant.this, OrganizerNotificationsDashboard.class);
+            intent.putExtra("notifyMode", mode);
+            intent.putExtra("eventID", eventID);
+            startActivity(intent);
         });
-
-
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
-
     }
 
-    /**
-    * This function setups a spinner with data from an event on the firebase
-    * @param spinner: the spinner to setup
-    * @param listAdapter: the adapter to use for the list view
-    * @param eventId: the id of the event to get the data from
-    * */
-    private void setupParticipantLists(Spinner spinner, ArrayAdapter<String> listAdapter, String eventId) {
-        //        Suggested fix by android studio
-        AtomicReference<ArrayList<String>> acceptedList = new AtomicReference<>(new ArrayList<>());
-        AtomicReference<ArrayList<String>> waitlistList = new AtomicReference<>(new ArrayList<>());
-        AtomicReference<ArrayList<String>> deletedList = new AtomicReference<>(new ArrayList<>());
+    private void setupParticipantLists(Spinner spinner, UserAdapter listAdapter, String eventId) {
+        ArrayList<RegisteredUser> acceptedList = new ArrayList<>();
+        ArrayList<RegisteredUser> waitlistList = new ArrayList<>();
+        ArrayList<RegisteredUser> deletedList = new ArrayList<>();
 
         FirebaseFirestore fs = FirebaseFirestore.getInstance();
         DatabaseWorker dbwork = new DatabaseWorker(fs);
 
-//        get event by id
         dbwork.getEventByID(eventId).addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
-                Log.d("OrganizerViewParticipant", "Event 'accepted' field: " +
-                        documentSnapshot.get("accepted"));
-                acceptedList.set((ArrayList<String>) documentSnapshot.get("accepted"));
-                waitlistList.set((ArrayList<String>) documentSnapshot.get("waitlist"));
-                deletedList.set((ArrayList<String>) documentSnapshot.get("declined"));
-                listAdapter.clear();
-                listAdapter.addAll(acceptedList.get());
-                listAdapter.notifyDataSetChanged();
+                Log.d(TAG, "Event document found. Data: " + documentSnapshot.getData());
+                ArrayList<String> acceptedIds = (ArrayList<String>) documentSnapshot.get("accepted");
+                ArrayList<String> waitlistIds = (ArrayList<String>) documentSnapshot.get("waitlist");
+                ArrayList<String> declinedIds = (ArrayList<String>) documentSnapshot.get("declined");
+
+                Log.d(TAG, "Accepted IDs: " + acceptedIds);
+                Log.d(TAG, "Waitlist IDs: " + waitlistIds);
+                Log.d(TAG, "Declined IDs: " + declinedIds);
+
+                int totalUsers = (acceptedIds != null ? acceptedIds.size() : 0) +
+                                 (waitlistIds != null ? waitlistIds.size() : 0) +
+                                 (declinedIds != null ? declinedIds.size() : 0);
+
+                Log.d(TAG, "Total users to load: " + totalUsers);
+
+                if (totalUsers == 0) {
+                    Log.d(TAG, "No users to load, setting up spinner immediately.");
+                    setupSpinnerListener(spinner, listAdapter, acceptedList, waitlistList, deletedList);
+                    return;
+                }
+
+                AtomicInteger usersLoaded = new AtomicInteger(0);
+
+                if (acceptedIds != null) {
+                    for (String userId : acceptedIds) {
+                        Log.d(TAG, "Fetching user: " + userId);
+                        dbwork.getUserByDeviceID(userId).addOnSuccessListener(user -> {
+                            if (user != null) {
+                                Log.d(TAG, "User found: " + user.getName());
+                                acceptedList.add(user);
+                            } else {
+                                Log.d(TAG, "User not found for ID: " + userId);
+                            }
+                            if (usersLoaded.incrementAndGet() == totalUsers) {
+                                Log.d(TAG, "All users loaded. Setting up spinner.");
+                                setupSpinnerListener(spinner, listAdapter, acceptedList, waitlistList, deletedList);
+                            }
+                        });
+                    }
+                }
+                if (waitlistIds != null) {
+                    for (String userId : waitlistIds) {
+                        Log.d(TAG, "Fetching user: " + userId);
+                        dbwork.getUserByDeviceID(userId).addOnSuccessListener(user -> {
+                            if (user != null) {
+                                Log.d(TAG, "User found: " + user.getName());
+                                waitlistList.add(user);
+                            } else {
+                                Log.d(TAG, "User not found for ID: " + userId);
+                            }
+                            if (usersLoaded.incrementAndGet() == totalUsers) {
+                                Log.d(TAG, "All users loaded. Setting up spinner.");
+                                setupSpinnerListener(spinner, listAdapter, acceptedList, waitlistList, deletedList);
+                            }
+                        });
+                    }
+                }
+                if (declinedIds != null) {
+                    for (String userId : declinedIds) {
+                        Log.d(TAG, "Fetching user: " + userId);
+                        dbwork.getUserByDeviceID(userId).addOnSuccessListener(user -> {
+                            if (user != null) {
+                                Log.d(TAG, "User found: " + user.getName());
+                                deletedList.add(user);
+                            } else {
+                                Log.d(TAG, "User not found for ID: " + userId);
+                            }
+                            if (usersLoaded.incrementAndGet() == totalUsers) {
+                                Log.d(TAG, "All users loaded. Setting up spinner.");
+                                setupSpinnerListener(spinner, listAdapter, acceptedList, waitlistList, deletedList);
+                            }
+                        });
+                    }
+                }
+
             } else {
-                Log.e("OrganizerViewParticipant", "No such document found with that ID.");
+                Log.e(TAG, "No such document found with that ID.");
             }
         }).addOnFailureListener(e -> {
-            Log.e("OrganizerViewParticipant", "Error getting document", e);
+            Log.e(TAG, "Error getting document", e);
         });
+    }
 
-        // setup spinner
+    private void setupSpinnerListener(Spinner spinner, UserAdapter listAdapter,
+                                      ArrayList<RegisteredUser> acceptedList,
+                                      ArrayList<RegisteredUser> waitlistList,
+                                      ArrayList<RegisteredUser> deletedList) {
+        Log.d(TAG, "setupSpinnerListener called.");
+        Log.d(TAG, "Final Accepted list size: " + acceptedList.size());
+        Log.d(TAG, "Final Waitlist list size: " + waitlistList.size());
+        Log.d(TAG, "Final Declined list size: " + deletedList.size());
+
         spinner.setOnItemSelectedListener(
                 new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, android.view.View view, int position, long id) {
                         String selectedItem = parent.getItemAtPosition(position).toString();
-                        Log.d("OrganizerViewParticipant", "Selected item: " + selectedItem);
-//                        check which item was selected
+                        Log.d(TAG, "Spinner item selected: " + selectedItem);
+                        listAdapter.clear();
                         if (selectedItem.equals("Accepted")) {
-                            Log.d("OrganizerViewParticipant", "Accepted");
-                            listAdapter.clear();
-                            listAdapter.addAll(acceptedList.get());
-                            listAdapter.notifyDataSetChanged();
+                            Log.d(TAG, "Adding acceptedList to adapter. Size: " + acceptedList.size());
+                            listAdapter.addAll(acceptedList);
                         } else if (selectedItem.equals("Waitlist")) {
-                            Log.d("OrganizerViewParticipant", "Waitlist");
-                            listAdapter.clear();
-                            listAdapter.addAll(waitlistList.get());
-                            listAdapter.notifyDataSetChanged();
+                            Log.d(TAG, "Adding waitlistList to adapter. Size: " + waitlistList.size());
+                            listAdapter.addAll(waitlistList);
                         } else if (selectedItem.equals("Declined")) {
-                            Log.d("OrganizerViewParticipant", "Declined");
-                            listAdapter.clear();
-                            listAdapter.addAll(deletedList.get());
-                            listAdapter.notifyDataSetChanged();
+                            Log.d(TAG, "Adding deletedList to adapter. Size: " + deletedList.size());
+                            listAdapter.addAll(deletedList);
                         }
+                        Log.d(TAG, "Adapter count after addAll: " + listAdapter.getCount());
+                        listAdapter.notifyDataSetChanged();
                     }
 
                     @Override
@@ -158,5 +198,12 @@ public class OrganizerViewParticipant extends AppCompatActivity {
                         // required but not used
                     }
                 });
+
+        // Initially load accepted list
+        Log.d(TAG, "Initially loading accepted list.");
+        listAdapter.clear();
+        listAdapter.addAll(acceptedList);
+        Log.d(TAG, "Adapter count after initial load: " + listAdapter.getCount());
+        listAdapter.notifyDataSetChanged();
     }
 }
