@@ -7,7 +7,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -86,7 +85,7 @@ public class DatabaseWorkerTest {
     }
 
     private Users createMockRegisteredUser() {
-        RegisteredUser user = new RegisteredUser();
+        RegisteredUser user = new RegisteredUser(deviceID, phoneNumber, email, name, token, latitude, longitude, type);
         user.setDeviceID("fake ID");
         return user;
     }
