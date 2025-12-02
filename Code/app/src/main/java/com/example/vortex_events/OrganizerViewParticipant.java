@@ -73,7 +73,7 @@ public class OrganizerViewParticipant extends AppCompatActivity {
         // Load Data
         setupParticipantLists(spinner, eventID);
 
-        // LONG CLICK LISTENER
+        // long click listenr
         participantList.setOnItemLongClickListener((parent, view, position, id) -> {
             String currentTab = spinner.getSelectedItem().toString();
             // Only allow selection in Waitlist or Won Lottery
@@ -93,7 +93,7 @@ public class OrganizerViewParticipant extends AppCompatActivity {
             }
         });
 
-        // NOTIFY BUTTON
+        // notify button
         notifyGroup.setOnClickListener(view -> {
             String mode = spinner.getSelectedItem().toString();
             Intent intent = new Intent(OrganizerViewParticipant.this, OrganizerNotificationsDashboard.class);
@@ -102,7 +102,7 @@ public class OrganizerViewParticipant extends AppCompatActivity {
             startActivity(intent);
         });
 
-        // DECLINE BUTTON LISTENER
+        // decline button listener
         btnDecline.setOnClickListener(v -> {
             ArrayList<String> selectedIDs = listAdapter.getSelectedIds();
             String currentTab = spinner.getSelectedItem().toString();
@@ -220,7 +220,7 @@ public class OrganizerViewParticipant extends AppCompatActivity {
         listAdapter.notifyDataSetChanged();
     }
 
-    // Handles List of users, Correct DB naming, Batch update
+
     private void moveUsersToDeclined(ArrayList<String> userIDs, String sourceTab) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         WriteBatch batch = db.batch();
