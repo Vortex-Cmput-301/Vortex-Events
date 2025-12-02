@@ -8,18 +8,19 @@
     android:background="@android:color/white">
 
     <!-- Top Bar -->
+
     <TextView
         android:id="@+id/textView_explore_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="68dp"
         android:text="Explore Events"
         android:textColor="@android:color/black"
         android:textSize="28sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@+id/imageView_profile"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imageButton"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
@@ -53,12 +54,14 @@
 
     <!-- Scrollable Events List -->
 
+    <!-- Bottom Navigation Bar -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button_sort"
         style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:text="Sort By: Trending"
         android:textAllCaps="false"
         app:backgroundTint="@color/project_blue"
@@ -66,7 +69,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView_explore_title" />
 
-    <!-- Bottom Navigation Bar -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView_events"
         android:layout_width="0dp"
@@ -95,5 +97,15 @@
         app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/bottom_nav_menu" />
+
+    <ImageButton
+        android:id="@+id/backButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/textView_explore_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/textView_explore_title"
+        app:srcCompat="@drawable/ic_back_icon" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
