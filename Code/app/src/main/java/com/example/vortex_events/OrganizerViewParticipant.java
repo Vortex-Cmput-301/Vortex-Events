@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 
@@ -67,6 +68,15 @@ public class OrganizerViewParticipant extends AppCompatActivity {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
+        });
+
+        ImageView downloadButton = findViewById(R.id.imageView);
+        setupParticipantLists(spinner, listAdapter, eventID);
+        downloadButton.setOnClickListener(v -> {
+            CsvExporter.exportAcceptedEntrants(
+                    OrganizerViewParticipant.this,
+                    eventID
+            );
         });
     }
 
