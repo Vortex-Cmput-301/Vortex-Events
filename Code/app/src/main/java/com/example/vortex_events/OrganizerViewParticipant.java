@@ -28,6 +28,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class OrganizerViewParticipant extends AppCompatActivity {
     Button notifyGroup;
     String eventID;
+
+    ArrayList<RegisteredUser> wonLotteryList = new ArrayList<>();
+
+    Button btnDecline;
+
+
     private static final String TAG = "OrganizerViewParticipant";
 
     @Override
@@ -35,6 +41,8 @@ public class OrganizerViewParticipant extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_organizer_view_participant);
         Spinner spinner = findViewById(R.id.participant_filter_dropdown);
+        //btn later
+
 
         Intent returnedID = getIntent();
         eventID = returnedID.getStringExtra("EventID");
