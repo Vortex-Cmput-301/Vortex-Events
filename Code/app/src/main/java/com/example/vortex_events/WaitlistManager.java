@@ -17,7 +17,6 @@ import java.util.Map;
 
 // Lightweight helper. Does NOT change existing DatabaseWorker or Events schema.
 public class WaitlistManager {
-
     private final FirebaseFirestore fs = FirebaseFirestore.getInstance();
 
     /** Save/Update the waiting list limit into EventSettings/{eventId}. 0 (or missing) = unlimited. */

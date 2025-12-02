@@ -27,6 +27,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.auth.User;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+
+
+/**
+ * Activity that handles user registration in the Vortex Events app.
+ * After submitting the form, the user is redirected to the main activity.
+ */
 public class RegistrationScreen extends AppCompatActivity {
     EditText phoneField;
     EditText emailField;
@@ -45,6 +51,11 @@ public class RegistrationScreen extends AppCompatActivity {
     private double latitude;
     private double longitude;
 
+
+    /**
+     * Launcher that requests both fine and coarse location permissions.
+     * If granted, the user's last known location is retrieved.
+     */
     private ActivityResultLauncher<String[]> locationPermissionRequest = registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), result -> {
         Boolean fineLocationGranted = result.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false);
         Boolean coarseLocationGranted = result.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false);
@@ -115,6 +126,11 @@ public class RegistrationScreen extends AppCompatActivity {
         });
     }
 
+
+    /**
+     * Retrieves the last known device location using the FusedLocationProviderClient.
+     * This method is only called when location permissions have already been granted.
+     */
     private void getLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;

@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+
+/**
+ * Model class representing a registered user in the Vortex Events app.
+ */
 public class RegisteredUser extends Users{
     String phone_number;
     String email;
@@ -25,6 +29,20 @@ public class RegisteredUser extends Users{
     public static final String STATUS_NOT_CHOSEN = "NOT_CHOSEN";
     public static final String STATUS_REGISTERED = "REGISTERED";
 
+
+    /**
+     * Constructs a RegisteredUser with full details including type.
+     *
+     * @param deviceID the unique device ID of the user
+     * @param phoneNumber the user's phone number
+     * @param email the user's email address
+     * @param name the user's name
+     * @param token the FCM notification token
+     * @param latitude last known latitude of the user
+     * @param longitude last known longitude of the user
+     * @param type the user type
+     * @param opted true if the user opted into notifications
+     */
     public RegisteredUser(String deviceID, String phoneNumber, String email, String name, String token, double latitude, double longitude, String type, boolean opted){
         this.deviceID = deviceID;
         this.phone_number = phoneNumber;
@@ -40,7 +58,9 @@ public class RegisteredUser extends Users{
         this.event_history = new HashMap<>();
         this.notifications = new ArrayList<>();
     }
-
+    /**
+     * No argument constructor required by Firebase
+     */
     public RegisteredUser(){
         // required by firebase
     }
@@ -133,7 +153,18 @@ public class RegisteredUser extends Users{
     public void setNotifications_opted(boolean notifications_opted) {
         this.notifications_opted = notifications_opted;
     }
-
+    /**
+     * Constructs a RegisteredUser using a Context to derive the device ID.
+     *
+     * @param context Android context used by the Users base class to get the device ID
+     * @param number the user's phone number
+     * @param email the user's email address
+     * @param name the user's name
+     * @param notificationToken the FCM notification token
+     * @param latitude last known latitude
+     * @param longitude last known longitude
+     * @param opted true if the user has opted into notifications
+     */
     public RegisteredUser(Context context, String number, String email, String name, String notificationToken, double latitude, double longitude, boolean opted){
         super(context);
         this.phone_number = number;
@@ -150,7 +181,18 @@ public class RegisteredUser extends Users{
         this.notifications = new ArrayList<>();
         this.notifications_opted = opted;
     }
-
+    /**
+     * Constructs a RegisteredUser using a provided device ID.
+     *
+     * @param deviceID the device ID for the user
+     * @param number the user's phone number
+     * @param email the user's email address
+     * @param name the user's name
+     * @param notificationToken the FCM notification token
+     * @param latitude last known latitude
+     * @param longitude last known longitude
+     * @param opted true if the user has opted into notifications
+     */
     public RegisteredUser(String deviceID, String number, String email, String name, String notificationToken, double latitude, double longitude, boolean opted){
         this.deviceID = deviceID;
         this.phone_number = number;
@@ -169,26 +211,13 @@ public class RegisteredUser extends Users{
         this.notifications_opted = opted;
 
     }
-
-//    public RegisteredUser(String Id, String number, String email, String name, double latitude, double longitude){
-//        this(Id, number, email, name, latitude, longitude, "Registered User");
-//    }
-//    public RegisteredUser(String Id, String number, String email, String name, double latitude, double longitude, String type){
-//        super();
-//        this.deviceID = Id;
-//        this.phone_number = number;
-//        this.email = email;
-//        this.name = name;
-//        this.type = type;  // add type
-//        this.latitude = latitude;
-//        this.longitude = longitude;
-//        this.signed_up_events = new ArrayList<>();
-//        this.created_events = new ArrayList<>();
-//        this.event_history = new HashMap<>();
-//        this.notifications = new ArrayList<>();
-//    }
-
-
+    /**
+     * Moves an event from the signed-up list into the event history with a given status.
+     *
+     * @param eventID the ID of the event to move
+     * @param status the status to record for the event (for example STATUS_CANCELLED)
+     * @return true if the event was in the signed-up list and was moved, false otherwise
+     */
     public boolean moveToHistory(String eventID, String status) {
         if (signed_up_events.contains(eventID)) {
             signed_up_events.remove(eventID);
@@ -197,14 +226,30 @@ public class RegisteredUser extends Users{
         }
         return false;
     }
-
-    public interface LeaveEventCallback { // *** NEW
+    /**
+     * Callback interface for asynchronous event leave operations.
+     */
+    public interface LeaveEventCallback {
+        /**
+         * Called when leaveEvent successfully completes all updates.
+         */
         void onSuccess();
+        /**
+         * Called when leaveEvent fails due to an error.
+         *
+         * @param e the exception that caused the failure
+         */
         void onFailure(Exception e);
     }
 
-    // *** CHANGED: leaveEvent now also syncs with database
-    public void leaveEvent(Event targetEvent, DatabaseWorker dbWorker, LeaveEventCallback callback) { // *** CHANGED
+    /**
+     * Removes this user from an event and updates the database.
+     *
+     * @param targetEvent the event the user is leaving
+     * @param dbWorker the DatabaseWorker used to update Firestore
+     * @param callback callback invoked on success or failure of the operation
+     */
+    public void leaveEvent(Event targetEvent, DatabaseWorker dbWorker, LeaveEventCallback callback) {
         if (targetEvent == null || dbWorker == null) {
             if (callback != null) {
                 callback.onFailure(new IllegalArgumentException("targetEvent or dbWorker is null"));
@@ -245,23 +290,46 @@ public class RegisteredUser extends Users{
             }
         });
     }
-
+    /**
+     * Returns the stored status for a given event ID from the event history.
+     *
+     * @param eventID the event ID to look up
+     * @return the status string for that event, or null if not found
+     */
     public String getEventStatus(String eventID) {
         return event_history.get(eventID);
     }
 
+    /**
+     * Checks whether an event is present in the user's event history.
+     *
+     * @param eventID the event ID to check
+     * @return true if the event exists in event_history, false otherwise
+     */
     public boolean isEventInHistory(String eventID) {
         return event_history.containsKey(eventID);
     }
-
+    /**
+     * Returns a list of all historical event IDs.
+     *
+     * @return a new ArrayList containing all keys from event_history
+     */
     public ArrayList<String> getHistoricalEventIDs() {
         return new ArrayList<>(event_history.keySet());
     }
-
+    /**
+     * Returns a list of all historical event IDs.
+     *
+     * @return a new ArrayList containing all keys from event_history
+     */
     public Map<String, String> getEventHistory() {
         return new HashMap<>(event_history);
     }
-
+    /**
+     * Adds an event to the user's signed-up event list.
+     *
+     * @param eventID the ID of the event to add
+     */
     public void addSignedUpEvent(String eventID) {
         if (signed_up_events == null) {
             signed_up_events = new ArrayList<>();

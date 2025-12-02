@@ -31,7 +31,9 @@ import com.google.mlkit.vision.common.InputImage;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
-
+/**
+ * Activity that handles scanning QR codes using CameraX and ML Kit.
+ */
 public class QRCodeScanner extends AppCompatActivity {
 
     private static final int CAMERA_PERMISSION = 2001;
@@ -83,7 +85,9 @@ public class QRCodeScanner extends AppCompatActivity {
             }
         });
     }
-
+    /**
+     * Checks camera permission and either starts the camera or requests permission.
+     */
     private void checkPermission() {
         if (ContextCompat.checkSelfPermission(
                 this, Manifest.permission.CAMERA
@@ -96,7 +100,9 @@ public class QRCodeScanner extends AppCompatActivity {
             );
         }
     }
-
+    /**
+     * Initializes the CameraX preview and barcode analysis pipeline.
+     */
     private void startCamera() {
         ListenableFuture<ProcessCameraProvider> future =
                 ProcessCameraProvider.getInstance(this);
@@ -132,7 +138,16 @@ public class QRCodeScanner extends AppCompatActivity {
 
         }, ContextCompat.getMainExecutor(this));
     }
-
+    /**
+     * Analyzes camera frames, detects QR codes, and handles event QR formats.
+     *
+     * This method uses ML Kit to:
+     * - Decode barcodes from the frame
+     * - Look for QR content that starts with "vortex://event/"
+     * - Extract the EventID and open EventDetails
+     *
+     * @param proxy the camera frame to analyze
+     */
     @OptIn(markerClass = ExperimentalGetImage.class)
     private void analyze(@NonNull ImageProxy proxy) {
         if (handled || proxy.getImage() == null) {
@@ -167,7 +182,16 @@ public class QRCodeScanner extends AppCompatActivity {
                 })
                 .addOnFailureListener(e -> proxy.close());
     }
-
+    /**
+     * Handles the result of a permission request.
+     *
+     * If permission is granted, the camera is started.
+     * If denied, a toast is shown and the activity closes.
+     *
+     * @param requestCode the code used when requesting permission
+     * @param permissions the permissions requested
+     * @param results the results for each permission
+     */
     @Override
     public void onRequestPermissionsResult(
             int requestCode, @NonNull String[] permissions, @NonNull int[] results

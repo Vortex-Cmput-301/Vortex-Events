@@ -23,6 +23,9 @@ import com.google.android.material.navigation.NavigationBarView;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Activity that allows users to search for events by tag.
+ */
 public class SearchEvents extends AppCompatActivity {
 
     @Override

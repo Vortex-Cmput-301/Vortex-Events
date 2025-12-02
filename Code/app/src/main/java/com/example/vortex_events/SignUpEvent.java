@@ -22,7 +22,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Activity that handles signing up for an event or leaving an already joined event.
+ */
 public class SignUpEvent extends AppCompatActivity {
+
     String EventID;
     Date time;
     String title;
@@ -42,8 +46,6 @@ public class SignUpEvent extends AppCompatActivity {
     String userType;
 
     ImageButton backButton;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,7 +80,7 @@ public class SignUpEvent extends AppCompatActivity {
 
 
 
-        dbWork.getEventByID(EventID).addOnSuccessListener(documentSnapshot -> { // Note: singular
+        dbWork.getEventByID(EventID).addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
                 title = documentSnapshot.getString("name");
                 location = documentSnapshot.getString("location");
@@ -86,14 +88,14 @@ public class SignUpEvent extends AppCompatActivity {
                 regLimit = documentSnapshot.getDate("enrollement_end");
 
 
-                //        Update UI
+
                 SignUpName.setText(title);
                 SignUpTime.setText(time.toString());
                 SignUpLocation.setText(location);
                 lotteryWarning.setText("You will be randomly added to a lottery where the winners will be given a spot to the event on " + regLimit.toString());
-                // *** CHANGED: behavior depends on whether user is already registered
-                if (!alreadyRegistered) { // new registration
-                    sign_up.setText("Confirm Sign Up"); // *** CHANGED
+
+                if (!alreadyRegistered) {
+                    sign_up.setText("Confirm Sign Up");
                     sign_up.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -121,7 +123,7 @@ public class SignUpEvent extends AppCompatActivity {
                         }
                     });
 
-                    cancel.setText("Cancel Sign Up"); // *** CHANGED
+                    cancel.setText("Cancel Sign Up");
                     cancel.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -131,9 +133,9 @@ public class SignUpEvent extends AppCompatActivity {
                         }
                     });
 
-                } else { // already registered: keep or leave
-                    sign_up.setText("Keep current registration"); // *** NEW
-                    sign_up.setOnClickListener(new View.OnClickListener() { // *** NEW
+                } else {
+                    sign_up.setText("Keep current registration");
+                    sign_up.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             Intent intent = new Intent(SignUpEvent.this, EventDetails.class);
@@ -142,8 +144,8 @@ public class SignUpEvent extends AppCompatActivity {
                         }
                     });
 
-                    cancel.setText("Leave event"); // *** NEW
-                    cancel.setOnClickListener(new View.OnClickListener() { // *** NEW
+                    cancel.setText("Leave event");
+                    cancel.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             leaveEvent(EventID);
@@ -162,32 +164,30 @@ public class SignUpEvent extends AppCompatActivity {
             Log.e("SignUpEvent", "Error getting document", e);
         });
 
-        // Check if user is guest (original logic)
-//        dbWork.getUserByDeviceID(deviceID).addOnSuccessListener(user -> {
-//            if (user != null && user.getType().equals("Guest")) {
-//                Toast.makeText(SignUpEvent.this, "Guests can't sign up for events", Toast.LENGTH_SHORT).show();
-//                Intent intent = new Intent(SignUpEvent.this, EventDetails.class);
-//                intent.putExtra("EventID", EventID);
-//                startActivity(intent);
-//                finish(); // Close activity for guest users
-//            }
-//        }).addOnFailureListener(e -> {
-//            Log.e("SignUpEvent", "DB error getting user type");
-//        });
-
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
     }
+
+    /**
+     * Updates the current user's list of signed-up events after they join an event.
+     *
+     * This method:
+     * - Retrieves the user by device ID
+     * - Adds the event ID to their signed-up events
+     * - Writes the updated user back to the database
+     * - Navigates to the main activity with a success or failure toast
+     *
+     * @param eventID the ID of the event the user signed up for
+     */
     private void updateUserEvents(String eventID) {
         dbWork.getUserByDeviceID(deviceID).addOnSuccessListener(user -> {
             if (user != null) {
-                // Use the convenience method
+
                 user.addSignedUpEvent(eventID);
 
-                // Update user in database
                 dbWork.updateUser(user).addOnSuccessListener(aVoid -> {
                     Log.d("SignUpEvent", "User events updated successfully");
                     Toast.makeText(SignUpEvent.this, "Sign up successful", Toast.LENGTH_SHORT).show();
@@ -212,6 +212,19 @@ public class SignUpEvent extends AppCompatActivity {
             startActivity(intent);
         });
     }
+
+    /**
+     * Handles the logic for a user leaving an event.
+     *
+     * This method:
+     * - Loads the user by device ID
+     * - Loads the event by ID from Firestore
+     * - Converts the event document into an Event object
+     * - Calls RegisteredUser.leaveEvent to remove the user from event lists
+     * - Shows success or failure toasts and navigates back to event details
+     *
+     * @param eventID the ID of the event the user is leaving
+     */
     private void leaveEvent(String eventID) {
         dbWork.getUserByDeviceID(deviceID).addOnSuccessListener(user -> {
             if (user == null) {
@@ -265,7 +278,11 @@ public class SignUpEvent extends AppCompatActivity {
         });
     }
 
-    // *** NEW: simple helper to navigate back to details
+    /**
+     * Navigates back to the EventDetails screen for the given event ID.
+     *
+     * @param eventID the ID of the event to show details for
+     */
     private void goBackToEventDetails(String eventID) {
         Intent intent = new Intent(SignUpEvent.this, EventDetails.class);
         intent.putExtra("EventID", eventID);

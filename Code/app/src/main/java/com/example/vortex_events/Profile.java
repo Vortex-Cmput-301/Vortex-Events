@@ -26,6 +26,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Activity that displays a user's profile
+ * For admins, this screen can also be used to view and delete other users'
+ * profiles by passing a device ID via EXTRA_DEVICE_ID.
+ */
 public class Profile extends AppCompatActivity {
 
     public static final String EXTRA_DEVICE_ID = "extra_device_id";
@@ -250,12 +255,30 @@ public class Profile extends AppCompatActivity {
         });
 
     }
-
+    /**
+     * Callback interface used when asynchronously loading a RegisteredUser.
+     */
     private interface UserLoadCallback {
+        /**
+         * Called when a user is successfully loaded.
+         *
+         * @param user the loaded RegisteredUser, or null if not found
+         */
         void onUserLoaded(RegisteredUser user);
+        /**
+         * Called when there is an error loading the user.
+         *
+         * @param e the exception describing the error
+         */
         void onError(Exception e);
     }
 
+    /**
+     * Loads a RegisteredUser from the database using a device ID.
+     *
+     * @param deviceID the device ID of the user to load
+     * @param callback a callback to receive the loaded user or an error
+     */
     private void loadUserByDeviceID(String deviceID, UserLoadCallback callback) {
         databaseWorker.getUserByDeviceID(deviceID).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {

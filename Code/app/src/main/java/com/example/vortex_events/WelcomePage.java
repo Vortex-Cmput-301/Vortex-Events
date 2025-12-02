@@ -17,6 +17,9 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
+/**
+ * Welcome page that displays sign up and guest sign up
+ */
 public class WelcomePage extends AppCompatActivity {
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
