@@ -258,6 +258,7 @@ public class EventDetails extends AppCompatActivity {
                             public void onClick(View view) {
                                 Intent intent = new Intent(EventDetails.this, SignUpEvent.class);
                                 intent.putExtra("EventID", EventID);
+                                intent.putExtra("alreadyRegistered", true);
                                 startActivity(intent);
                             }
                         });
@@ -269,6 +270,7 @@ public class EventDetails extends AppCompatActivity {
                             public void onClick(View view) {
                                 Intent intent = new Intent(EventDetails.this, SignUpEvent.class);
                                 intent.putExtra("EventID", EventID);
+                                intent.putExtra("alreadyRegistered", false);
                                 startActivity(intent);
                             }
                         });

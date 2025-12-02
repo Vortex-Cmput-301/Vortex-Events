@@ -99,16 +99,17 @@
                 app:backgroundTint="@color/transparent" />
 
             <!-- 4. RecyclerView for the list of past events -->
+
+            <!-- ... (See More, Account Settings, and Log Out buttons remain the same) ... -->
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView_past_events"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:nestedScrollingEnabled="false"
-                tools:listitem="@layout/item_past_event"
-                tools:itemCount="3"/>
-
-            <!-- ... (See More, Account Settings, and Log Out buttons remain the same) ... -->
+                tools:itemCount="3"
+                tools:listitem="@layout/item_past_event" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/button_account_settings"
