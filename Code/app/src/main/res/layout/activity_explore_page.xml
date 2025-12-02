@@ -8,18 +8,18 @@
     android:background="@android:color/white">
 
     <!-- Top Bar -->
+
     <TextView
         android:id="@+id/textView_explore_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginEnd="68dp"
         android:text="Explore Events"
         android:textColor="@android:color/black"
         android:textSize="28sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@+id/imageView_profile"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/button_sort"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
@@ -53,12 +53,14 @@
 
     <!-- Scrollable Events List -->
 
+    <!-- Bottom Navigation Bar -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button_sort"
         style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:text="Sort By: Trending"
         android:textAllCaps="false"
         app:backgroundTint="@color/project_blue"
@@ -66,7 +68,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView_explore_title" />
 
-    <!-- Bottom Navigation Bar -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView_events"
         android:layout_width="0dp"
@@ -87,6 +88,7 @@
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        style="@style/Widget.App.BottomNavigationView"
         android:layout_alignParentBottom="true"
         android:background="@color/white"
         android:outlineAmbientShadowColor="@color/black"
