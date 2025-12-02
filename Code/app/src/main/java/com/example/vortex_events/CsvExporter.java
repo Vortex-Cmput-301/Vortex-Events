@@ -46,7 +46,7 @@ public class CsvExporter {
                     if (tmpName == null || tmpName.isEmpty()) {
                         tmpName = eventId;
                     }
-                    final String eventName = tmpName;   // 这一行很关键：lambda 里用这个 final 变量
+                    final String eventName = tmpName;
 
 
                     List<String> acceptedIds = (List<String>) eventDoc.get("accepted");
@@ -160,7 +160,7 @@ public class CsvExporter {
 
     private static String csvCell(String value) {
         String v = safe(value);
-        v = v.replace("\"", "\"\"");   // 转义双引号
-        return "\"" + v + "\"";        // 用引号包起来，避免逗号问题
+        v = v.replace("\"", "\"\"");
+        return "\"" + v + "\"";
     }
 }
