@@ -10,21 +10,22 @@ public class RegisteredUser extends Users{
     String phone_number;
     String email;
     String name;
+    boolean notifications_opted;
+    String notificationToken;
     double latitude;
     double longitude;
     ArrayList<String> signed_up_events;
     Map<String, String> event_history;
     ArrayList<String> created_events;
-    ArrayList<AppNotification> notifications;
+    ArrayList<String> notifications;
     // Event status constants
     public static final String STATUS_ACCEPTED = "ACCEPTED";
     public static final String STATUS_DECLINED = "DECLINED";
     public static final String STATUS_CANCELLED = "CANCELLED";
     public static final String STATUS_NOT_CHOSEN = "NOT_CHOSEN";
+    public static final String STATUS_REGISTERED = "REGISTERED";
 
-    public RegisteredUser(){
-
-    };
+    public RegisteredUser(String deviceID, String phoneNumber, String email, String name, String token, double latitude, double longitude, String type, boolean opted){}
 
     public ArrayList<String> getCreated_events() {
         return created_events;
@@ -50,14 +51,6 @@ public class RegisteredUser extends Users{
         this.event_history = event_history;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public double getLatitude() {
         return latitude;
     }
@@ -74,12 +67,28 @@ public class RegisteredUser extends Users{
         this.longitude = longitude;
     }
 
-    public ArrayList<AppNotification> getNotifications() {
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public ArrayList<String> getNotifications() {
         return notifications;
     }
 
-    public void setNotifications(ArrayList<AppNotification> notifications) {
+    public void setNotifications(ArrayList<String> notifications) {
         this.notifications = notifications;
+    }
+
+    public String getNotificationToken() {
+        return notificationToken;
+    }
+
+    public void setNotificationToken(String notificationToken) {
+        this.notificationToken = notificationToken;
     }
 
     public String getPhone_number() {
@@ -98,33 +107,68 @@ public class RegisteredUser extends Users{
         this.signed_up_events = signed_up_events;
     }
 
-    public RegisteredUser(Context context, String number, String email, String name, double latitude, double longitude){
+    public boolean isNotifications_opted() {
+        return notifications_opted;
+    }
+
+    public void setNotifications_opted(boolean notifications_opted) {
+        this.notifications_opted = notifications_opted;
+    }
+
+    public RegisteredUser(Context context, String number, String email, String name, String notificationToken, double latitude, double longitude, boolean opted){
         super(context);
         this.phone_number = number;
         this.email = email;
         this.name = name;
+        this.notificationToken = notificationToken;
+
         this.latitude = latitude;
         this.longitude = longitude;
+
         this.signed_up_events = new ArrayList<>();
         this.created_events = new ArrayList<>();
         this.event_history = new HashMap<>();
         this.notifications = new ArrayList<>();
+        this.notifications_opted = opted;
     }
 
-    public RegisteredUser(String Id, String number, String email, String name, double latitude, double longitude){
-        super(); // Call parent's no-argument constructor
-        this.deviceID = Id;
+    public RegisteredUser(String deviceID, String number, String email, String name, String notificationToken, double latitude, double longitude, boolean opted){
+        this.deviceID = deviceID;
         this.phone_number = number;
         this.email = email;
         this.name = name;
-        this.type = "Registered User";
+        this.notificationToken = notificationToken;
+
         this.latitude = latitude;
         this.longitude = longitude;
+
         this.signed_up_events = new ArrayList<>();
         this.created_events = new ArrayList<>();
         this.event_history = new HashMap<>();
         this.notifications = new ArrayList<>();
+        this.type = "Registered User";
+        this.notifications_opted = opted;
+
     }
+
+//    public RegisteredUser(String Id, String number, String email, String name, double latitude, double longitude){
+//        this(Id, number, email, name, latitude, longitude, "Registered User");
+//    }
+//    public RegisteredUser(String Id, String number, String email, String name, double latitude, double longitude, String type){
+//        super();
+//        this.deviceID = Id;
+//        this.phone_number = number;
+//        this.email = email;
+//        this.name = name;
+//        this.type = type;  // add type
+//        this.latitude = latitude;
+//        this.longitude = longitude;
+//        this.signed_up_events = new ArrayList<>();
+//        this.created_events = new ArrayList<>();
+//        this.event_history = new HashMap<>();
+//        this.notifications = new ArrayList<>();
+//    }
+
 
     public boolean moveToHistory(String eventID, String status) {
         if (signed_up_events.contains(eventID)) {
@@ -135,14 +179,52 @@ public class RegisteredUser extends Users{
         return false;
     }
 
-    public boolean leaveEvent(Event targetEvent){
-        if (signed_up_events.contains(targetEvent.getEventID())) {
-            if (targetEvent.getWaitlist() != null) {
-                targetEvent.getWaitlist().remove(deviceID); // remove from waitlist
+    public interface LeaveEventCallback { // *** NEW
+        void onSuccess();
+        void onFailure(Exception e);
+    }
+
+    // *** CHANGED: leaveEvent now also syncs with database
+    public void leaveEvent(Event targetEvent, DatabaseWorker dbWorker, LeaveEventCallback callback) { // *** CHANGED
+        if (targetEvent == null || dbWorker == null) {
+            if (callback != null) {
+                callback.onFailure(new IllegalArgumentException("targetEvent or dbWorker is null"));
             }
-            return moveToHistory(targetEvent.getEventID(), STATUS_CANCELLED);
+            return;
         }
-        return false;
+
+        // Ensure waitlist is not null
+        if (targetEvent.getWaitlist() == null) {
+            targetEvent.setWaitlist(new ArrayList<String>());
+        }
+
+        // Update in-memory user state
+        boolean inSignedUp = signed_up_events != null && signed_up_events.contains(targetEvent.getEventID());
+        if (inSignedUp) {
+            moveToHistory(targetEvent.getEventID(), STATUS_CANCELLED);
+        }
+
+        // Remove from event waitlist in memory
+        targetEvent.getWaitlist().remove(deviceID);
+
+        // Persist user and event waitlist
+        dbWorker.updateUser(this).addOnSuccessListener(aVoid -> {
+            dbWorker.updateWaitlist(targetEvent.getWaitlist(), targetEvent.getEventID())
+                    .addOnSuccessListener(aVoid2 -> {
+                        if (callback != null) {
+                            callback.onSuccess();
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        if (callback != null) {
+                            callback.onFailure(e);
+                        }
+                    });
+        }).addOnFailureListener(e -> {
+            if (callback != null) {
+                callback.onFailure(e);
+            }
+        });
     }
 
     public String getEventStatus(String eventID) {

@@ -1,6 +1,7 @@
 package com.example.vortex_events;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -23,6 +24,8 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.auth.User;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 public class RegistrationScreen extends AppCompatActivity {
     EditText phoneField;
@@ -83,8 +86,22 @@ public class RegistrationScreen extends AppCompatActivity {
                 emailAddress = emailField.getText().toString();
                 userName = nameField.getText().toString();
 
-                RegisteredUser user = new RegisteredUser(RegistrationScreen.this, phoneNumber, emailAddress, userName, latitude, longitude);
-                dbWorker.createRegisteredUser(user);
+                FirebaseMessaging.getInstance().getToken()
+                        .addOnCompleteListener(task -> {
+                            if (!task.isSuccessful()) {
+                                android.util.Log.w("FCM", "Fetching FCM registration token failed", task.getException());
+                                return;
+                            }
+                            String token = task.getResult();
+                            android.util.Log.d("FCM", "Token: " + token);
+                            RegisteredUser user =  new RegisteredUser( RegistrationScreen.this, phoneNumber, emailAddress, userName, token, longitude, latitude, true);
+                            user.setType("Registered User");
+                            dbWorker.createRegisteredUser(user);
+                        });
+
+
+
+
 
                 Intent intent = new Intent(RegistrationScreen.this, MainActivity.class);
                 startActivity(intent);
