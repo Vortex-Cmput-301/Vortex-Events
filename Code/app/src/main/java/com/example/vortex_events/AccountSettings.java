@@ -2,16 +2,20 @@ package com.example.vortex_events;
 
 import static android.content.ContentValues.TAG;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -29,6 +33,7 @@ public class AccountSettings extends AppCompatActivity {
     // Firebase Components
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
+    DatabaseWorker dbWorker;
     private String currentUser;
     private DocumentReference userDocRef;
     @Override
@@ -45,8 +50,21 @@ public class AccountSettings extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
-//        currentUser = mAuth.getCurrentUser();
-        currentUser = "2c5e1fb22ef59572";//Todo Currently this is hardcoded to the userID in the DATABASE, just a test in order to see if it works (which it does) still needs to implement getting the userId and checking with the databse to get information.
+        dbWorker = new DatabaseWorker();
+
+        @SuppressLint("HardwareIds") String userID = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+        dbWorker.getUserByDeviceID(userID).addOnCompleteListener(new OnCompleteListener<RegisteredUser>() {
+            @Override
+            public void onComplete(@NonNull Task<RegisteredUser> task) {
+                if (task.isSuccessful()){
+                    RegisteredUser user = task.getResult();
+                }else{
+                    Log.d("account settings","Doesn't work");
+                }
+            }
+        });
+
+        currentUser = userID;
         // If the user is not null, get the reference to their document in Firestore
         if (currentUser != null) {
             userDocRef = db.collection("Users").document(currentUser);
