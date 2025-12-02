@@ -178,20 +178,24 @@ public class SignUpEvent extends AppCompatActivity {
                 // Update user in database
                 dbWork.updateUser(user).addOnSuccessListener(aVoid -> {
                     Log.d("SignUpEvent", "User events updated successfully");
+                    Toast.makeText(SignUpEvent.this, "Sign up successful", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(SignUpEvent.this, MainActivity.class);
                     startActivity(intent);
                 }).addOnFailureListener(e -> {
                     Log.e("SignUpEvent", "DB error updating user");
+                    Toast.makeText(SignUpEvent.this, "Sign up failed", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(SignUpEvent.this, MainActivity.class);
                     startActivity(intent);
                 });
             } else {
                 Log.e("SignUpEvent", "User not found");
+                Toast.makeText(SignUpEvent.this, "Sign up failed", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(SignUpEvent.this, MainActivity.class);
                 startActivity(intent);
             }
         }).addOnFailureListener(e -> {
             Log.e("SignUpEvent", "DB error getting user");
+            Toast.makeText(SignUpEvent.this, "Sign up failed", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(SignUpEvent.this, MainActivity.class);
             startActivity(intent);
         });

@@ -89,11 +89,11 @@
                 android:id="@+id/btn_push_to_declined"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Push to group"
-                android:backgroundTint="@android:color/black"
-                android:textColor="@android:color/white"
+                android:backgroundTint="@color/porject_pink"
                 android:paddingVertical="12dp"
-                android:textSize="18sp"/>
+                android:text="Push to group"
+                android:textColor="@android:color/white"
+                android:textSize="18sp" />
 
 
 
