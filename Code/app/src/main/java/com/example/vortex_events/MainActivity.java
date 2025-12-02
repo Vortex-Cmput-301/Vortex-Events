@@ -7,6 +7,7 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private List<Event> pastEventList = new ArrayList<>();
     private DatabaseWorker databaseWorker;
     private TextView homeTitleTextView;
+    private Button exploreButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerViewPastEvents = findViewById(R.id.recyclerView_past_events);
         layoutEmptyState = findViewById(R.id.layoutEmptyState);
+        exploreButton = findViewById(R.id.btnExplore);
 
         pastEventAdapter = new PastEventAdapter(pastEventList, this);
         recyclerViewPastEvents.setLayoutManager(new LinearLayoutManager(this));
@@ -67,6 +70,13 @@ public class MainActivity extends AppCompatActivity {
             profileButton.setOnClickListener(v -> {
                 Intent intent = new Intent(getApplicationContext(), Profile.class);
                 intent.putExtra("prev_activity", "home");
+                startActivity(intent);
+            });
+        }
+
+        if (exploreButton != null) {
+            exploreButton.setOnClickListener(v -> {
+                Intent intent = new Intent(getApplicationContext(), ExplorePage.class);
                 startActivity(intent);
             });
         }
