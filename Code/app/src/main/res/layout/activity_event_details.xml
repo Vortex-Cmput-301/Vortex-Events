@@ -235,6 +235,7 @@
         android:outlineAmbientShadowColor="@color/black"
         app:itemIconSize="30dp"
         app:labelVisibilityMode="labeled"
+        style="@style/Widget.App.BottomNavigationView"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/bottom_nav_menu" />
 
