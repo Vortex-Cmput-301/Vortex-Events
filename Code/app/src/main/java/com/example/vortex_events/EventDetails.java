@@ -76,6 +76,16 @@ public class EventDetails extends AppCompatActivity {
 
     ImageView qrImage;
 
+    ArrayList<String> wonLottery;
+
+    ArrayList<String> waitList;
+
+    ArrayList<String> accepted;
+
+    ArrayList<String> declined;
+
+
+
 
     @SuppressLint("HardwareIds")
     @Override
@@ -109,6 +119,8 @@ public class EventDetails extends AppCompatActivity {
         editEventButton = findViewById(R.id.edit_event_button);
         notifcationsDashBoardButton = findViewById(R.id.organizer_notifications_button);
         Button mapButton = findViewById(R.id.btn_details_open_map);
+        Button decline = findViewById(R.id.decline);
+        Button accept = findViewById(R.id.accept);
         mapButton.setVisibility(View.GONE);
 
         moreButton = findViewById(R.id.btn_more);
@@ -149,6 +161,11 @@ public class EventDetails extends AppCompatActivity {
                 time = event.getStart_time();
                 orgID = event.getOrganizer();
                 image = event.getImage();
+                wonLottery = event.getWonLottery();
+                waitList = event.getWaitlist();
+                declined = event.getDeclined();
+                accepted = event.getAccepted();
+
 
                 if (image != null && !image.isEmpty()) {
                     try {
@@ -249,8 +266,9 @@ public class EventDetails extends AppCompatActivity {
 
 
 
+
                 }else{
-                    if (event.getWaitlist().contains(deviceID)) {
+                    if (waitList.contains(deviceID)) {
                         signupButton.setText("Registered, leave or edit");
 //                    Listener for sign up for event
                         signupButton.setOnClickListener(new View.OnClickListener() {
@@ -263,7 +281,37 @@ public class EventDetails extends AppCompatActivity {
                                 startActivity(intent);
                             }
                         });
-                    }else{
+
+                    }else if (wonLottery.contains(deviceID)){
+                        accept.setVisibility(VISIBLE);
+                        decline.setVisibility(VISIBLE);
+
+                        accept.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                accepted.add(deviceID);
+                                event.setAccepted(accepted);
+                                wonLottery.remove(deviceID);
+                                event.setWonLottery(wonLottery);
+                            }
+                        });
+
+                        decline.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                declined.add(deviceID);
+                                event.setDeclined(declined);
+                                wonLottery.remove(deviceID);
+                                event.setWonLottery(declined);
+
+                            }
+                        });
+
+
+                    } else if (declined.contains(deviceID) || accepted.contains(deviceID)) {
+
+
+                    } else{
                         signupButton.setText("Sign up for this event");
 //                    Listener for sign up for event
                         signupButton.setOnClickListener(new View.OnClickListener() {
