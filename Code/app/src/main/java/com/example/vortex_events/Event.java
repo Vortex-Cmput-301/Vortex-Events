@@ -20,6 +20,8 @@ public class Event {
     ArrayList<String> accepted;
     ArrayList<String> declined;
     ArrayList<String> wonLottery;
+
+
     String organizer;
     boolean lottery_done;
 
@@ -46,6 +48,7 @@ public class Event {
         this.waitlist = new ArrayList<String>();
         this.accepted = new ArrayList<String>();
         this.declined = new ArrayList<String>();
+        this.wonLottery = new ArrayList<String>();
     }
 
     public ArrayList<String> getWonLottery() {

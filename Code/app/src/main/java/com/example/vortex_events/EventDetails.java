@@ -174,6 +174,7 @@ public class EventDetails extends AppCompatActivity {
 
 
 
+
                 //displays QR code
                 String payload = "vortex://event/" + EventID;
 
