@@ -4,11 +4,17 @@
 
     <solid android:color="@color/project_blue" />
 
-    <corners android:radius="8dp" />
+    <corners android:radius="20dp" />
 
     <stroke
         android:width="2dp"
         android:color="#448AFF"
         android:dashWidth="10dp"
         android:dashGap="6dp" />
+    <padding
+        android:bottom="15dp"
+        android:left="15dp"
+        android:right="15dp"
+        android:top="15dp"
+        />
 </shape>

@@ -9,8 +9,8 @@
 
     <TextView
         android:id="@+id/textView_Home_title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="293dp"
+        android:layout_height="77dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
         android:text="Welcome"
@@ -21,56 +21,57 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
     <ImageButton
         android:id="@+id/imageView_profile"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="56dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="Profile"
         android:scaleType="centerInside"
         android:src="@drawable/ic_person"
         app:layout_constraintBottom_toBottomOf="@+id/textView_Home_title"
-        app:layout_constraintEnd_toStartOf="@+id/imageView_notifications"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/textView_Home_title"
-        app:layout_constraintVertical_bias="1.0"
+        app:layout_constraintVertical_bias="0.428"
         app:tint="@android:color/darker_gray" />
-
 
     <ImageButton
         android:id="@+id/imageView_notifications"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="16dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="Notifications"
         android:scaleType="centerInside"
         android:src="@drawable/ic_notification"
         app:layout_constraintBottom_toBottomOf="@+id/textView_Home_title"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.708"
+        app:layout_constraintStart_toEndOf="@+id/imageView_profile"
         app:layout_constraintTop_toTopOf="@+id/textView_Home_title"
-        app:layout_constraintVertical_bias="1.0"
+        app:layout_constraintVertical_bias="0.422"
         app:tint="@android:color/darker_gray" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layoutEmptyState"
-        android:layout_width="0dp"
-        android:layout_height="200dp"
-        android:layout_marginTop="52dp"
+        android:layout_width="match_parent"
+        android:layout_height="186dp"
+        android:layout_margin="20sp"
         android:background="@drawable/blue_dashed"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.6"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView_Home_title">
+        app:layout_constraintTop_toBottomOf="@+id/textView_Home_title"
+        app:layout_constraintVertical_bias="0.401">
 
         <TextView
             android:id="@+id/tvNoEvents"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="You have no events yet."
-            android:textColor="#2962FF"
+            android:textColor="@color/white"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@id/btnExplore"

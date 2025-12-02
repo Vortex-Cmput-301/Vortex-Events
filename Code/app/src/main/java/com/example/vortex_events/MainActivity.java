@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
                         String baseText = "Welcome";
                         String userName = user.getName();
                         if (userName != null && !userName.trim().isEmpty()) {
-                            homeTitleTextView.setText(baseText + " " + userName.trim());
+                            homeTitleTextView.setText(baseText + ",\n" + userName.trim());
                         } else {
                             homeTitleTextView.setText(baseText);
                         }
