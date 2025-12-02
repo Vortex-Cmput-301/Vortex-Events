@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -161,7 +162,11 @@ public class EventDetails extends AppCompatActivity {
                 time = event.getStart_time();
                 orgID = event.getOrganizer();
                 image = event.getImage();
-                wonLottery = event.getWonLottery();
+                wonLottery =  new ArrayList<>();
+                if (event.getWonLottery()!= null){
+                    wonLottery = event.getWonLottery();
+                }
+
                 waitList = event.getWaitlist();
                 declined = event.getDeclined();
                 accepted = event.getAccepted();
@@ -170,7 +175,7 @@ public class EventDetails extends AppCompatActivity {
                 if (image != null && !image.isEmpty()) {
                     try {
 
-                        byte[] imageBytes = android.util.Base64.decode(image, android.util.Base64.DEFAULT);
+                        byte[] imageBytes = Base64.decode(image, Base64.DEFAULT);
 
 
                         Glide.with(this).load(imageBytes).into(posterPreview);
