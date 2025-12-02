@@ -163,6 +163,35 @@
 
 
 
+
+            <Button
+                android:id="@+id/accept"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="decline"
+                android:backgroundTint="@color/porject_pink"
+                android:textColor="@android:color/white"
+                android:paddingVertical="12dp"
+                android:textSize="18sp"
+                android:visibility="gone" />
+
+
+
+            <Button
+                android:id="@+id/decline"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="accept"
+                android:backgroundTint="@color/porject_pink"
+                android:textColor="@android:color/white"
+                android:paddingVertical="12dp"
+                android:textSize="18sp"
+                android:visibility="gone" />
+
+
+
+
+
             <Button
                 android:id="@+id/edit_event_button"
                 android:layout_width="match_parent"
