@@ -7,8 +7,19 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
+/**
+ * Utility that generates QR code Bitmaps from a text payload.
+ */
 public class QRCodeGenerator {
 
+    /**
+     * Generates a QR code bitmap for the provided text.
+     * @param text payload to encode
+     * @param width bitmap width
+     * @param height bitmap height
+     * @return generated QR Bitmap
+     * @throws WriterException when QR encoding fails
+     */
     public static Bitmap generateQRCodeBitmap(String text, int width, int height)
             throws WriterException {
 

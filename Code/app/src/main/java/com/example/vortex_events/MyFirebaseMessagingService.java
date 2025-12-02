@@ -13,8 +13,14 @@ import androidx.core.app.NotificationCompat;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+/**
+ * Firebase messaging service to handle incoming push notifications and token updates.
+ */
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
+    /**
+     * Called when a message is received from FCM.
+     */
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage){
 
@@ -31,12 +37,18 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
     }
 
+    /**
+     * Called when a new FCM registration token is generated for this device.
+     */
     @Override
     public void onNewToken(String token) {
 
         android.util.Log.d("FCM", "Token: " + token);
     }
 
+    /**
+     * Build and show a platform notification with the provided title/body.
+     */
     private void sendNotification(String title, String body){
         String channelID = "main_channel";
 

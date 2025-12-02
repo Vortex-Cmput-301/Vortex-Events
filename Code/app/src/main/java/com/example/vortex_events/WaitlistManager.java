@@ -15,12 +15,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-// Lightweight helper. Does NOT change existing DatabaseWorker or Events schema.
+/**
+ * Lightweight helper for managing event waitlist limits and array initialization.
+ * Does not modify the existing DatabaseWorker or Events schema.
+ */
 public class WaitlistManager {
 
     private final FirebaseFirestore fs = FirebaseFirestore.getInstance();
 
-    /** Save/Update the waiting list limit into EventSettings/{eventId}. 0 (or missing) = unlimited. */
+    /**
+     * Save or update the waitlist limit for an event. 0 (or missing) means unlimited.
+     * @param eventId event ID
+     * @param limit waitlist capacity limit
+     * @return task for the operation
+     */
     public Task<Void> setWaitlistLimit(@NonNull String eventId, int limit) {
         DocumentReference settings = fs.collection("Events").document(eventId);
         Map<String, Object> data = new HashMap<>();
@@ -28,7 +36,11 @@ public class WaitlistManager {
         return settings.set(data, SetOptions.merge());
     }
 
-    /** Initialize accepted/waitlist/declined arrays (merge, won’t overwrite other fields). */
+    /**
+     * Initialize accepted/waitlist/declined arrays for an event (merge mode, won't overwrite other fields).
+     * @param eventId event ID
+     * @return task for the operation
+     */
     public Task<Void> initEventArrays(@NonNull String eventId) {
         DocumentReference eventDoc = fs.collection("Events").document(eventId);
         Map<String, Object> init = new HashMap<>();

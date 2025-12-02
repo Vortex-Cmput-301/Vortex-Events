@@ -28,6 +28,10 @@ import java.util.Map;
 
 public class AccountSettings extends AppCompatActivity {
 
+    /**
+     * Activity to view and edit current user's account settings stored in Firestore.
+     */
+
     private EditText editTextName, editTextEmail, editTextPhone;
     private Button buttonSaveChanges;
     private ImageView buttonBack;

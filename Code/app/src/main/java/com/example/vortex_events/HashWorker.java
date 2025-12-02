@@ -1,5 +1,8 @@
 package com.example.vortex_events;
 
+/**
+ * Small utility to generate and reverse simple event IDs from names and organizer IDs.
+ */
 public class HashWorker {
     public HashWorker() {
     }

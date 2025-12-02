@@ -17,16 +17,27 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * Adapter to display a list of {@link Event} items inside a RecyclerView on the Explore page.
+ */
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
 
     private final List<Event> eventList;
     private final ExplorePage activity;
 
+    /**
+     * Create a new EventAdapter.
+     * @param eventList list of events to display
+     * @param activity ExplorePage activity used for callbacks
+     */
     public EventAdapter(List<Event> eventList, ExplorePage activity) {
         this.eventList = eventList;
         this.activity = activity;
     }
 
+    /**
+     * Inflate the item view and wrap it in a view holder.
+     */
     @NonNull
     @Override
     public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -36,6 +47,9 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         return new EventViewHolder(itemView);
     }
 
+    /**
+     * Returns the number of events in the list.
+     */
     @Override
     public int getItemCount() {
         return eventList.size();
@@ -46,6 +60,9 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         TextView eventTitle, eventLocation, eventDate;
         Button detailsButton;
 
+        /**
+         * ViewHolder constructor - finds child views inside the item view.
+         */
         public EventViewHolder(@NonNull View itemView) {
             super(itemView);
             // Initialize the views
@@ -58,6 +75,9 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
         // A helper method to bind data and listeners
     }
+    /**
+     * Binds event data for the item at the given position to the holder views.
+     */
     @Override
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
         // Get the data model for this position

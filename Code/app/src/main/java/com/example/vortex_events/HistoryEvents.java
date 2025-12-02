@@ -32,6 +32,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * Activity showing a user's historical events (past events) with a list view.
+ */
 public class HistoryEvents extends AppCompatActivity {
 
     private ListView eventListView;
@@ -43,6 +46,9 @@ public class HistoryEvents extends AppCompatActivity {
     private List<HistoryEventItem> historyEvents;
     private HistoryEventAdapter adapter;
 
+    /**
+     * Initialize the activity, views, and start loading history events.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +75,9 @@ public class HistoryEvents extends AppCompatActivity {
 
     }
 
+    /**
+     * Loads the current user by device ID and then loads their history.
+     */
     private void loadCurrentUserAndHistory() {
         // Get device ID
         String deviceID = getDeviceID();
@@ -97,6 +106,10 @@ public class HistoryEvents extends AppCompatActivity {
     }
 
     @SuppressLint("HardwareIds")
+    /**
+     * Returns the Android device ID used to look up the registered user.
+     * @return device ID string or null if unavailable
+     */
     private String getDeviceID() {
         try {
             return Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -105,6 +118,9 @@ public class HistoryEvents extends AppCompatActivity {
         }
     }
 
+    /**
+     * Loads historical events for the current user and displays them.
+     */
     private void loadHistoryEvents() {
         if (currentUser == null) {
             Toast.makeText(this, "User not found", Toast.LENGTH_SHORT).show();
@@ -129,6 +145,10 @@ public class HistoryEvents extends AppCompatActivity {
         }
     }
 
+    /**
+     * Loads one event's details by ID and adds it to the history list.
+     * @param eventID id of the event to load
+     */
     private void loadEventDetails(String eventID) {
         databaseWorker.getEventByID(eventID).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -184,6 +204,12 @@ public class HistoryEvents extends AppCompatActivity {
      * Format start_time and end_time into a single date string
      * Format: "MMM dd, yyyy hh:mm a - hh:mm a"
      */
+    /**
+     * Formats start/end times into a readable date string.
+     * @param startTime event start time (nullable)
+     * @param endTime event end time (nullable)
+     * @return formatted date string
+     */
     private String formatEventDate(Date startTime, Date endTime) {
         if (startTime == null && endTime == null) {
             return "Date not specified";
@@ -214,12 +240,18 @@ public class HistoryEvents extends AppCompatActivity {
     // Custom adapter for history events
     private class HistoryEventAdapter extends ArrayAdapter<HistoryEventItem> {
 
+        /**
+         * Adapter constructor for history event items.
+         */
         public HistoryEventAdapter(HistoryEvents context, List<HistoryEventItem> events) {
             super(context, R.layout.item_past_event, events);
         }
 
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+    /**
+     * Bind a HistoryEventItem to a list item view.
+     */
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
             if (convertView == null) {
                 convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_past_event, parent, false);
             }
@@ -278,7 +310,10 @@ public class HistoryEvents extends AppCompatActivity {
             return convertView;
         }
 
-        private String getStatusText(String status) {
+    /**
+     * Convert an internal status code into a human-readable label.
+     */
+    private String getStatusText(String status) {
             if (status == null) {
                 return "Unknown";
             }
@@ -297,7 +332,10 @@ public class HistoryEvents extends AppCompatActivity {
             }
         }
 
-        private void setButtonColor(Button button, String status) {
+    /**
+     * Set the button color based on the event status.
+     */
+    private void setButtonColor(Button button, String status) {
             if (status == null) {
                 button.setBackgroundColor(getContext().getResources().getColor(android.R.color.darker_gray));
                 return;
@@ -323,7 +361,10 @@ public class HistoryEvents extends AppCompatActivity {
             }
         }
 
-        private void showEventDetails(HistoryEventItem event) {
+    /**
+     * Show a toast with basic event details (used by the adapter).
+     */
+    private void showEventDetails(HistoryEventItem event) {
             // Show event details - could be a dialog or new activity
             Toast.makeText(getContext(),
                     "Event: " + event.getEventName() +
@@ -335,6 +376,9 @@ public class HistoryEvents extends AppCompatActivity {
     }
 
     // Data model for history event items
+    /**
+     * Simple data holder for history list items.
+     */
     private class HistoryEventItem {
         private String eventID;
         private String eventName;

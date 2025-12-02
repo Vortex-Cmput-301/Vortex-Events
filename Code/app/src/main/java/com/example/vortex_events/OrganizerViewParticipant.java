@@ -30,6 +30,10 @@ public class OrganizerViewParticipant extends AppCompatActivity {
     String eventID;
     private static final String TAG = "OrganizerViewParticipant";
 
+    /**
+     * Initialize the activity, load participant data, and set up filtering UI.
+     * @param savedInstanceState saved instance state
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,6 +84,12 @@ public class OrganizerViewParticipant extends AppCompatActivity {
         });
     }
 
+    /**
+     * Load participant lists (accepted, waitlist, declined) for the event and populate the adapter.
+     * @param spinner filter dropdown spinner
+     * @param listAdapter adapter for displaying participants
+     * @param eventId event ID to load participants for
+     */
     private void setupParticipantLists(Spinner spinner, UserAdapter listAdapter, String eventId) {
         ArrayList<RegisteredUser> acceptedList = new ArrayList<>();
         ArrayList<RegisteredUser> waitlistList = new ArrayList<>();
@@ -173,6 +183,14 @@ public class OrganizerViewParticipant extends AppCompatActivity {
         });
     }
 
+    /**
+     * Wire up the spinner to filter the participant list by status (Accepted/Waitlist/Declined).
+     * @param spinner filter dropdown
+     * @param listAdapter adapter for participants
+     * @param acceptedList list of accepted users
+     * @param waitlistList list of waitlisted users
+     * @param deletedList list of declined users
+     */
     private void setupSpinnerListener(Spinner spinner, UserAdapter listAdapter,
                                       ArrayList<RegisteredUser> acceptedList,
                                       ArrayList<RegisteredUser> waitlistList,

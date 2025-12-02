@@ -22,6 +22,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Activity for signing up or leaving an event; handles waitlist and acceptance flows.
+ */
 public class SignUpEvent extends AppCompatActivity {
     String EventID;
     Date time;
@@ -44,6 +47,9 @@ public class SignUpEvent extends AppCompatActivity {
     ImageButton backButton;
 
 
+    /**
+     * Initialize sign-up UI and manage the sign-up/leave flows.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -181,6 +187,11 @@ public class SignUpEvent extends AppCompatActivity {
             return insets;
         });
     }
+    /**
+     * After successfully adding the current device to the event, update the user's record
+     * with the new signed-up event and navigate back to the main screen.
+     * @param eventID event id to add to the user
+     */
     private void updateUserEvents(String eventID) {
         dbWork.getUserByDeviceID(deviceID).addOnSuccessListener(user -> {
             if (user != null) {
@@ -212,6 +223,10 @@ public class SignUpEvent extends AppCompatActivity {
             startActivity(intent);
         });
     }
+    /**
+     * Leave the event by removing the device from the waitlist and updating user/event state.
+     * @param eventID the id of the event to leave
+     */
     private void leaveEvent(String eventID) {
         dbWork.getUserByDeviceID(deviceID).addOnSuccessListener(user -> {
             if (user == null) {
@@ -266,6 +281,10 @@ public class SignUpEvent extends AppCompatActivity {
     }
 
     // *** NEW: simple helper to navigate back to details
+    /**
+     * Navigate back to the EventDetails activity for the given event.
+     * @param eventID id of the event
+     */
     private void goBackToEventDetails(String eventID) {
         Intent intent = new Intent(SignUpEvent.this, EventDetails.class);
         intent.putExtra("EventID", eventID);

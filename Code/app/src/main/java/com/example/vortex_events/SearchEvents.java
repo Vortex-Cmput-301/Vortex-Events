@@ -23,8 +23,14 @@ import com.google.android.material.navigation.NavigationBarView;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Activity that provides a simple search UI to filter events by tags.
+ */
 public class SearchEvents extends AppCompatActivity {
 
+    /**
+     * Initialize search UI and wire text change listeners to filter events.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

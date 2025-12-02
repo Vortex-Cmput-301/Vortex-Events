@@ -32,6 +32,9 @@ import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 public class MainActivity extends AppCompatActivity {
+    /**
+     * Main landing screen showing recent/past events and navigation to other screens.
+     */
     private RecyclerView recyclerViewPastEvents;
     private ConstraintLayout layoutEmptyState;
     private PastEventAdapter pastEventAdapter;

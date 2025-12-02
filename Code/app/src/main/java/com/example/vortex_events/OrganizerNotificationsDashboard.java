@@ -27,6 +27,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Activity used by event organizers to create and push notifications to groups
+ * (accepted, declined, waitlist) for a given event.
+ */
 public class OrganizerNotificationsDashboard extends AppCompatActivity {
     String eventID;
     String deviceID;
@@ -52,6 +56,9 @@ public class OrganizerNotificationsDashboard extends AppCompatActivity {
 
 
 
+    /**
+     * Initialize UI and load the event to determine which group to notify.
+     */
     @SuppressLint("HardwareIds")
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -24,6 +24,10 @@ import com.google.android.material.navigation.NavigationBarView;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 
+/**
+ * Activity that displays entrant locations on a Google Map for a specific event.
+ * Accepted entrants shown in green, waitlist in yellow, declined in red.
+ */
 public class MapEntrants extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
@@ -35,6 +39,10 @@ public class MapEntrants extends FragmentActivity implements OnMapReadyCallback 
     ArrayList<String> deletedList = new ArrayList<>();
 
 
+    /**
+     * Initialize the activity, load event data, and prepare the map.
+     * @param savedInstanceState saved instance state bundle
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,12 +85,9 @@ public class MapEntrants extends FragmentActivity implements OnMapReadyCallback 
     }
 
 
-    /*
-    * Add all the lists to the map
-    * accepted = green
-    * waitlist = yellow
-    * declined = red
-    * */
+    /**
+     * Add markers to the map for accepted (green), waitlist (yellow), and declined (red) users.
+     */
     public void addToMap() {
         for (String userID : acceptedList) {
             dbWorker.getUserByDeviceID(userID).addOnSuccessListener(user -> {
@@ -142,10 +147,9 @@ public class MapEntrants extends FragmentActivity implements OnMapReadyCallback 
     }
 
     /**
-     * sets the map and centers it on creation
-     * @param googleMap GoogleMap object to manipulate.
+     * Called when the Google Map is ready. Sets up the map and centers it on Edmonton.
+     * @param googleMap the GoogleMap object to manipulate
      */
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;

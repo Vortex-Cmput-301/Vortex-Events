@@ -29,6 +29,10 @@ import java.util.Map;
  */
 public class AdminActivity extends AppCompatActivity implements AdminListAdapter.AdminItemListener {
 
+    /**
+     * Activity entry - sets up the admin UI and loads the default tab.
+     */
+
     private RecyclerView recyclerView;
     private MaterialButton buttonTabUsers;
     private MaterialButton buttonTabImages;

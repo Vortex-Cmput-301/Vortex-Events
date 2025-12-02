@@ -52,6 +52,11 @@ public class AdminListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         this.listener = listener;
     }
 
+    /**
+     * Create a new AdminListAdapter with the provided listener.
+     * @param listener listener for item interactions
+     */
+
     // ========= Public setters =========
 
     /**

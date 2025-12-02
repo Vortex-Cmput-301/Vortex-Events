@@ -2,6 +2,10 @@ package com.example.vortex_events;
 
 import android.content.Context;
 
+/**
+ * Admin user subclass with elevated permissions.
+ * Extends RegisteredUser with admin privileges.
+ */
 public class AdminUser extends RegisteredUser{
     /**
      * Constructor for AdminUser.
