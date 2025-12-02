@@ -71,7 +71,7 @@ public class PastEventAdapter extends RecyclerView.Adapter<PastEventAdapter.Past
 
                 com.bumptech.glide.Glide.with(holder.itemView.getContext())
                         .load(decodedString)
-                        .fitCenter()
+                        .centerCrop()
                         .into(holder.thumbnail);
 
             } catch (Exception e) {
