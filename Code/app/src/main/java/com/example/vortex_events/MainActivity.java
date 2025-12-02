@@ -1,7 +1,10 @@
 package com.example.vortex_events;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -91,6 +94,19 @@ public class MainActivity extends AppCompatActivity {
 //                startActivity(intent);
 //            });
 //        }
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+
+                requestPermissions(
+                        new String[]{Manifest.permission.POST_NOTIFICATIONS},
+                        1001
+                );
+            }
+        }
+
 
         loadSignedUpEventsForCurrentUser();
 

@@ -68,7 +68,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/time_of_event"
+                android:text="Event Start Time"
                 android:textSize="16sp" />
 
             <EditText
@@ -85,7 +85,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/end_of_event"
+                android:text="Event End Time"
                 android:textSize="16sp" />
 
             <EditText
@@ -151,7 +151,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/registration_period"
+                android:text="End of Enrollment Period"
                 android:textSize="16sp" />
 
             <EditText

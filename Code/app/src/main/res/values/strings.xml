@@ -66,6 +66,7 @@
         <item>Accepted</item>
         <item>Declined</item>
         <item>Waitlist</item>
+        <item>WonLottery</item>
     </string-array>
     <string name="end_of_event">End of event</string>
     <string name="start_at_yyyy_mm_dd_hh_mm">Start at: YYYY-MM-DD, HH:MM</string>
