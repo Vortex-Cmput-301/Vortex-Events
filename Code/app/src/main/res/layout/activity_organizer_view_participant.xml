@@ -61,11 +61,29 @@
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <ListView
+        android:id="@+id/participantList"
         android:layout_width="394dp"
         android:layout_height="417dp"
-        android:id="@+id/participantList"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.47"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/participant_filter_dropdown" />
+        app:layout_constraintTop_toBottomOf="@+id/participant_filter_dropdown"
+        app:layout_constraintVertical_bias="0.428" />
+
+    <Button
+        android:id="@+id/btn_decline_selected"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="36dp"
+        android:backgroundTint="#FF0000"
+        android:textColor="@color/black"
+        android:text="Move to Declined"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/participantList"
+        app:layout_constraintVertical_bias="1.0"
+        android:visibility="gone"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
