@@ -41,7 +41,7 @@ public class CsvExporterTest {
                 Context.class,
                 String.class,
                 String.class,
-                List.class    // 这里不用改，泛型会被擦除
+                List.class
         );
         method.setAccessible(true);
 
@@ -49,12 +49,6 @@ public class CsvExporterTest {
     }
 
 
-    /**
-     * 正常情况：有两条用户数据时，CSV 里应该是：
-     *   第 1 行：表头
-     *   第 2 行：第一个用户
-     *   第 3 行：第二个用户
-     */
 
     @Test
     public void writeCsvFile_writesHeaderAndRows() throws Exception {
@@ -62,7 +56,7 @@ public class CsvExporterTest {
                 .getInstrumentation()
                 .getTargetContext();
 
-        // 这里改成 List<String[]>
+
         List<String[]> rows = new ArrayList<>();
         rows.add(new String[]{"uid123", "SunFlower", "sunny@gardon.com", "1234567890"});
         rows.add(new String[]{"uid456", "Peashooter", "pea@gardon.com", "0987654321"});
@@ -85,7 +79,7 @@ public class CsvExporterTest {
             }
         }
 
-        // 1 行表头 + 2 行数据
+
         assertEquals(3, lines.size());
         assertEquals("UserID,Username,UserEmail,UserPhone", lines.get(0));
         assertEquals("\"uid123\",\"SunFlower\",\"sunny@gardon.com\",\"1234567890\"", lines.get(1));
@@ -94,16 +88,14 @@ public class CsvExporterTest {
     }
 
 
-    /**
-     * 边界情况：rows 为空时，CSV 里至少要有表头一行。
-     */
+
     @Test
     public void writeCsvFile_handlesEmptyRows() throws Exception {
         Context context = InstrumentationRegistry
                 .getInstrumentation()
                 .getTargetContext();
 
-        List<String[]> rows = new ArrayList<>();   // 空列表
+        List<String[]> rows = new ArrayList<>();
 
         File csvFile = invokeWriteCsvFile(
                 context,
@@ -123,7 +115,7 @@ public class CsvExporterTest {
             }
         }
 
-        // 只有表头
+
         assertEquals(1, lines.size());
         assertEquals("UserID,Username,UserEmail,UserPhone", lines.get(0));
     }
