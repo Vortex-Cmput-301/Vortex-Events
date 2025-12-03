@@ -17,6 +17,9 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
+/**
+ * Landing activity shown at app start where users can sign in or continue as guest.
+ */
 public class WelcomePage extends AppCompatActivity {
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -24,6 +27,9 @@ public class WelcomePage extends AppCompatActivity {
 
     Button signInButton;
     TextView guestLink;
+    /**
+     * Activity entry; sets up sign-in and guest actions.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

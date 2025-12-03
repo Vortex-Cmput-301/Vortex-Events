@@ -43,6 +43,11 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 
+/**
+ * Activity that displays detailed information about a single event and
+ * allows the user to sign up, accept/decline invitations, or (if organizer)
+ * edit/delete the event.
+ */
 public class EventDetails extends AppCompatActivity {
     String EventID;
     FirebaseFirestore db;
@@ -90,6 +95,9 @@ public class EventDetails extends AppCompatActivity {
 
 
     @SuppressLint("HardwareIds")
+    /**
+     * Activity lifecycle entry point - initializes UI and loads event data.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -494,5 +502,15 @@ public class EventDetails extends AppCompatActivity {
         });
 
     }
-
+    /**
+     * Move the given user ID from the event waitlist into the declined list
+     * in Firestore.
+     * @param userID device/user id to move to declined
+     */
+    public void switchToDeclined(String userID){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("Events")
+                .document(EventID)
+                .update("waitlist", FieldValue.arrayRemove(userID), "declined", FieldValue.arrayUnion(userID));
+    }
 }

@@ -45,6 +45,10 @@ public class OrganizerViewParticipant extends AppCompatActivity {
     ArrayList<RegisteredUser> declinedList = new ArrayList<>();
     ArrayList<RegisteredUser> wonLotteryList = new ArrayList<>();
 
+    /**
+     * Initialize the activity, load participant data, and set up filtering UI.
+     * @param savedInstanceState saved instance state
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -122,8 +126,14 @@ public class OrganizerViewParticipant extends AppCompatActivity {
         });
     }
 
-
-    private void setupParticipantLists(Spinner spinner, String eventId) {
+    /**
+     * Load participant lists (accepted, waitlist, declined) for the event and populate the adapter.
+     * @param spinner filter dropdown spinner
+     * @param eventId event ID to load participants for
+     */
+    private void setupParticipantLists(Spinner spinner, String eventId) {        ArrayList<RegisteredUser> acceptedList = new ArrayList<>();
+        ArrayList<RegisteredUser> waitlistList = new ArrayList<>();
+        ArrayList<RegisteredUser> deletedList = new ArrayList<>();
         FirebaseFirestore fs = FirebaseFirestore.getInstance();
         DatabaseWorker dbwork = new DatabaseWorker(fs);
 
@@ -189,7 +199,10 @@ public class OrganizerViewParticipant extends AppCompatActivity {
         });
     }
 
-
+    /**
+     * Wire up the spinner to filter the participant list by status (Accepted/Waitlist/Declined).
+     * @param spinner filter dropdown
+     */
     private void setupSpinnerListener(Spinner spinner) {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

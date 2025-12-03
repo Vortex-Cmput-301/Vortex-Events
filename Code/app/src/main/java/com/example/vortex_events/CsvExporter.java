@@ -28,13 +28,17 @@ public class CsvExporter {
 
     private static final String TAG = "CsvExporter";
 
+    /**
+     * Export the accepted list of a given event to a CSV file.
+     * @param context The context.
+     * @param eventId The ID of the event.
+     */
     public static void exportAcceptedEntrants(
             @NonNull Context context,
             @NonNull String eventId
     ) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        // 1. get Event first, find accepted list amd event name
         db.collection("Events").document(eventId).get()
                 .addOnSuccessListener(eventDoc -> {
                     if (!eventDoc.exists()) {
@@ -54,7 +58,6 @@ public class CsvExporter {
                         acceptedIds = new ArrayList<>();
                     }
 
-                    // 2. get Users doc of each userId
                     List<Task<DocumentSnapshot>> userTasks = new ArrayList<>();
                     for (String uid : acceptedIds) {
                         userTasks.add(db.collection("Users").document(uid).get());
@@ -115,12 +118,20 @@ public class CsvExporter {
     }
 
 
+    /**
+     * Writes a CSV file to the documents directory.
+     * @param context The context.
+     * @param eventName The name of the event.
+     * @param eventId The ID of the event.
+     * @param rows The rows of the CSV.
+     * @return The file.
+     * @throws IOException If the file cannot be written.
+     */
     private static File writeCsvFile(
             Context context,
             String eventName,
             String eventId,
-            List<String[]> rows
-    ) throws IOException {
+            List<String[]> rows) throws IOException {
 
         // csv name：EventName (eventId).csv
         String baseName = eventName + " (" + eventId + ").csv";
@@ -154,10 +165,20 @@ public class CsvExporter {
         return outFile;
     }
 
+    /**
+     * check if a string is not null
+     * @param s the string to check
+     * @return the string if not null, empty string otherwise
+     * */
     private static String safe(String s) {
         return s == null ? "" : s;
     }
 
+    /**
+     * escape a string for csv
+     * @param value the string to escape
+     * @return the escaped string
+     * */
     private static String csvCell(String value) {
         String v = safe(value);
         v = v.replace("\"", "\"\"");

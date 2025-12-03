@@ -14,9 +14,14 @@ import androidx.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+/**
+ * Simple ArrayAdapter to show RegisteredUser items in a ListView.
+ */
 public class UserAdapter extends ArrayAdapter<RegisteredUser> {
 
-    // Tracks the Device IDs of the selected users
+    /**
+     * Create a new UserAdapter.
+     */
     private HashSet<String> selectedItems = new HashSet<>();
     private boolean selectionMode = false;
 
@@ -24,6 +29,9 @@ public class UserAdapter extends ArrayAdapter<RegisteredUser> {
         super(context, 0, users);
     }
 
+    /**
+     * Bind a RegisteredUser to the list item view.
+     */
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {

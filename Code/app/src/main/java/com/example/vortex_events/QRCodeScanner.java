@@ -34,6 +34,11 @@ import java.util.concurrent.Executors;
 
 public class QRCodeScanner extends AppCompatActivity {
 
+    /**
+     * Activity that scans QR codes using CameraX and ML Kit. When a vortex://event/<id>
+     * QR is detected it opens EventDetails for that event.
+     */
+
     private static final int CAMERA_PERMISSION = 2001;
 
     private PreviewView previewView;
@@ -84,6 +89,9 @@ public class QRCodeScanner extends AppCompatActivity {
         });
     }
 
+    /**
+     * Check for camera permission and request or start the camera accordingly.
+     */
     private void checkPermission() {
         if (ContextCompat.checkSelfPermission(
                 this, Manifest.permission.CAMERA
@@ -97,6 +105,9 @@ public class QRCodeScanner extends AppCompatActivity {
         }
     }
 
+    /**
+     * Start CameraX preview and attach an analyzer to process frames.
+     */
     private void startCamera() {
         ListenableFuture<ProcessCameraProvider> future =
                 ProcessCameraProvider.getInstance(this);
@@ -134,6 +145,9 @@ public class QRCodeScanner extends AppCompatActivity {
     }
 
     @OptIn(markerClass = ExperimentalGetImage.class)
+    /**
+     * Analyze a single camera frame using ML Kit to detect barcodes.
+     */
     private void analyze(@NonNull ImageProxy proxy) {
         if (handled || proxy.getImage() == null) {
             proxy.close();
@@ -168,9 +182,12 @@ public class QRCodeScanner extends AppCompatActivity {
                 .addOnFailureListener(e -> proxy.close());
     }
 
+    /**
+     * Handle the result of the camera permission request.
+     */
     @Override
     public void onRequestPermissionsResult(
-            int requestCode, @NonNull String[] permissions, @NonNull int[] results
+        int requestCode, @NonNull String[] permissions, @NonNull int[] results
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, results);
 

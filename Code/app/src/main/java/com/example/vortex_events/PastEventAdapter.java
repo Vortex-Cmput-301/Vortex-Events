@@ -15,6 +15,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * Adapter for displaying a user's past events in a RecyclerView.
+ */
 public class PastEventAdapter extends RecyclerView.Adapter<PastEventAdapter.PastEventViewHolder> {
 
     private final List<Event> pastEventList;
@@ -71,7 +74,7 @@ public class PastEventAdapter extends RecyclerView.Adapter<PastEventAdapter.Past
 
                 com.bumptech.glide.Glide.with(holder.itemView.getContext())
                         .load(decodedString)
-                        .fitCenter()
+                        .centerCrop()
                         .into(holder.thumbnail);
 
             } catch (Exception e) {

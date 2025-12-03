@@ -29,6 +29,10 @@ import java.util.Map;
  */
 public class AdminActivity extends AppCompatActivity implements AdminListAdapter.AdminItemListener {
 
+    /**
+     * Activity entry - sets up the admin UI and loads the default tab.
+     */
+
     private RecyclerView recyclerView;
     private MaterialButton buttonTabUsers;
     private MaterialButton buttonTabImages;
@@ -72,12 +76,19 @@ public class AdminActivity extends AppCompatActivity implements AdminListAdapter
         switchToTab(AdminListAdapter.AdminTabType.USERS);
     }
 
+    /**
+    * Sets up the click listeners for the buttons.
+    * */
     private void setupTabButtons() {
         buttonTabUsers.setOnClickListener(v -> switchToTab(AdminListAdapter.AdminTabType.USERS));
         buttonTabImages.setOnClickListener(v -> switchToTab(AdminListAdapter.AdminTabType.IMAGES));
         buttonTabNotifications.setOnClickListener(v -> switchToTab(AdminListAdapter.AdminTabType.NOTIFICATIONS));
     }
 
+    /**
+    * Switches to the given tab.
+    * @param tabType The type of tab to switch to.
+    * */
     private void switchToTab(AdminListAdapter.AdminTabType tabType) {
         currentTab = tabType;
         highlightTab(tabType);
@@ -91,6 +102,10 @@ public class AdminActivity extends AppCompatActivity implements AdminListAdapter
         }
     }
 
+    /**
+     * Highlights the given tab.
+     * @param type The type of tab to highlight.
+     * */
     private void highlightTab(AdminListAdapter.AdminTabType type) {
         // Reset all tabs to default style first
         resetTabStyles();
@@ -110,6 +125,10 @@ public class AdminActivity extends AppCompatActivity implements AdminListAdapter
         }
     }
 
+
+    /**
+     * Resets all tabs to default style.
+     * */
     private void resetTabStyles() {
         int strokeColor = getColor(android.R.color.black);
         int textColor = getColor(android.R.color.black);
@@ -119,6 +138,12 @@ public class AdminActivity extends AppCompatActivity implements AdminListAdapter
         resetSingleTab(buttonTabNotifications, strokeColor, textColor);
     }
 
+    /**
+     * Resets a single tab to default style.
+     * @param button The button to reset.
+     * @param strokeColor The stroke color to use.
+     * @param textColor The text color to use.
+     * */
     private void resetSingleTab(MaterialButton button, int strokeColor, int textColor) {
         // Transparent background
         int transparent = getColor(android.R.color.transparent);
@@ -202,30 +227,30 @@ public class AdminActivity extends AppCompatActivity implements AdminListAdapter
             notifications.clear();
             if (t.isSuccessful() && t.getResult() != null) {
                 for (QueryDocumentSnapshot document : t.getResult()) {
-                    AppNotification notification = new AppNotification(); // added
-                    // Map Firestore fields to AppNotification // added
-                    String authorID = document.getString("authorID"); // added
-                    String title = document.getString("title"); // added
-                    String description = document.getString("description"); // added
-                    Boolean read = document.getBoolean("read"); // added
-                    Object timeObj = document.get("time_created"); // added
+                    AppNotification notification = new AppNotification();
+                    // Map Firestore fields to AppNotification 
+                    String authorID = document.getString("authorID"); 
+                    String title = document.getString("title"); 
+                    String description = document.getString("description"); 
+                    Boolean read = document.getBoolean("read"); 
+                    Object timeObj = document.get("time_created"); 
 
-                    notification.setNotificationID(document.getId()); // added
-                    notification.setAuthorID(authorID != null ? authorID : ""); // added
-                    notification.setTitle(title != null ? title : ""); // added
-                    notification.setDescription(description != null ? description : ""); // added
-                    notification.setRead(read != null ? read : false); // added
+                    notification.setNotificationID(document.getId()); 
+                    notification.setAuthorID(authorID != null ? authorID : ""); 
+                    notification.setTitle(title != null ? title : ""); 
+                    notification.setDescription(description != null ? description : ""); 
+                    notification.setRead(read != null ? read : false); 
 
-                    if (timeObj instanceof com.google.firebase.Timestamp) { // added
-                        com.google.firebase.Timestamp ts = (com.google.firebase.Timestamp) timeObj; // added
-                        notification.setTime_created(ts.toDate()); // added
-                    } else if (timeObj instanceof Date) { // added
-                        notification.setTime_created((Date) timeObj); // added
-                    } else { // added
-                        notification.setTime_created(null); // added
-                    } // added
+                    if (timeObj instanceof com.google.firebase.Timestamp) { 
+                        com.google.firebase.Timestamp ts = (com.google.firebase.Timestamp) timeObj; 
+                        notification.setTime_created(ts.toDate()); 
+                    } else if (timeObj instanceof Date) { 
+                        notification.setTime_created((Date) timeObj); 
+                    } else { 
+                        notification.setTime_created(null); 
+                    } 
 
-                    notifications.add(notification); // added
+                    notifications.add(notification); 
                 }
             } else {
                 Toast.makeText(this, "Failed to load notifications.", Toast.LENGTH_SHORT).show();
@@ -235,10 +260,10 @@ public class AdminActivity extends AppCompatActivity implements AdminListAdapter
         });
     }
 
-    // ========================
-    // Click handlers (via Adapter callback)
-    // ========================
-
+    /**
+     * Listener for user clicks.
+     * @param user The user that was clicked.
+     */
     @Override
     public void onUserClicked(@NonNull RegisteredUser user) {
         // Open Profile activity for given deviceID.
@@ -247,6 +272,10 @@ public class AdminActivity extends AppCompatActivity implements AdminListAdapter
         startActivity(intent);
     }
 
+    /**
+     * Listener for image clicks.
+     * @param imageUrl The URL of the image that was clicked.
+     */
     @Override
     public void onImageClicked(@NonNull String imageUrl) {
         dialogHelper.showSimpleConfirmationDialog(
@@ -256,6 +285,10 @@ public class AdminActivity extends AppCompatActivity implements AdminListAdapter
         );
     }
 
+    /**
+     * Listener for notification clicks.
+     * @param notification The notification that was clicked.
+     */
     @Override
     public void onNotificationClicked(@NonNull AppNotification notification) {
         dialogHelper.showSimpleConfirmationDialog(
@@ -271,6 +304,7 @@ public class AdminActivity extends AppCompatActivity implements AdminListAdapter
 
     /**
      * Clear image field of the event which has this imageUrl.
+     * @param imageUrl The URL of the image to delete.
      */
     private void performDeleteImage(@NonNull String imageUrl) {
         // Find the event that owns this image
@@ -309,14 +343,14 @@ public class AdminActivity extends AppCompatActivity implements AdminListAdapter
             return; // modified
         } // modified
 
-        databaseWorker.deleteNotificationById(targetNotificationID) // added
-                .addOnSuccessListener(aVoid -> { // added
-                    Toast.makeText(this, "Notification deleted.", Toast.LENGTH_SHORT).show(); // added
-                    // Refresh list after deletion // added
-                    loadNotifications(); // added
-                }) // added
-                .addOnFailureListener(e -> { // added
-                    Toast.makeText(this, "Failed to delete notification.", Toast.LENGTH_SHORT).show(); // added
-                }); // added
+        databaseWorker.deleteNotificationById(targetNotificationID) 
+                .addOnSuccessListener(aVoid -> { 
+                    Toast.makeText(this, "Notification deleted.", Toast.LENGTH_SHORT).show(); 
+                    // Refresh list after deletion 
+                    loadNotifications(); 
+                }) 
+                .addOnFailureListener(e -> { 
+                    Toast.makeText(this, "Failed to delete notification.", Toast.LENGTH_SHORT).show(); 
+                }); 
     }
 }

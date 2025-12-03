@@ -365,6 +365,11 @@ public class CreateActivityEvents extends AppCompatActivity {
         });
     }
 
+    /**
+     * Encodes an image uri to base 64
+     * @param imageUri
+     * @return Base64 encoding of the image uri
+     */
     private String encodeImage(Uri imageUri) {
         try {
 

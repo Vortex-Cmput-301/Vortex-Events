@@ -1,6 +1,9 @@
 package com.example.vortex_events;
 
 // Helper class to represent data
+/**
+ * Simple sealed-like holder for operation results: Success<T> or Error<T>.
+ */
 public class Result<T> {
     private Result() {}
     public static final class Success<T> extends Result<T> {
