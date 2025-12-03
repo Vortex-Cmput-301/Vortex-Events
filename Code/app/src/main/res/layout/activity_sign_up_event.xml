@@ -128,7 +128,23 @@
 
         </TextView>
 
+
     </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/sign_up_policy_link"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:text="@string/see_full_policy"
+        android:textColor="@color/project_blue"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/sign_up_sign_up"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/sign_up_sign_up"
