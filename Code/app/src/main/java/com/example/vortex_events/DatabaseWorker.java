@@ -28,6 +28,7 @@ public class DatabaseWorker {
 
 
 
+
     /**
      * @Test for dependency injection
      * DO NOT USE FOR NON TESTING PURPOSES
@@ -213,6 +214,11 @@ public class DatabaseWorker {
         return eventsRef.document(id).get();
     }
 
+    public Task<DocumentSnapshot> getNotificationByID(String id) {
+        return notificationsRef.document(id).get();
+    }
+
+
     /**
      * get all events for Explore page
      * @return Task<QuerySnapshot>
@@ -336,7 +342,7 @@ public class DatabaseWorker {
             List<String> signedUpEvents = (List<String>) document.get("signed_up_events");
             Map<String, String> eventHistory = (Map<String, String>) document.get("event_history");
             List<String> createdEvents = (List<String>) document.get("created_events");
-            List<AppNotification> notifications = (List<AppNotification>) document.get("notifications");
+            ArrayList<String> notifications = (ArrayList<String>) document.get("notifications");
 
             // Create RegisteredUser object
             RegisteredUser user = new RegisteredUser(deviceID, phoneNumber, email, name, token, latitude, longitude, opted);
@@ -352,7 +358,7 @@ public class DatabaseWorker {
                 user.created_events = new ArrayList<>(createdEvents);
             }
             if (notifications != null) {
-                user.notifications = new ArrayList<>();
+                user.setNotifications(notifications);
             }
 
             Log.d("DatabaseWorker", "Successfully converted document to RegisteredUser: " + deviceID);

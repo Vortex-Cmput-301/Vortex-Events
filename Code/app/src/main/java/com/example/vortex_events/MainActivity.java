@@ -84,13 +84,12 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
-//        if (notificationsButton != null) {
-//            notificationsButton.setOnClickListener(v -> {
-//                // TODO: replace NotificationsDashboard with real activity
-//                Intent intent = new Intent(getApplicationContext(), NotificationsDashboard.class);
-//                startActivity(intent);
-//            });
-//        }
+        if (notificationsButton != null) {
+            notificationsButton.setOnClickListener(v -> {
+                Intent intent = new Intent(getApplicationContext(), notificationsScreen.class);
+                startActivity(intent);
+            });
+        }
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

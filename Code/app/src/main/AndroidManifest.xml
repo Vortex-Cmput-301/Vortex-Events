@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
+
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -22,6 +24,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Vortexevents">
         <activity
+            android:name=".notificationsScreen"
+            android:exported="false" />
+        <activity
             android:name=".EditEvents"
             android:exported="false" />
 
@@ -31,15 +36,13 @@
 
         <activity
             android:name=".MapEntrants"
-            android:exported="false"/>
-
+            android:exported="false" />
         <activity
             android:name=".QRCodeScanner"
             android:exported="false" />
         <activity
             android:name=".OrganizerNotificationsDashboard"
             android:exported="false" />
-
         <activity
             android:name=".SignUpEvent"
             android:exported="false" />
@@ -90,7 +93,6 @@
         <activity
             android:name=".HistoryEvents"
             android:exported="false" />
-
         <activity
             android:name=".AdminActivity"
             android:exported="false" />
@@ -103,6 +105,5 @@
             </intent-filter>
         </service>
     </application>
-
 
 </manifest>
