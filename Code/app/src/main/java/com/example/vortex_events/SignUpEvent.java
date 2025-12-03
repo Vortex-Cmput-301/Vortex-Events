@@ -3,6 +3,7 @@ package com.example.vortex_events;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -67,6 +69,7 @@ public class SignUpEvent extends AppCompatActivity {
         SignUpLocation = findViewById(R.id.sign_up_location);
         SignUpTime = findViewById(R.id.sign_up_date);
         lotteryWarning = findViewById(R.id.sign_up_warning);
+        TextView policyLink = findViewById(R.id.sign_up_policy_link);
 
         cancel = findViewById(R.id.sign_up_cancel);
         sign_up = findViewById(R.id.sign_up_sign_up);
@@ -78,6 +81,23 @@ public class SignUpEvent extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 finish();
+            }
+        });
+
+        policyLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                TextView messageView = new TextView(SignUpEvent.this);
+                messageView.setText(getString(R.string.lottery_policy));
+                messageView.setPadding(48, 32, 48, 32);
+                messageView.setTextSize(14f);
+                messageView.setMovementMethod(new ScrollingMovementMethod());
+
+                new AlertDialog.Builder(SignUpEvent.this)
+                        .setTitle("Lottery Policy") // keep English, no new string required
+                        .setView(messageView)
+                        .setPositiveButton("OK", null)
+                        .show();
             }
         });
 
