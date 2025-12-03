@@ -27,6 +27,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.auth.User;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+/**
+ * Screen allowing a new user to register (collects name, phone, email and location).
+ */
 public class RegistrationScreen extends AppCompatActivity {
     EditText phoneField;
     EditText emailField;
@@ -60,6 +63,9 @@ public class RegistrationScreen extends AppCompatActivity {
         }
     });
 
+    /**
+     * Initialize registration form, request location permission, and handle sign-up.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,6 +121,9 @@ public class RegistrationScreen extends AppCompatActivity {
         });
     }
 
+    /**
+     * Fetches the last known device location if permissions are granted.
+     */
     private void getLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;

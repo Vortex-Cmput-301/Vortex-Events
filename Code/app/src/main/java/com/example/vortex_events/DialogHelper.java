@@ -27,6 +27,10 @@ public class DialogHelper {
     private Context context;
     private DatabaseWorker databaseWorker;
 
+    /**
+     * Constructor for DialogHelper
+     * @param context Application context
+     */
     public DialogHelper(Context context) {
         this.context = context;
         this.databaseWorker = new DatabaseWorker(FirebaseFirestore.getInstance());

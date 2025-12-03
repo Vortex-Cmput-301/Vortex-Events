@@ -15,6 +15,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class LoadingActivity extends AppCompatActivity {
 
+    /**
+     * Lightweight launcher activity that decides whether to show the main app or
+     * the welcome/registration flow based on whether the device ID has an associated user.
+     */
+
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     DatabaseWorker dbWorker = new DatabaseWorker(db);

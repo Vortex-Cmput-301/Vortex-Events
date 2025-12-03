@@ -33,6 +33,10 @@ import java.util.List;
 
 public class ExplorePage extends AppCompatActivity {
 
+    /**
+     * Activity that displays a scrollable list of events for users to explore.
+     */
+
     private List<Event> eventList;
     private EventAdapter eventAdapter; //set up adapter
     private DatabaseWorker databaseWorker; //set up database worker

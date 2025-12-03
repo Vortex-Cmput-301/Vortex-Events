@@ -19,6 +19,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Central database worker for Firestore operations on Events, Users, and Notifications.
+ * Provides CRUD operations and conversion utilities for documents.
+ */
 public class DatabaseWorker {
     FirebaseFirestore db;
     CollectionReference eventsRef;
@@ -28,13 +32,13 @@ public class DatabaseWorker {
 
 
 
-    /**
-     * @Test for dependency injection
-     * DO NOT USE FOR NON TESTING PURPOSES
-     * */
+
     boolean userExists;
 
-
+    /**
+     * Dependency-injected constructor used for testing.
+     * @param db_arg Firestore instance to use
+     */
     public DatabaseWorker(FirebaseFirestore db_arg) {
         this.db = db_arg;
         this.eventsRef = db.collection("Events");
@@ -48,6 +52,9 @@ public class DatabaseWorker {
         }));
     }
 
+    /**
+     * Default constructor - initializes with default Firestore instance.
+     */
     public DatabaseWorker() {
         this.db = FirebaseFirestore.getInstance();
         this.eventsRef = db.collection("Events");
@@ -56,10 +63,19 @@ public class DatabaseWorker {
 
     }
 
+    /**
+     * Check if user exists flag.
+     * @return true if user exists, false otherwise
+     */
     public boolean isUserExists() {
         return userExists;
     }
 
+    /**
+     * Create a guest user in the database.
+     * @param guest guest user object to create
+     * @return task representing the operation
+     */
     public Task<Void> createGuest(GuestUser guest){
         DocumentReference docuRef = usersRef.document(guest.deviceID);
 
@@ -67,6 +83,11 @@ public class DatabaseWorker {
 
     }
 
+    /**
+     * Check if a user exists in the database by device ID and invoke callback with result.
+     * @param deviceID unique device identifier
+     * @param callBack callback to receive existence check result
+     */
     public void checkIfIn(String deviceID, final UserCheckCallBack callBack){
 
 
@@ -93,7 +114,11 @@ public class DatabaseWorker {
         });
     }
 
-
+    /**
+     * Create a registered user in the database.
+     * @param user registered user object to create
+     * @return task representing the operation
+     */
     public Task<Void> createRegisteredUser(RegisteredUser user){
         DocumentReference docuRef = usersRef.document(user.deviceID);
 
@@ -101,16 +126,19 @@ public class DatabaseWorker {
     }
 
     /**
-     * For adding notifications to the database 11.22 - Saleh
-     * **/
+     * Push a notification object to the Notifications collection.
+     * @param notification notification object to save
+     * @return task representing the operation
+     */
     public Task<Void> pushNotificationToDB(AppNotification notification){
         DocumentReference docuRef = notificationsRef.document(notification.notificationID);
 
         return docuRef.set(notification);
     }
+
     /**
      * Get all documents from the Notifications collection.
-     * @return Task resolving to a QuerySnapshot of all notifications.
+     * @return task resolving to a QuerySnapshot of all notifications
      */
     public Task<QuerySnapshot> getAllNotifications() {
         return notificationsRef.get();
@@ -119,21 +147,29 @@ public class DatabaseWorker {
     /**
      * Delete a notification document by its ID from the Notifications collection.
      * @param notificationID document ID of the notification to delete
-     * @return Task representing the delete operation.
+     * @return task representing the delete operation
      */
     public Task<Void> deleteNotificationById(String notificationID) {
         return notificationsRef.document(notificationID).delete();
     }
 
     /**
-     * For adding notifications to the users 11.22 - Saleh
-     * **/
+     * Update the notifications list for a specific user.
+     * @param newNotifications the list of notification IDs to set
+     * @param userID the user ID to update
+     * @return task representing the update operation
+     */
     public Task<Void> pushNotiToUser(List<String> newNotifications, String userID){
         return usersRef.document(userID).update("notifications", newNotifications);
     }
 
 
-
+    /**
+     * Create an event in the database.
+     * @param maker the organizer (user) creating the event
+     * @param targetEvent the event object to create
+     * @return task representing the operation
+     */
     public Task<Void> createEvent(Users maker, Event targetEvent){
         HashWorker hw = new HashWorker();
         targetEvent.setOrganizer(maker.deviceID);
@@ -142,93 +178,130 @@ public class DatabaseWorker {
 
         return docuref.set(targetEvent);
     }
+
+    /**
+     * Update an existing event in the database.
+     * @param targetEvent the event object with updated data
+     * @return task representing the operation
+     */
     public Task<Void> updateEvent(Event targetEvent) {
         DocumentReference docuref = eventsRef.document(targetEvent.getEventID());
 
         return docuref.set(targetEvent);
     }
 
-    // modified: delete event and remove it from all users' signed_up_events
+    /**
+     * Delete an event and clean up references in users' signed_up_events.
+     * @param targetEvent the event to delete
+     * @return task representing the operation
+     */
     public Task<Void> deleteEvent(Event targetEvent) { // modified
-        if (targetEvent == null || targetEvent.getEventID() == null || targetEvent.getEventID().isEmpty()) { // added
-            Log.e("DatabaseWorker", "deleteEvent: event or eventID is null/empty"); // added
-            return null; // added
-        } // added
+        if (targetEvent == null || targetEvent.getEventID() == null || targetEvent.getEventID().isEmpty()) { 
+            Log.e("DatabaseWorker", "deleteEvent: event or eventID is null/empty"); 
+            return null; 
+        } 
 
-        String targetEventId = targetEvent.getEventID(); // added
+        String targetEventId = targetEvent.getEventID(); 
 
-        // Step 1: query all users whose signed_up_events contains this eventID // added
-        return usersRef.whereArrayContains("signed_up_events", targetEventId) // added
-                .get() // added
-                .continueWithTask(task -> { // added
-                    if (!task.isSuccessful()) { // added
-                        Exception e = task.getException(); // added
-                        Log.e("DatabaseWorker", "Failed to query users for event cleanup", e); // added
-                        throw e != null ? e : new Exception("Unknown error querying users for event cleanup"); // added
-                    } // added
+        // Step 1: query all users whose signed_up_events contains this eventID 
+        return usersRef.whereArrayContains("signed_up_events", targetEventId) 
+                .get() 
+                .continueWithTask(task -> { 
+                    if (!task.isSuccessful()) { 
+                        Exception e = task.getException(); 
+                        Log.e("DatabaseWorker", "Failed to query users for event cleanup", e); 
+                        throw e != null ? e : new Exception("Unknown error querying users for event cleanup"); 
+                    } 
 
-                    QuerySnapshot querySnapshot = task.getResult(); // added
-                    if (querySnapshot != null) { // added
-                        for (DocumentSnapshot userDoc : querySnapshot.getDocuments()) { // added
-                            List<String> signedUpEvents = (List<String>) userDoc.get("signed_up_events"); // added
-                            if (signedUpEvents != null && signedUpEvents.contains(targetEventId)) { // added
-                                signedUpEvents.remove(targetEventId); // added
-                                usersRef.document(userDoc.getId()) // added
-                                        .update("signed_up_events", signedUpEvents) // added
-                                        .addOnFailureListener(e -> Log.e("DatabaseWorker", "Failed to update signed_up_events for user: " + userDoc.getId(), e)); // added
-                            } // added
-                        } // added
-                    } // added
+                    QuerySnapshot querySnapshot = task.getResult(); 
+                    if (querySnapshot != null) { 
+                        for (DocumentSnapshot userDoc : querySnapshot.getDocuments()) { 
+                            List<String> signedUpEvents = (List<String>) userDoc.get("signed_up_events"); 
+                            if (signedUpEvents != null && signedUpEvents.contains(targetEventId)) { 
+                                signedUpEvents.remove(targetEventId); 
+                                usersRef.document(userDoc.getId()) 
+                                        .update("signed_up_events", signedUpEvents) 
+                                        .addOnFailureListener(e -> Log.e("DatabaseWorker", "Failed to update signed_up_events for user: " + userDoc.getId(), e)); 
+                            } 
+                        } 
+                    } 
 
-                    // Step 2: delete the event document itself // added
-                    DocumentReference docRef = eventsRef.document(targetEventId); // added
-                    return docRef.delete(); // added
-                }); // added
+                    // Step 2: delete the event document itself 
+                    DocumentReference docRef = eventsRef.document(targetEventId); 
+                    return docRef.delete(); 
+                }); 
     }
 
 
-
+    /**
+     * Get all events organized by a specific organizer.
+     * @param organizer organizer device ID
+     * @return task resolving to query snapshot of events
+     */
     public Task<QuerySnapshot> getOrganizerEvents(String organizer) {
         return eventsRef.whereEqualTo("organizer", organizer).get();
     }
 
+    /**
+     * Get the waitlist subcollection for an event (deprecated pattern).
+     * @param eventID event ID
+     * @return task resolving to query snapshot
+     */
     public Task<QuerySnapshot> getEventWaitlist(String eventID) {
         return eventsRef.document(eventID).collection("waitlist").get();
     }
-
+    
+    /**
+     * Get accepted users subcollection for an event (deprecated pattern).
+     * @param eventID event ID
+     * @return task resolving to query snapshot
+     */
     public Task<QuerySnapshot> getEventAccepted(String eventID) {
         return eventsRef.document(eventID).collection("accepted").get();
     }
 
+    /**
+     * Get declined users subcollection for an event (deprecated pattern).
+     * @param eventID event ID
+     * @return task resolving to query snapshot
+     */
     public Task<QuerySnapshot> getEventDeclined(String eventID) {
         return eventsRef.document(eventID).collection("declined").get();
     }
 
+    /**
+     * Update the waitlist array field for an event.
+     * @param newList updated list of user IDs
+     * @param eventID event ID
+     * @return task representing the operation
+     */
     public Task<Void> updateWaitlist(List<String> newList, String eventID){
        return eventsRef.document(eventID).update("waitlist", newList);
     }
 
-
+    /**
+     * Get an event document by ID.
+     * @param id event ID
+     * @return task resolving to document snapshot
+     */
     public Task<DocumentSnapshot> getEventByID(String id) {
         return eventsRef.document(id).get();
     }
 
     /**
-     * get all events for Explore page
-     * @return Task<QuerySnapshot>
+     * Get all events (for Explore page).
+     * @return task resolving to query snapshot of all events
      */
-    //TODO: treat search by tag
     public Task<QuerySnapshot> getAllEvents() {
         Log.d("DatabaseWorker", "Getting all events");
         return eventsRef.get();
     }
 
 
-    // 11.6 by Kehan - User related methods
     /**
-     * creat user
-     * @param user  new user object
-     * @return Task<Void>
+     * Create a new user in the database.
+     * @param user new RegisteredUser object
+     * @return task representing the operation
      */
     public Task<Void> createUser(RegisteredUser user) {
         Log.d("DatabaseWorker", "Creating user with deviceID: " + user.deviceID);
@@ -237,9 +310,9 @@ public class DatabaseWorker {
     }
 
     /**
-     * User info update
-     * @param user object need to update
-     * @return Task<Void>
+     * Update user information in the database.
+     * @param user RegisteredUser object with updated data
+     * @return task representing the operation
      */
     public Task<Void> updateUser(RegisteredUser user) {
         Log.d("DatabaseWorker", "Updating user with deviceID: " + user.deviceID);
@@ -248,9 +321,9 @@ public class DatabaseWorker {
     }
 
     /**
-     * Delete user's profile by deviceID from RegisteredUser object
-     * @param user object need to remove
-     * @return Task<Void>
+     * Delete a user's profile by device ID.
+     * @param user RegisteredUser object to delete
+     * @return task representing the operation
      */
     public Task<Void> deleteUser(RegisteredUser user) {
         if (user == null || user.getDeviceID() == null) {
@@ -265,9 +338,9 @@ public class DatabaseWorker {
     }
 
     /**
-     * Get user by deviceID and convert to RegisteredUser object
-     * @param deviceID
-     * @return Task<RegisteredUser> stored user data as RegisteredUser object
+     * Get a user by device ID and convert to RegisteredUser object.
+     * @param deviceID unique device identifier
+     * @return task resolving to RegisteredUser object or null if not found
      */
     public Task<RegisteredUser> getUserByDeviceID(String deviceID) {
         Log.d("DatabaseWorker", "Getting user by deviceID: " + deviceID);
@@ -290,9 +363,9 @@ public class DatabaseWorker {
     }
 
     /**
-     * check if user exists
-     * @param deviceID
-     * @return Task<Boolean> if user already in database or not
+     * Check if a user exists by device ID.
+     * @param deviceID unique device identifier
+     * @return task resolving to true if user exists, false otherwise
      */
     public Task<Boolean> userExists(String deviceID) {
         return usersRef.document(deviceID).get().continueWith(task -> {
@@ -305,8 +378,8 @@ public class DatabaseWorker {
     }
 
     /**
-     * get all users only for testing, should not use in final app
-     * @return Task<QuerySnapshot>
+     * Get all users (for admin/testing purposes only).
+     * @return task resolving to query snapshot of all users
      */
     public Task<QuerySnapshot> getAllUsers() {
         Log.d("DatabaseWorker", "Getting all users");
@@ -315,9 +388,9 @@ public class DatabaseWorker {
 
 
     /**
-     * Convert DocumentSnapshot to RegisteredUser object
-     * @param document DocumentSnapshot from Firestore
-     * @return RegisteredUser object
+     * Convert a Firestore DocumentSnapshot to a RegisteredUser object.
+     * @param document Firestore document snapshot
+     * @return RegisteredUser object or null if conversion fails
      */
     private RegisteredUser convertDocumentToRegisteredUser(DocumentSnapshot document) {
         try {
@@ -365,9 +438,9 @@ public class DatabaseWorker {
     }
 
     /**
-     * Convert DocumentSnapshot to Event object
-     * @param document DocumentSnapshot from Firestore
-     * @return Event object
+     * Convert a Firestore DocumentSnapshot to an Event object.
+     * @param document Firestore document snapshot
+     * @return Event object or null if conversion fails
      */
     public static Event convertDocumentToEvent(DocumentSnapshot document) {
         try {
@@ -438,20 +511,19 @@ public class DatabaseWorker {
     }
 
     /**
-     * Clear image field of an event by eventID. For admin use only
-     *
-     * @param eventID id of event to update
-     * @return Task<Void>
+     * Clear the image field of an event (for admin use).
+     * @param eventID event ID to update
+     * @return task representing the operation
      */
     public Task<Void> clearEventImage(String eventID) {
         return eventsRef.document(eventID).update("image", null);
     }
+
     /**
-     * Replace notifications array for a specific user. For admin use only
-     *
-     * @param deviceID      user id
+     * Replace the notifications array for a specific user (for admin use).
+     * @param deviceID user device ID
      * @param notifications new list of notifications
-     * @return Task<Void>
+     * @return task representing the operation
      */
     public Task<Void> updateUserNotifications(String deviceID, List<AppNotification> notifications) {
         return usersRef.document(deviceID).update("notifications", notifications);

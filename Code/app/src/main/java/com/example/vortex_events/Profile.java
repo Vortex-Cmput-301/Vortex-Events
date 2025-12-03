@@ -28,6 +28,11 @@ import java.util.List;
 
 public class Profile extends AppCompatActivity {
 
+    /**
+     * Activity showing a user's profile and their past/signed-up events. Admins can
+     * view other users' profiles and delete accounts from here.
+     */
+
     public static final String EXTRA_DEVICE_ID = "extra_device_id";
 
     private List<Event> pastEventList;
