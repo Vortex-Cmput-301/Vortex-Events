@@ -170,6 +170,8 @@ public class AdminActivity extends AppCompatActivity implements AdminListAdapter
                 for (QueryDocumentSnapshot document : t.getResult()) {
                     Double lat = document.getDouble("latitude");
                     Double lng = document.getDouble("longitude");
+                    Boolean opted = document.getBoolean("notifications_opted"); // *** ADDED
+                    boolean optedValue = opted != null ? opted : false;
 
                     RegisteredUser user = new RegisteredUser(
                             this,
@@ -179,7 +181,7 @@ public class AdminActivity extends AppCompatActivity implements AdminListAdapter
                             document.getString("notificationToken"),
                             lat != null ? lat : 0.0,
                             lng != null ? lng : 0.0,
-                            document.getBoolean("notifications_opted")
+                            optedValue
                     );
                     user.setDeviceID(document.getString("deviceID"));
                     users.add(user);

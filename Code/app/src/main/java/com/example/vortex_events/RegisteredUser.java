@@ -215,7 +215,7 @@ public class RegisteredUser extends Users{
      * @param longitude longitude coordinate
      * @param opted notification opt-in status
      */
-    public RegisteredUser(String deviceID, String number, String email, String name, String notificationToken, double latitude, double longitude, boolean opted){
+    public RegisteredUser(String deviceID, String number, String email, String name, String notificationToken, double latitude, double longitude, boolean opted, String type){
         this.deviceID = deviceID;
         this.phone_number = number;
         this.email = email;
@@ -229,7 +229,7 @@ public class RegisteredUser extends Users{
         this.created_events = new ArrayList<>();
         this.event_history = new HashMap<>();
         this.notifications = new ArrayList<>();
-        this.type = "Registered User";
+        this.type = type;
         this.notifications_opted = opted;
 
     }

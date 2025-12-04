@@ -417,7 +417,7 @@ public class DatabaseWorker {
             ArrayList<String> notifications = (ArrayList<String>) document.get("notifications");
 
             // Create RegisteredUser object
-            RegisteredUser user = new RegisteredUser(deviceID, phoneNumber, email, name, token, latitude, longitude, opted);
+            RegisteredUser user = new RegisteredUser(deviceID, phoneNumber, email, name, token, latitude, longitude, opted, type);
 
             // Set the lists
             if (signedUpEvents != null) {
