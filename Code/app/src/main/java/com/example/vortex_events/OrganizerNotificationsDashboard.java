@@ -117,8 +117,11 @@ public class OrganizerNotificationsDashboard extends AppCompatActivity {
                     group = currentEvent.declined;
                 }else if (notifyMode.equals("Waitlist")){
                     group = currentEvent.waitlist;
+                }else if(notifyMode.equals("WonLottery")){
+                    group = currentEvent.wonLottery;
                 }
 
+                Log.d("Group", currentEvent.wonLottery.toString());
                 List<Task<?>> tasks = new ArrayList<>();
 
                 for (String user: group){

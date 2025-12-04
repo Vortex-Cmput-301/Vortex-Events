@@ -493,16 +493,17 @@ public class DatabaseWorker {
             }
 
             // Load waitlist participants (directly as ArrayList<String>)
-            List<String> waitlistUserIDs = (List<String>) document.get("waitlist");
+            ArrayList<String> waitlistUserIDs = (ArrayList<String>) document.get("waitlist");
             if (waitlistUserIDs != null) {
                 event.setWaitlist(new ArrayList<>(waitlistUserIDs));
             } else {
                 event.setWaitlist(new ArrayList<>());
             }
 
-            List<String> wonUserIDs = (List<String>) document.get("wonLottery");
+            ArrayList<String> wonUserIDs = (ArrayList<String>) document.get("wonLottery");
             if (waitlistUserIDs != null) {
-                event.setWonLottery(new ArrayList<>(wonUserIDs));
+                Log.d("WON USERS", wonUserIDs.toString());
+                event.setWonLottery(wonUserIDs);
             } else {
                 event.setWonLottery(new ArrayList<>());
             }
